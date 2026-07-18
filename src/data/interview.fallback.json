@@ -1,0 +1,240 @@
+[
+  {
+    "id": "roadmap",
+    "title": "8-Week Learn → Interview Roadmap",
+    "description": "Depth-first learning first, then interview practice. Each week links to deep topics.",
+    "items": [
+      {
+        "id": "w1",
+        "title": "Week 1 — Foundations",
+        "body": "Learn: Programming Fundamentals (SOLID), Immutability, Operating Systems basics.\nPractice: explain SRP with a real service split; write an immutable Money type.\nQuiz each topic to ≥80%.",
+        "learnSlug": "programming-fundamentals",
+        "tags": ["foundation"]
+      },
+      {
+        "id": "w2",
+        "title": "Week 2 — Concurrency & Patterns",
+        "body": "Learn: Concurrency, Design Patterns (Factory/Decorator/Singleton/Observer).\nPractice: fix a lost-update counter; decorate a repository with metrics.",
+        "learnSlug": "concurrency",
+        "tags": ["backend"]
+      },
+      {
+        "id": "w3",
+        "title": "Week 3 — Data & APIs",
+        "body": "Learn: Databases, APIs, Idempotency, Caching.\nPractice: N+1 fix; Idempotency-Key design; cache-aside with stampede control.",
+        "learnSlug": "idempotency",
+        "tags": ["backend"]
+      },
+      {
+        "id": "w4",
+        "title": "Week 4 — Distributed building blocks",
+        "body": "Learn: Messaging & Streaming, Networking, System Design.\nPractice: outbox + idempotent consumer; sketch URL shortener with cache + DB.",
+        "learnSlug": "messaging-queues",
+        "tags": ["architecture"]
+      },
+      {
+        "id": "w5",
+        "title": "Week 5 — Security & Auth",
+        "body": "Learn: Security, SSL/JWT/OAuth, Cloud & DevOps basics.\nPractice: JWT validation checklist; pick OAuth flow for SPA vs cron.",
+        "learnSlug": "auth-tls",
+        "tags": ["security"]
+      },
+      {
+        "id": "w6",
+        "title": "Week 6 — Quality & Ops",
+        "body": "Learn: Testing, TDD, Observability, Debugging.\nPractice: red→green→refactor on a domain rule; define RED dashboard + SLO.",
+        "learnSlug": "tdd",
+        "tags": ["quality"]
+      },
+      {
+        "id": "w7",
+        "title": "Week 7 — DSA patterns + design prompts",
+        "body": "Drill: hash maps, two pointers, sliding window, BFS/DFS, light DP.\nDesign: rate limiter, chat, notifications. Always mention failure modes & metrics.",
+        "learnSlug": "algorithms",
+        "tags": ["interview"]
+      },
+      {
+        "id": "w8",
+        "title": "Week 8 — Mocks & behavioral",
+        "body": "Full loops: coding + design + STAR stories (ownership, conflict, failure).\nReview weak deep topics; retake quizzes; polish scoreboard gaps.",
+        "learnSlug": "problem-solving",
+        "tags": ["interview"]
+      }
+    ]
+  },
+  {
+    "id": "dsa",
+    "title": "Most-Asked DSA Patterns",
+    "description": "Pattern recognition beats memorizing 300 problems. Learn Algorithms deeply, then drill these.",
+    "items": [
+      {
+        "id": "dsa-hash",
+        "title": "Hash map lookups",
+        "body": "Classic: Two Sum, anagram groups, subarray sum equals K.\nApproach: value→index or frequency map; O(n) average.\nSay time/space out loud.",
+        "learnSlug": "algorithms",
+        "tags": ["arrays", "hashing"]
+      },
+      {
+        "id": "dsa-two",
+        "title": "Two pointers",
+        "body": "Classic: sorted two-sum, container with most water, valid palindrome.\nApproach: left/right on sorted array or string; move the side that can improve the answer.",
+        "learnSlug": "algorithms",
+        "tags": ["pointers"]
+      },
+      {
+        "id": "dsa-window",
+        "title": "Sliding window",
+        "body": "Classic: longest substring without repeat, min window substring.\nApproach: expand right, shrink left while invariant broken; O(n).",
+        "learnSlug": "algorithms",
+        "tags": ["strings"]
+      },
+      {
+        "id": "dsa-bfsdfs",
+        "title": "BFS / DFS",
+        "body": "Classic: level order, number of islands, clone graph.\nBFS for shortest path in unweighted graphs; DFS for components/backtracking.",
+        "learnSlug": "data-structures",
+        "tags": ["graphs", "trees"]
+      },
+      {
+        "id": "dsa-bs",
+        "title": "Binary search",
+        "body": "Classic: search insert position, first bad version, rotated array.\nInvariant: answer in [lo, hi]; be careful with mid and boundaries.",
+        "learnSlug": "algorithms",
+        "tags": ["search"]
+      },
+      {
+        "id": "dsa-dp",
+        "title": "1D / 2D DP (medium)",
+        "body": "Classic: climb stairs, house robber, unique paths, coin change.\nDefine state, transition, base cases; start recursive+memo then tabulate.",
+        "learnSlug": "algorithms",
+        "tags": ["dp"]
+      }
+    ]
+  },
+  {
+    "id": "system-design",
+    "title": "System Design Prompts",
+    "description": "Framework: clarify → capacity → high-level → deep dive → trade-offs/ops. Link building-block topics.",
+    "items": [
+      {
+        "id": "sd-url",
+        "title": "Design a URL shortener",
+        "body": "Clarify: read/write ratio, custom aliases, expiry.\nCore: base62 ids, DB mapping, Redis cache for redirects, analytics async.\nOps: cache stampede on hot links, rate limit creates.",
+        "learnSlug": "system-design",
+        "tags": ["classic"]
+      },
+      {
+        "id": "sd-rate",
+        "title": "Design a rate limiter",
+        "body": "Token bucket vs sliding window; Redis counters; per-user/IP/API-key.\nFail open vs closed; where to enforce (gateway vs service).",
+        "learnSlug": "caching",
+        "tags": ["classic"]
+      },
+      {
+        "id": "sd-chat",
+        "title": "Design a chat app",
+        "body": "WebSockets/gateway; message store; fan-out; online presence; push.\nOrdering per conversation; at-least-once delivery + idempotent clients.",
+        "learnSlug": "messaging-queues",
+        "tags": ["classic"]
+      },
+      {
+        "id": "sd-notify",
+        "title": "Design a notification system",
+        "body": "Ingest events → queue → channel workers (email/SMS/push); templates; preferences; retries/DLQ.\nIdempotency so users are not spammed on replay.",
+        "learnSlug": "messaging-queues",
+        "tags": ["classic"]
+      },
+      {
+        "id": "sd-rag",
+        "title": "Design a RAG support chatbot",
+        "body": "Ingest/chunk/embed → vector DB → retrieve/rerank → LLM with citations.\nCost/latency budgets, evals, refusal when retrieval weak.",
+        "learnSlug": "ai-engineering",
+        "tags": ["2026"]
+      }
+    ]
+  },
+  {
+    "id": "behavioral",
+    "title": "Behavioral STAR Bank",
+    "description": "Prepare stories with Situation, Task, Action, Result (metrics). Behavioral rounds are decisive at many companies.",
+    "items": [
+      {
+        "id": "beh-own",
+        "title": "Ownership / delivered under ambiguity",
+        "body": "S/T: unclear requirements, deadline risk.\nA: clarified scope, sliced MVP, communicated trade-offs, owned rollout.\nR: shipped on time with measurable impact (latency, revenue, error rate).",
+        "learnSlug": "problem-solving",
+        "tags": ["STAR"]
+      },
+      {
+        "id": "beh-conflict",
+        "title": "Technical disagreement",
+        "body": "S/T: disagreed on SQL vs NoSQL / sync vs async.\nA: wrote spike, compared data with constraints, facilitated decision doc.\nR: chose option X; prevented incident Y; team alignment.",
+        "learnSlug": "system-design",
+        "tags": ["STAR"]
+      },
+      {
+        "id": "beh-fail",
+        "title": "Production failure / incident",
+        "body": "S/T: outage or bug you contributed to.\nA: mitigated, RCA, fix, prevention (tests, alerts, runbook).\nR: MTTR, recurrence prevented — honesty + learning matter.",
+        "learnSlug": "observability",
+        "tags": ["STAR"]
+      },
+      {
+        "id": "beh-deadline",
+        "title": "Tight deadline",
+        "body": "S/T: immovable date.\nA: cut scope consciously, parallelized, protected quality on critical path.\nR: delivered core value; followed up on debt.",
+        "learnSlug": "problem-solving",
+        "tags": ["STAR"]
+      },
+      {
+        "id": "beh-learn",
+        "title": "Learning agility",
+        "body": "S/T: new domain/tech under pressure.\nA: structured learning plan, mentor/docs, small production slice.\nR: independent ownership within N weeks; concrete outcome.",
+        "learnSlug": "tdd",
+        "tags": ["STAR"]
+      }
+    ]
+  },
+  {
+    "id": "cs-mcq",
+    "title": "Quick-fire CS Fundamentals",
+    "description": "Short prompts common in campus/service rounds. Learn the linked topics for depth.",
+    "items": [
+      {
+        "id": "mcq-acid",
+        "title": "What does Atomicity guarantee?",
+        "body": "All-or-nothing transaction outcomes — partial updates roll back.\nLearn deeply in Databases.",
+        "learnSlug": "databases",
+        "tags": ["DBMS"]
+      },
+      {
+        "id": "mcq-tcp",
+        "title": "TCP vs UDP one-liner?",
+        "body": "TCP: reliable ordered streams. UDP: best-effort datagrams.\nLearn deeply in Networking.",
+        "learnSlug": "networking",
+        "tags": ["networks"]
+      },
+      {
+        "id": "mcq-process",
+        "title": "Process vs thread?",
+        "body": "Processes isolate address spaces; threads share heap/memory inside a process.\nLearn deeply in OS + Concurrency.",
+        "learnSlug": "operating-systems",
+        "tags": ["OS"]
+      },
+      {
+        "id": "mcq-cap",
+        "title": "CAP theorem in one sentence?",
+        "body": "During a partition, you trade Consistency vs Availability.\nLearn deeply in System Design.",
+        "learnSlug": "system-design",
+        "tags": ["distributed"]
+      },
+      {
+        "id": "mcq-jwt",
+        "title": "Why prefer RS256/JWKS over shared HS256?",
+        "body": "Only the issuer holds the private key; services verify with public JWKS — no shared secret sprawl.\nLearn deeply in Auth & TLS.",
+        "learnSlug": "auth-tls",
+        "tags": ["security"]
+      }
+    ]
+  }
+]

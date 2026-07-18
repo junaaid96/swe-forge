@@ -1,0 +1,832 @@
+[
+  {
+    "id": "idempotency",
+    "slug": "idempotency",
+    "order": 25,
+    "emoji": "🔁",
+    "title": "Idempotency",
+    "cat": "data",
+    "tag": "Safe retries — same request, same effect",
+    "relatedSlugs": [
+      "apis",
+      "messaging-queues",
+      "databases",
+      "caching"
+    ],
+    "connections": [
+      "APIs (Idempotency-Key)",
+      "Messaging (duplicate deliveries)",
+      "Databases (unique constraints as guards)"
+    ],
+    "sections": [
+      {
+        "h": "Definition and why networks force it",
+        "b": "An operation is idempotent if performing it once or many times has the same effect as performing it once.\n\nIn distributed systems, timeouts are ambiguous: the server may have succeeded while the client saw failure. Clients retry. Without idempotency you get double charges, duplicate orders, and double emails.\n\nReliability requires retries; retries require idempotency."
+      },
+      {
+        "h": "HTTP semantics reminder",
+        "b": "GET, PUT, DELETE are idempotent by spec intent (PUT replaces the same resource).\nPOST is not idempotent by default — creating a payment twice creates two payments.\n\nMake POST safe with Idempotency-Key (Stripe-style):\n• Client sends unique key per logical action\n• Server stores key → response/result\n• Retries with same key return the original result without re-executing side effects"
+      },
+      {
+        "h": "Implementation pattern",
+        "b": "1) Require Idempotency-Key on sensitive POSTs\n2) Begin transaction\n3) INSERT into idempotency_keys(key, request_hash, status, response) — unique(key)\n4) If duplicate key with same hash: return stored response\n5) If duplicate with different hash: 409 conflict\n6) Else perform work, store response, commit\n\nInclude request hash so a reused key with a different body cannot silently do the wrong thing.\nExpire keys after a retention window (e.g. 24h) with a TTL job."
+      },
+      {
+        "h": "Messaging and exactly-once effect",
+        "b": "Brokers give at-least-once. Exactly-once effect is an application property:\n• Stable event identity\n• Dedupe table or upsert natural key\n• Side effects inside the same transaction as the dedupe insert when possible\n\nKafka EOS helps Kafka-internal pipelines; once you touch an external DB/API, you still design idempotent handlers."
+      },
+      {
+        "h": "Practical examples",
+        "b": "Payments: key = wallet-tx-uuid from client.\nOrder create: key per checkout attempt.\nWebhook handlers: use provider event id as dedupe key.\nEmail: store notification already sent for order X type Y.\n\nAnti-pattern: dedupe only in Redis without DB uniqueness — Redis flush re-enables duplicates."
+      },
+      {
+        "h": "Testing idempotency",
+        "b": "Replay the same request 10 times — assert one row, one charge, same response body/code.\nChaos: kill the server between commit and response; client retries; still one effect.\nFor consumers: deliver the same Kafka record twice in a test harness."
+      }
+    ],
+    "code": "@PostMapping(\"/payments\")\npublic ResponseEntity<?> pay(@RequestHeader(\"Idempotency-Key\") String key,\n                             @RequestBody PaymentRequest req) {\n  String hash = sha256(req);\n  return tx.execute(status -> {\n    var existing = idemRepo.find(key);\n    if (existing.isPresent()) {\n      if (!existing.get().hash.equals(hash))\n        return ResponseEntity.status(409).body(\"key reused with different body\");\n      return ResponseEntity.status(existing.get().code).body(existing.get().body);\n    }\n    PaymentResult result = payments.charge(req);\n    idemRepo.insert(key, hash, 201, result);\n    return ResponseEntity.status(201).body(result);\n  });\n}",
+    "tips": [
+      "Treat every timeout as maybe succeeded — design retries accordingly.",
+      "Persist idempotency records in the same DB as the side effect when you can.",
+      "Hash the request body with the key to prevent key reuse mistakes.",
+      "Idempotency is a product feature for payments, not an afterthought."
+    ],
+    "quiz": [
+      {
+        "id": "idem-q1",
+        "question": "POST is made idempotent in practice with…",
+        "options": [
+          "Always using GET",
+          "Idempotency-Key + server-side dedupe store",
+          "Turning off HTTPS",
+          "Longer timeouts only"
+        ],
+        "correctIndex": 1,
+        "explanation": "Client key + persisted result."
+      },
+      {
+        "id": "idem-q2",
+        "question": "At-least-once delivery requires consumers to…",
+        "options": [
+          "Ignore keys",
+          "Tolerate duplicates via idempotent handling",
+          "Disable retries",
+          "Use only UDP"
+        ],
+        "correctIndex": 1,
+        "explanation": "Duplicates are normal."
+      },
+      {
+        "id": "idem-q3",
+        "question": "Same Idempotency-Key, different body should…",
+        "options": [
+          "Silently run both",
+          "Return conflict / reject",
+          "Delete the key",
+          "Charge twice"
+        ],
+        "correctIndex": 1,
+        "explanation": "409 or equivalent."
+      },
+      {
+        "id": "idem-q4",
+        "question": "Best place for durable dedupe of payments?",
+        "options": [
+          "Only browser localStorage",
+          "Database unique constraint / table",
+          "CSS cookie",
+          "CDN only"
+        ],
+        "correctIndex": 1,
+        "explanation": "Durable shared store."
+      },
+      {
+        "id": "idem-q5",
+        "question": "Timeout then retry without idempotency risks…",
+        "options": [
+          "Faster UX always",
+          "Double side effects",
+          "Smaller logs",
+          "Stronger TLS"
+        ],
+        "correctIndex": 1,
+        "explanation": "Ambiguous success + second execution."
+      }
+    ],
+    "problems": [
+      {
+        "id": "idem-p1",
+        "title": "Payment API",
+        "difficulty": "medium",
+        "prompt": "Design headers/tables for idempotent POST /charges.",
+        "hints": [
+          "key",
+          "hash",
+          "response store"
+        ],
+        "solution": "Idempotency-Key header; table(key PK, body_hash, status_code, response_json, created_at); first writer executes charge.",
+        "points": 20
+      },
+      {
+        "id": "idem-p2",
+        "title": "Webhook replay",
+        "difficulty": "easy",
+        "prompt": "Provider retries webhooks. How do you avoid double fulfillment?",
+        "hints": [
+          "event id"
+        ],
+        "solution": "Store provider event_id uniquely; process only on first insert.",
+        "points": 15
+      }
+    ]
+  },
+  {
+    "id": "auth-tls",
+    "slug": "auth-tls",
+    "order": 26,
+    "emoji": "🔑",
+    "title": "SSL, JWT & OAuth",
+    "cat": "ops",
+    "tag": "TLS, tokens, delegated auth — production patterns",
+    "relatedSlugs": [
+      "security",
+      "apis",
+      "cloud-devops"
+    ],
+    "connections": [
+      "Security (defense in depth)",
+      "APIs (Bearer tokens)",
+      "Cloud (certs, secrets, gateways)"
+    ],
+    "sections": [
+      {
+        "h": "TLS/SSL — encrypt the pipe",
+        "b": "TLS (successor of SSL) provides confidentiality and integrity for data in transit. HTTPS = HTTP over TLS.\n\nWithout TLS, bearer tokens and passwords can be sniffed. OAuth and JWT do NOT encrypt the channel by themselves — HTTPS is mandatory in production.\n\nAlso know: certificate chains, expiry, HSTS, and terminating TLS at a load balancer vs mTLS between services."
+      },
+      {
+        "h": "JWT structure and pitfalls",
+        "b": "JWT: header.payload.signature (base64url). Common claims: sub, iss, aud, exp, iat.\n\nProduction rules (2026):\n• Prefer RS256/ES256 with JWKS over shared HS256 across many services\n• Short-lived access tokens (minutes) + refresh token rotation\n• Validate exp/iss/aud/signature; reject alg=none\n• Do not stuff sensitive PII into tokens\n• JWTs are hard to revoke — keep them short or use denylist/introspection for high-risk cases"
+      },
+      {
+        "h": "OAuth2 flows you must know",
+        "b": "Authorization Code + PKCE: SPAs/mobile/user login (delegated access).\nClient Credentials: service-to-service, no user present.\nRefresh tokens: obtain new access tokens; rotate and detect reuse.\n\nResource Server (your API) validates access tokens. Authorization Server (Keycloak/Auth0/Cognito) issues them."
+      },
+      {
+        "h": "mTLS for service identity",
+        "b": "Mutual TLS: both sides present certificates. Proves service identity on the network, complementary to user JWTs.\n\nAt scale, service mesh (Istio) automates short-lived certs. App still checks user JWT for user-level authorization.\n\nDefense in depth: mTLS (service) + JWT (user) + RBAC on the action."
+      },
+      {
+        "h": "Spring-shaped practical wiring",
+        "b": "API as OAuth2 resource server: validate JWT via issuer-uri / jwk-set-uri.\nSeparate authentication (401) from authorization (403).\nProtect /token endpoints with rate limits.\nStore client secrets in a secret manager — never in git."
+      },
+      {
+        "h": "Common failures",
+        "b": "• HS256 secret leaked from any microservice → forge tokens for all\n• Eternal JWTs with no exp\n• Accepting tokens without aud check (token confusion)\n• CORS + cookies misconfig leading to token theft\n• Logging Authorization headers"
+      }
+    ],
+    "code": "spring:\n  security:\n    oauth2:\n      resourceserver:\n        jwt:\n          issuer-uri: https://auth.example.com/realms/app\n\n// Validate: signature via JWKS, exp, iss, aud, scopes",
+    "tips": [
+      "HTTPS first — tokens on cleartext HTTP are already compromised.",
+      "RS256 + JWKS scales safer than a shared HS256 secret.",
+      "Short access token TTL + rotating refresh tokens.",
+      "401 unauthenticated vs 403 unauthorized — use both correctly."
+    ],
+    "quiz": [
+      {
+        "id": "auth-q1",
+        "question": "OAuth2/JWT without HTTPS is…",
+        "options": [
+          "Fine on localhost prod",
+          "Unsafe — tokens can be intercepted",
+          "Required by JWT spec to skip TLS",
+          "Only a CORS issue"
+        ],
+        "correctIndex": 1,
+        "explanation": "TLS protects the channel."
+      },
+      {
+        "id": "auth-q2",
+        "question": "Prefer RS256/JWKS over HS256 in microservices because…",
+        "options": [
+          "It is shorter",
+          "Public verify keys can be shared; private signing key stays in the issuer",
+          "HS256 is illegal",
+          "JWTs cannot use HS256"
+        ],
+        "correctIndex": 1,
+        "explanation": "Avoid distributing a symmetric secret everywhere."
+      },
+      {
+        "id": "auth-q3",
+        "question": "Authorization Code + PKCE is for…",
+        "options": [
+          "Batch ETL",
+          "User login for public clients (SPA/mobile)",
+          "Disk encryption",
+          "SQL indexing"
+        ],
+        "correctIndex": 1,
+        "explanation": "Delegated user auth."
+      },
+      {
+        "id": "auth-q4",
+        "question": "Client Credentials grant is for…",
+        "options": [
+          "End-user browser login",
+          "Machine-to-machine / service auth",
+          "CSS themes",
+          "DNSSEC"
+        ],
+        "correctIndex": 1,
+        "explanation": "No user interaction."
+      },
+      {
+        "id": "auth-q5",
+        "question": "mTLS proves…",
+        "options": [
+          "User email always",
+          "Service identity via certificates on both sides",
+          "Password strength",
+          "Kafka lag"
+        ],
+        "correctIndex": 1,
+        "explanation": "Mutual certificate auth."
+      }
+    ],
+    "problems": [
+      {
+        "id": "auth-p1",
+        "title": "Token design",
+        "difficulty": "medium",
+        "prompt": "List 5 validations your API must perform on an access JWT.",
+        "hints": [
+          "sig",
+          "exp",
+          "iss",
+          "aud"
+        ],
+        "solution": "Verify signature with JWKS; check exp; iss; aud; required scopes/roles for the route.",
+        "points": 20
+      },
+      {
+        "id": "auth-p2",
+        "title": "Flow choice",
+        "difficulty": "easy",
+        "prompt": "Internal cron calls billing API with no user. Which OAuth flow?",
+        "hints": [
+          "client credentials"
+        ],
+        "solution": "Client Credentials grant (or mTLS + workload identity).",
+        "points": 10
+      }
+    ]
+  },
+  {
+    "id": "tdd",
+    "slug": "tdd",
+    "order": 27,
+    "emoji": "🔴",
+    "title": "TDD — Test-Driven Development",
+    "cat": "practice",
+    "tag": "Red → green → refactor — design with tests",
+    "relatedSlugs": [
+      "testing",
+      "programming-fundamentals",
+      "design-patterns"
+    ],
+    "connections": [
+      "Testing (pyramid, doubles)",
+      "Clean design (TDD pushes smaller units)",
+      "CI (tests gate merges)"
+    ],
+    "sections": [
+      {
+        "h": "What TDD is (and is not)",
+        "b": "TDD: write a failing test (red), write the minimal code to pass (green), improve design (refactor) while tests stay green.\n\nTDD is not write tests after if you have time. It is a design feedback loop. It is also not 100% coverage theater — you still pick meaningful behaviors.\n\nUse TDD heavily for domain logic and pure transforms; use broader tests for framework wiring."
+      },
+      {
+        "h": "The cycle in practice",
+        "b": "1) Name a behavior: reject negative payment amounts\n2) Write a test that fails for the right reason\n3) Implement the simplest fix\n4) Refactor names/structure\n5) Next behavior\n\nKeep tests in AAA form: Arrange, Act, Assert. One logical assertion theme per test."
+      },
+      {
+        "h": "Test doubles without over-mocking",
+        "b": "Stub: returns canned data.\nMock: verifies interactions.\nFake: in-memory repo.\n\nOver-mocking leads to brittle tests that mirror implementation. Prefer fakes for repositories when exercising domain services; mock only awkward boundaries (payment gateway, clock, random)."
+      },
+      {
+        "h": "Outside-in vs inside-out",
+        "b": "Inside-out: start from domain units.\nOutside-in (ATDD): start from an acceptance test, discover collaborators.\n\nFor APIs: one acceptance test for the happy path + focused unit TDD for rules (discounts, eligibility)."
+      },
+      {
+        "h": "Characterizing legacy code",
+        "b": "Cannot TDD a ball of mud instantly. Add characterization tests that lock current behavior, then refactor under that safety net, then grow TDD for new features.\n\nSeams: extract pure functions, introduce interfaces at I/O boundaries."
+      },
+      {
+        "h": "CI and team habits",
+        "b": "Tests must be deterministic and fast. Flakes destroy trust.\nTDD works when the team protects the red-green-refactor rhythm in PRs — not when coverage badges replace thinking."
+      }
+    ],
+    "code": "@Test\nvoid rejectsNegativeAmount() {\n  PaymentService svc = new PaymentService(new FakeGateway());\n  assertThrows(InvalidPaymentException.class,\n    () -> svc.charge(new Money(new BigDecimal(\"-1\"), USD)));\n}\n\npublic Receipt charge(Money m) {\n  if (m.amount().signum() < 0) throw new InvalidPaymentException();\n  return gateway.charge(m);\n}",
+    "tips": [
+      "Fail for the right reason — a wrong compile error is not a good red.",
+      "Refactor only on green; never mix refactor with new behavior.",
+      "Prefer fakes over heavy mocks for repositories.",
+      "Characterization tests unlock legacy refactors safely."
+    ],
+    "quiz": [
+      {
+        "id": "tdd-q1",
+        "question": "Correct TDD order?",
+        "options": [
+          "Green → red → deploy",
+          "Red → green → refactor",
+          "Refactor → delete tests",
+          "Only write tests in prod"
+        ],
+        "correctIndex": 1,
+        "explanation": "Classic cycle."
+      },
+      {
+        "id": "tdd-q2",
+        "question": "A fake repository is useful because…",
+        "options": [
+          "It hits production DB",
+          "It gives fast deterministic storage for unit/domain tests",
+          "It skips asserts",
+          "It replaces CI"
+        ],
+        "correctIndex": 1,
+        "explanation": "In-memory seam."
+      },
+      {
+        "id": "tdd-q3",
+        "question": "Over-mocking often causes…",
+        "options": [
+          "Faster domain design",
+          "Brittle tests coupled to internals",
+          "Automatic SRP",
+          "No need for fakes"
+        ],
+        "correctIndex": 1,
+        "explanation": "Tests break on harmless refactors."
+      },
+      {
+        "id": "tdd-q4",
+        "question": "Characterization tests…",
+        "options": [
+          "Delete legacy code",
+          "Document/lock current behavior before refactor",
+          "Replace product owners",
+          "Only test UI pixels"
+        ],
+        "correctIndex": 1,
+        "explanation": "Safety net on existing behavior."
+      },
+      {
+        "id": "tdd-q5",
+        "question": "AAA means…",
+        "options": [
+          "Always Add Annotations",
+          "Arrange Act Assert",
+          "Async Await Atomic",
+          "None"
+        ],
+        "correctIndex": 1,
+        "explanation": "Structure every test."
+      }
+    ],
+    "problems": [
+      {
+        "id": "tdd-p1",
+        "title": "Write the red test",
+        "difficulty": "easy",
+        "prompt": "For discount: orders >= 100 get 10% off. Write a test name + assert sketch before implementation.",
+        "hints": [
+          "behavior name"
+        ],
+        "solution": "@Test void appliesTenPercentWhenTotalAtLeast100() { assertEquals(90, pricing.total(cartWith(100))); }",
+        "points": 10
+      },
+      {
+        "id": "tdd-p2",
+        "title": "Choose double",
+        "difficulty": "medium",
+        "prompt": "PaymentService talks to Stripe HTTP. What do you use in unit TDD and why?",
+        "hints": [
+          "mock/fake gateway"
+        ],
+        "solution": "Mock/fake PaymentGateway interface — do not call Stripe in unit tests; keep an integration test separate.",
+        "points": 15
+      }
+    ]
+  },
+  {
+    "id": "networking",
+    "slug": "networking",
+    "order": 28,
+    "emoji": "🌐",
+    "title": "Networking Fundamentals",
+    "cat": "arch",
+    "tag": "DNS → TCP → TLS → HTTP — the path of a request",
+    "relatedSlugs": [
+      "apis",
+      "system-design",
+      "auth-tls",
+      "cloud-devops"
+    ],
+    "connections": [
+      "APIs (HTTP semantics)",
+      "Auth/TLS (HTTPS)",
+      "System Design (LB, CDN, latency)"
+    ],
+    "sections": [
+      {
+        "h": "The journey of a browser request",
+        "b": "1) DNS resolves api.example.com → IP\n2) TCP handshake to port 443\n3) TLS handshake\n4) HTTP request\n5) Load balancer → service → DB\n6) Response reverse path\n\nDebugging starts here: which hop failed?"
+      },
+      {
+        "h": "TCP vs UDP",
+        "b": "TCP: reliable, ordered, congestion-controlled — HTTP, databases, most APIs.\nUDP: no connection guarantee — video, gaming, DNS often uses UDP.\n\nHTTP/3 uses QUIC (UDP-based) but restores reliability in userspace."
+      },
+      {
+        "h": "HTTP versions and connections",
+        "b": "HTTP/1.1: persistent connections.\nHTTP/2: multiplexing over one TCP connection.\nKeep-alive and connection pools matter for service-to-service calls.\n\nTimeouts: connect vs read vs overall. Retries only when idempotent."
+      },
+      {
+        "h": "Load balancers, proxies, CDN",
+        "b": "L4 vs L7 load balancing. Reverse proxies terminate TLS, route by path/host.\nCDN: edge caches for static assets.\n\nKnow X-Forwarded-For trust boundaries and health checks."
+      },
+      {
+        "h": "Practical debugging",
+        "b": "• dig/nslookup for DNS\n• curl -v for TLS/HTTP headers\n• Distinguish client timeout vs server 5xx vs LB 502"
+      }
+    ],
+    "code": "dig api.example.com\ncurl -v https://api.example.com/health\n\nHttpClient.newBuilder()\n  .connectTimeout(Duration.ofSeconds(2))\n  .build();",
+    "tips": [
+      "Separate DNS, TCP, TLS, and app-layer failures when debugging.",
+      "Set aggressive connect timeouts; bound total retries.",
+      "Know whether your LB health check hits /health correctly.",
+      "CDN caches are part of your system — purge strategy matters."
+    ],
+    "quiz": [
+      {
+        "id": "net-q1",
+        "question": "HTTPS is…",
+        "options": [
+          "HTTP + gzip only",
+          "HTTP over TLS",
+          "UDP email",
+          "A Java keyword"
+        ],
+        "correctIndex": 1,
+        "explanation": "TLS-wrapped HTTP."
+      },
+      {
+        "id": "net-q2",
+        "question": "TCP provides…",
+        "options": [
+          "No ordering",
+          "Reliable ordered byte streams",
+          "Only broadcast",
+          "Image compression"
+        ],
+        "correctIndex": 1,
+        "explanation": "Connection-oriented reliability."
+      },
+      {
+        "id": "net-q3",
+        "question": "DNS purpose?",
+        "options": [
+          "Encrypt bodies",
+          "Resolve names to addresses",
+          "Compile Java",
+          "Shard Redis"
+        ],
+        "correctIndex": 1,
+        "explanation": "Name resolution."
+      },
+      {
+        "id": "net-q4",
+        "question": "Safe automatic retries are for…",
+        "options": [
+          "All POSTs always",
+          "Idempotent requests",
+          "Only WebSockets",
+          "DNSSEC"
+        ],
+        "correctIndex": 1,
+        "explanation": "Avoid double side effects."
+      },
+      {
+        "id": "net-q5",
+        "question": "502 from load balancer often means…",
+        "options": [
+          "JWT expired",
+          "Upstream/service unreachable or misbehaving",
+          "CSS missing",
+          "Kafka lag"
+        ],
+        "correctIndex": 1,
+        "explanation": "Gateway cannot get a valid upstream response."
+      }
+    ],
+    "problems": [
+      {
+        "id": "net-p1",
+        "title": "Timeout design",
+        "difficulty": "medium",
+        "prompt": "Service A calls B. Pick timeout/retry policy.",
+        "hints": [
+          "connect short",
+          "idempotent retry"
+        ],
+        "solution": "Short connect timeout; overall deadline; retry only idempotent GETs/PUTs with jittered backoff.",
+        "points": 20
+      },
+      {
+        "id": "net-p2",
+        "title": "Map the hops",
+        "difficulty": "easy",
+        "prompt": "List hops from mobile app to Spring on K8s behind Cloudflare.",
+        "hints": [
+          "DNS",
+          "CDN",
+          "LB",
+          "pod"
+        ],
+        "solution": "DNS → CDN/edge → LB → ingress → service → pod; TLS may terminate at edge/ingress.",
+        "points": 10
+      }
+    ]
+  },
+  {
+    "id": "operating-systems",
+    "slug": "operating-systems",
+    "order": 29,
+    "emoji": "💻",
+    "title": "Operating Systems Basics",
+    "cat": "core",
+    "tag": "Processes, memory, I/O — enough to reason about backends",
+    "relatedSlugs": [
+      "concurrency",
+      "cloud-devops",
+      "debugging"
+    ],
+    "connections": [
+      "Concurrency (threads schedule on CPUs)",
+      "Containers (cgroups/limits)",
+      "Debugging (CPU, RSS, file descriptors)"
+    ],
+    "sections": [
+      {
+        "h": "Process vs thread",
+        "b": "Process: isolated address space, heavy to create.\nThread: shares memory inside a process — cheap communication, easy races.\n\nBackends are multi-threaded processes. Containers isolate processes with cgroups/namespaces."
+      },
+      {
+        "h": "CPU scheduling and blocking",
+        "b": "Runnable vs blocked (waiting on I/O/lock).\nHigh latency + low CPU often means blocking/waiting, not compute starvation."
+      },
+      {
+        "h": "Memory",
+        "b": "Stack vs heap. GC languages: allocation churn → GC pauses.\nRSS vs heap metrics. OOMKilled in Kubernetes = limit hit.\nBound caches or you leak."
+      },
+      {
+        "h": "Files, sockets, FDs",
+        "b": "Everything is a file descriptor on Unix: files, sockets, pipes.\nToo many open connections → FD exhaustion. Tune ulimit; fix leaks; pool clients."
+      },
+      {
+        "h": "Why backends care",
+        "b": "Connection pools, thread pools, container CPU throttling, page cache vs disk I/O — OS fundamentals explain production incidents."
+      }
+    ],
+    "code": "ps aux | grep java\nls -l /proc/<pid>/fd | wc -l\nfree -h\nulimit -n",
+    "tips": [
+      "Latency + low CPU → look for blocking I/O or lock waits.",
+      "Always bound caches and pools — OS will OOM you otherwise.",
+      "FD leaks look like random connection failures under load.",
+      "Container limits change what enough CPU means — watch throttling."
+    ],
+    "quiz": [
+      {
+        "id": "os-q1",
+        "question": "Threads in one process share…",
+        "options": [
+          "Nothing",
+          "Address space / heap memory",
+          "Only disk",
+          "DNS cache exclusively"
+        ],
+        "correctIndex": 1,
+        "explanation": "Shared memory → races possible."
+      },
+      {
+        "id": "os-q2",
+        "question": "OOMKilled usually means…",
+        "options": [
+          "JWT bad",
+          "Container exceeded memory limit",
+          "Kafka down",
+          "Bad CSS"
+        ],
+        "correctIndex": 1,
+        "explanation": "cgroup memory limit."
+      },
+      {
+        "id": "os-q3",
+        "question": "Too many open files points to…",
+        "options": [
+          "FD exhaustion / connection leak",
+          "Bad CSS",
+          "Missing index always",
+          "Idempotency"
+        ],
+        "correctIndex": 1,
+        "explanation": "Socket/file descriptor leak or limit too low."
+      },
+      {
+        "id": "os-q4",
+        "question": "Blocked thread is typically…",
+        "options": [
+          "Using 100% CPU",
+          "Waiting on I/O or a lock",
+          "Holding DNS hostage",
+          "Compiling"
+        ],
+        "correctIndex": 1,
+        "explanation": "Not runnable until event arrives."
+      },
+      {
+        "id": "os-q5",
+        "question": "Process isolation means…",
+        "options": [
+          "All apps share heap",
+          "Separate address spaces (generally)",
+          "No need for auth",
+          "UDP only"
+        ],
+        "correctIndex": 1,
+        "explanation": "OS process boundaries."
+      }
+    ],
+    "problems": [
+      {
+        "id": "os-p1",
+        "title": "Read the symptoms",
+        "difficulty": "medium",
+        "prompt": "p99=2s, CPU=10%, DB pool waits high. What is happening?",
+        "hints": [
+          "blocked on pool"
+        ],
+        "solution": "Threads blocked waiting for DB connections — not CPU bound; fix pool/query/concurrency.",
+        "points": 15
+      },
+      {
+        "id": "os-p2",
+        "title": "Limits",
+        "difficulty": "easy",
+        "prompt": "Why set memory limits on a JVM pod?",
+        "hints": [
+          "OOM isolation"
+        ],
+        "solution": "Contain blast radius; surface leaks via OOMKilled; size heap below limit.",
+        "points": 10
+      }
+    ]
+  },
+  {
+    "id": "graphql-grpc",
+    "slug": "graphql-grpc",
+    "order": 30,
+    "emoji": "🔌",
+    "title": "GraphQL & gRPC",
+    "cat": "data",
+    "tag": "When REST is not enough — schemas, N+1, protobuf",
+    "relatedSlugs": [
+      "apis",
+      "networking",
+      "system-design",
+      "caching"
+    ],
+    "connections": [
+      "APIs (REST comparison)",
+      "Networking (HTTP/2 for gRPC)",
+      "Caching (GraphQL cache complexity)"
+    ],
+    "sections": [
+      {
+        "h": "REST is not the only API style",
+        "b": "REST/JSON over HTTP is the default public API. Internally and for specialized clients, GraphQL and gRPC are common.\n\nChoose based on clients, coupling, tooling, and performance — not fashion."
+      },
+      {
+        "h": "GraphQL core ideas",
+        "b": "Schema defines types and queries/mutations/subscriptions.\nClient asks for exactly the fields it needs.\n\nCosts: complex authz, harder caching, N+1 in resolvers (DataLoader), need query cost limits."
+      },
+      {
+        "h": "gRPC core ideas",
+        "b": "Protobuf contracts, HTTP/2, codegen stubs. Excellent for service-to-service: low latency, strong typing, streaming RPCs.\n\nBrowser clients usually need grpc-web or a gateway."
+      },
+      {
+        "h": "Comparison cheat sheet",
+        "b": "Public multi-language clients → REST.\nMany mobile screens needing flexible fields → GraphQL with discipline.\nInternal microservice mesh / streaming → gRPC.\n\nMix: REST edge + gRPC interior."
+      },
+      {
+        "h": "Practical pitfalls",
+        "b": "GraphQL: unbounded queries as DoS — persist allowlists or cost analysis.\ngRPC: version protobuf carefully; never reuse field numbers incorrectly.\nBoth still need authn/z, timeouts, observability, idempotency for writes."
+      }
+    ],
+    "code": "type User { id: ID! name: String! orders: [Order!]! }\ntype Query { user(id: ID!): User }\n\nservice OrderService {\n  rpc GetOrder (GetOrderRequest) returns (Order);\n}",
+    "tips": [
+      "GraphQL without DataLoader often recreates N+1.",
+      "gRPC shines inside the data center; REST still wins many public APIs.",
+      "Limit GraphQL query cost — treat queries like untrusted code.",
+      "Contracts (OpenAPI/protobuf/GraphQL schema) are part of API design."
+    ],
+    "quiz": [
+      {
+        "id": "gg-q1",
+        "question": "GraphQL N+1 is fixed with…",
+        "options": [
+          "Bigger JWT",
+          "DataLoader / batching resolvers",
+          "Removing schemas",
+          "UDP"
+        ],
+        "correctIndex": 1,
+        "explanation": "Batch backend fetches."
+      },
+      {
+        "id": "gg-q2",
+        "question": "gRPC commonly uses…",
+        "options": [
+          "SOAP only",
+          "HTTP/2 + protobuf",
+          "FTP",
+          "CSS"
+        ],
+        "correctIndex": 1,
+        "explanation": "Modern RPC stack."
+      },
+      {
+        "id": "gg-q3",
+        "question": "Best default for public CRUD HTTP API?",
+        "options": [
+          "gRPC-web mandatory",
+          "REST/JSON",
+          "Raw Redis protocol",
+          "GraphQL without limits"
+        ],
+        "correctIndex": 1,
+        "explanation": "Ecosystem and simplicity."
+      },
+      {
+        "id": "gg-q4",
+        "question": "GraphQL caching is harder because…",
+        "options": [
+          "No HTTP",
+          "Queries vary by shape; URL cache keys less natural",
+          "Protobuf forbids caches",
+          "TCP missing"
+        ],
+        "correctIndex": 1,
+        "explanation": "Flexible queries complicate CDN/HTTP caching."
+      },
+      {
+        "id": "gg-q5",
+        "question": "Mixed architecture pattern?",
+        "options": [
+          "REST edge, gRPC interior",
+          "gRPC only in browsers always",
+          "No auth ever",
+          "One giant GraphQL for DBs directly"
+        ],
+        "correctIndex": 0,
+        "explanation": "Common pragmatic split."
+      }
+    ],
+    "problems": [
+      {
+        "id": "gg-p1",
+        "title": "Choose API style",
+        "difficulty": "easy",
+        "prompt": "Mobile app needs many screens with different fields from same backend. Options?",
+        "hints": [
+          "GraphQL or BFF"
+        ],
+        "solution": "GraphQL or a BFF that shapes REST DTOs per screen.",
+        "points": 10
+      },
+      {
+        "id": "gg-p2",
+        "title": "Secure GraphQL",
+        "difficulty": "medium",
+        "prompt": "List 3 production controls for a public GraphQL endpoint.",
+        "hints": [
+          "auth",
+          "depth",
+          "cost"
+        ],
+        "solution": "AuthZ per field; max depth/complexity; persisted queries; rate limits; timeout.",
+        "points": 20
+      }
+    ]
+  }
+]

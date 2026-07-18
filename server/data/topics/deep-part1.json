@@ -1,0 +1,279 @@
+[
+  {
+    "id": "concurrency",
+    "slug": "concurrency",
+    "order": 20,
+    "emoji": "🧵",
+    "title": "Concurrency & Multithreading",
+    "cat": "core",
+    "tag": "Races, locks, pools — make parallel work correct",
+    "relatedSlugs": [
+      "immutability",
+      "messaging-queues",
+      "operating-systems",
+      "debugging"
+    ],
+    "connections": [
+      "Immutability (shared mutable state is the root of most races)",
+      "Operating Systems (threads vs processes)",
+      "Messaging (async across machines)",
+      "Debugging (heisenbugs under load)"
+    ],
+    "sections": [
+      {
+        "h": "Why concurrency matters in backends",
+        "b": "A single-threaded request handler can serve many users via async I/O, but CPU-bound work, parallel fan-out, and shared caches still force you to reason about simultaneous execution.\n\nFailure modes you will see in production:\n• Lost updates when two threads read-modify-write the same counter\n• Dirty reads of half-written objects\n• Deadlocks when lock order differs across code paths\n• Thread-pool exhaustion: all workers blocked on slow DB → latency cliff\n\nConcurrency is not \"use more threads.\" It is coordinating access to shared state and bounded resources under failure."
+      },
+      {
+        "h": "Threads, pools, and virtual threads",
+        "b": "Platform threads are OS-scheduled and expensive. Backend servers almost never create a Thread per request manually — they use a pool (ExecutorService, Tomcat/Jetty workers, Netty event loops).\n\nRules of thumb:\n• Bound the pool. Unbounded executors hide overload until the JVM dies.\n• Separate pools for different workloads (HTTP vs CPU vs blocking IO) so one cannot starve the other.\n• Java 21 virtual threads: cheap to block; great for \"one task per request\" style code. Still not a free pass on shared mutable state — races remain.\n\nAsk: Is my work CPU-bound, blocking I/O, or async event-driven? Pick the model that matches."
+      },
+      {
+        "h": "Races, visibility, and happens-before",
+        "b": "A race condition: correctness depends on unlucky timing.\n\nTwo classic bugs:\n1) Check-then-act: if (!map.contains(k)) map.put(k, v) — two threads both insert.\n2) Visibility: Thread A writes flag=true; Thread B never sees it without synchronization (CPU caches / reordering).\n\nJava tools:\n• synchronized / ReentrantLock — mutual exclusion + visibility\n• volatile — visibility for a single field, not atomic compound actions\n• AtomicInteger / AtomicReference — CAS loops for counters and lock-free updates\n• ConcurrentHashMap — concurrent map operations (still careful with multi-step logic)\n\nPrefer immutability and message-passing so fewer things need locks."
+      },
+      {
+        "h": "Deadlocks and lock ordering",
+        "b": "Deadlock: Thread A holds Lock1 waits Lock2; Thread B holds Lock2 waits Lock1.\n\nPrevention:\n• Always acquire locks in a global order (accountId ascending for transfers)\n• Prefer tryLock with timeout and retry/backoff\n• Keep critical sections tiny — no remote calls inside synchronized\n• Prefer higher-level concurrency (actors, queues, DB transactions with consistent lock order)\n\nDetect: thread dumps (jstack), deadlock detection MXBean, blocked-thread metrics."
+      },
+      {
+        "h": "Practical patterns for services",
+        "b": "1) Striped locks: lock per userId/orderId instead of one global lock.\n2) Single-writer: funnel mutations for an entity through one queue/partition.\n3) Optimistic concurrency: @Version / ETag — retry on conflict.\n4) Bulkheads: isolate thread pools and connection pools per dependency.\n5) Timeouts everywhere: never wait forever on a lock or remote call.\n\nAnti-pattern: synchronizing on a public String or Boolean — other code can lock the same object."
+      },
+      {
+        "h": "Testing concurrent code",
+        "b": "Unit tests that always pass on your laptop often miss races. Techniques:\n• Stress loops (run the scenario 10k times)\n• JCStress / concurrency test harnesses\n• Inject sleeps/yields at critical points in tests (temporary)\n• Property: after N parallel increments, counter == N\n• Prefer designing races out (immutable messages) over proving locks correct"
+      }
+    ],
+    "code": "// Lost update vs AtomicInteger vs striped lock\n\n// BAD: race\nclass Counter {\n  private int n;\n  void inc() { n = n + 1; } // read-modify-write race\n}\n\n// GOOD: atomic\nclass AtomicCounter {\n  private final AtomicInteger n = new AtomicInteger();\n  void inc() { n.incrementAndGet(); }\n}\n\n// Transfer with ordered locks (avoid deadlock)\nclass Accounts {\n  void transfer(Account a, Account b, long amount) {\n    Account first = a.id < b.id ? a : b;\n    Account second = a.id < b.id ? b : a;\n    synchronized (first) {\n      synchronized (second) {\n        if (a.balance < amount) throw new IllegalStateException(\"insufficient\");\n        a.balance -= amount;\n        b.balance += amount;\n      }\n    }\n  }\n}\n\n// Bounded pool for blocking work\nExecutorService dbPool = Executors.newFixedThreadPool(16,\n  new ThreadFactoryBuilder().setNameFormat(\"db-%d\").build());",
+    "tips": [
+      "Never hold a lock across network I/O — that is how pools die.",
+      "volatile ≠ atomic compound actions. Use Atomic* or locks for check-then-act.",
+      "Virtual threads help blocking style code; they do not fix shared mutable state.",
+      "Reproduce races with load tests + thread dumps, not hope."
+    ],
+    "quiz": [
+      {
+        "id": "conc-q1",
+        "question": "What makes check-then-act unsafe without sync?",
+        "options": [
+          "It is always O(n)",
+          "Two threads can both pass the check and both act",
+          "GC pauses forbid it",
+          "It only fails on virtual threads"
+        ],
+        "correctIndex": 1,
+        "explanation": "Both threads observe the same pre-state and both mutate."
+      },
+      {
+        "id": "conc-q2",
+        "question": "volatile guarantees…",
+        "options": [
+          "Atomic multi-field updates",
+          "Visibility of writes to that field across threads",
+          "No deadlocks",
+          "Faster than AtomicInteger always"
+        ],
+        "correctIndex": 1,
+        "explanation": "Visibility (and ordering for that variable), not compound atomicity."
+      },
+      {
+        "id": "conc-q3",
+        "question": "Best deadlock prevention for two account locks?",
+        "options": [
+          "Random lock order",
+          "Always lock lower accountId first",
+          "Use sleep(1)",
+          "Disable GC"
+        ],
+        "correctIndex": 1,
+        "explanation": "Consistent global lock ordering."
+      },
+      {
+        "id": "conc-q4",
+        "question": "Unbounded thread creation under load typically causes…",
+        "options": [
+          "Perfect scaling",
+          "Memory/CPU collapse and latency spikes",
+          "Automatic backpressure",
+          "Stronger consistency"
+        ],
+        "correctIndex": 1,
+        "explanation": "Pools must be bounded; overload needs rejection/backpressure."
+      },
+      {
+        "id": "conc-q5",
+        "question": "Which structure helps concurrent map updates?",
+        "options": [
+          "HashMap without sync",
+          "ArrayList",
+          "ConcurrentHashMap",
+          "Stack"
+        ],
+        "correctIndex": 1,
+        "explanation": "ConcurrentHashMap is designed for concurrent access."
+      }
+    ],
+    "problems": [
+      {
+        "id": "conc-p1",
+        "title": "Fix the lost update",
+        "difficulty": "medium",
+        "prompt": "A metrics counter uses int++ from many request threads. Explain the bug and give two correct approaches.",
+        "hints": [
+          "Think read-modify-write",
+          "Atomics or LongAdder"
+        ],
+        "solution": "int++ is not atomic. Use AtomicInteger/LongAdder, or confine increments to one thread via a queue.",
+        "points": 20
+      },
+      {
+        "id": "conc-p2",
+        "title": "Design striped locks",
+        "difficulty": "hard",
+        "prompt": "You need mutual exclusion per orderId without one global lock. Sketch an approach.",
+        "hints": [
+          "array of locks",
+          "hash id to stripe"
+        ],
+        "solution": "Lock[] stripes = new Lock[1024]; lock = stripes[orderId.hashCode() & 1023]; lock.lock() around critical section.",
+        "points": 25
+      }
+    ]
+  },
+  {
+    "id": "immutability",
+    "slug": "immutability",
+    "order": 21,
+    "emoji": "🧊",
+    "title": "Immutability",
+    "cat": "core",
+    "tag": "Unchangeable data — fewer races, clearer reasoning",
+    "relatedSlugs": [
+      "concurrency",
+      "programming-fundamentals",
+      "design-patterns"
+    ],
+    "connections": [
+      "Concurrency (immutable objects are safely shareable)",
+      "Design Patterns (Value Object)",
+      "Functional style (map/filter pipelines)"
+    ],
+    "sections": [
+      {
+        "h": "What immutability buys you",
+        "b": "An immutable object’s state never changes after construction. Threads can share it freely without locks. Reasoning becomes local: if you hold a reference, you know the values.\n\nMutable shared state is the #1 source of Heisenbugs in backends. Immutability does not remove all concurrency issues (you still coordinate who publishes the next version), but it removes an entire class of in-place corruption bugs."
+      },
+      {
+        "h": "How to build immutable types",
+        "b": "Java patterns:\n• private final fields; no setters\n• defensive copies of mutable inputs (List.copyOf, Map.copyOf)\n• return unmodifiable views\n• records (Java 16+) for transparent carriers\n• builders that produce a final instance\n\nKotlin data class with val, TypeScript readonly / as const, Python frozen dataclasses — same idea across languages."
+      },
+      {
+        "h": "Updating immutable state",
+        "b": "You do not mutate — you create a new version:\nOrder updated = order.withStatus(SHIPPED);\n\nPersistent/functional collections (e.g. structural sharing) make this cheap for large trees. In typical services, copying a DTO/record is fine.\n\nAt the system level: event sourcing and append-only logs are immutability applied to history."
+      },
+      {
+        "h": "Where mutation is OK",
+        "b": "Local variables inside a method, StringBuilder while building a string, arrays in a tight algorithm before publishing an immutable result — mutation in a confined scope is fine.\n\nDanger zone: caches, singletons, static maps, session objects visible to many threads. Prefer ConcurrentHashMap of immutable values, or replace the whole reference atomically (AtomicReference / volatile field of immutable snapshot)."
+      },
+      {
+        "h": "Practical domain modeling",
+        "b": "Money: use immutable Money(amount, currency) — never setters on amount.\nIDs: wrap in typed Id records.\nAPI responses: map entities → immutable DTOs so controllers cannot accidentally dirty the persistence context.\n\nAnti-pattern: “immutable” class with a final List field that is still mutable via list.add(). Use List.copyOf in the constructor."
+      }
+    ],
+    "code": "public record Money(BigDecimal amount, Currency currency) {\n  public Money {\n    Objects.requireNonNull(amount);\n    Objects.requireNonNull(currency);\n    if (amount.scale() > currency.getDefaultFractionDigits())\n      throw new IllegalArgumentException(\"scale\");\n  }\n  public Money plus(Money other) {\n    if (!currency.equals(other.currency)) throw new IllegalArgumentException(\"fx\");\n    return new Money(amount.add(other.amount), currency);\n  }\n}\n\npublic final class Order {\n  private final String id;\n  private final List<LineItem> items; // immutable\n  private final OrderStatus status;\n\n  public Order(String id, List<LineItem> items, OrderStatus status) {\n    this.id = id;\n    this.items = List.copyOf(items); // defensive copy\n    this.status = status;\n  }\n  public List<LineItem> items() { return items; }\n  public Order withStatus(OrderStatus s) { return new Order(id, items, s); }\n}",
+    "tips": [
+      "final fields alone are not enough if they hold mutable collections.",
+      "Prefer records for simple values; keep domain invariants in compact constructors.",
+      "Share immutable snapshots across threads; publish new versions instead of editing.",
+      "Immutability + messaging beats locks for many service designs."
+    ],
+    "quiz": [
+      {
+        "id": "imm-q1",
+        "question": "Why are immutable objects safer to share across threads?",
+        "options": [
+          "They are always smaller",
+          "State cannot change under another thread",
+          "GC never collects them",
+          "They disable CPUs"
+        ],
+        "correctIndex": 1,
+        "explanation": "No in-place mutation → no races on that object."
+      },
+      {
+        "id": "imm-q2",
+        "question": "List.copyOf in a constructor is used to…",
+        "options": [
+          "Sort the list",
+          "Defensively copy so callers cannot mutate internal state",
+          "Enable Hibernate",
+          "Make JSON smaller"
+        ],
+        "correctIndex": 1,
+        "explanation": "Protect encapsulation of “immutable” collections."
+      },
+      {
+        "id": "imm-q3",
+        "question": "Updating immutable state means…",
+        "options": [
+          "Calling setters carefully",
+          "Creating a new object/version with changes",
+          "Using reflection",
+          "Clearing the cache only"
+        ],
+        "correctIndex": 1,
+        "explanation": "Copy-on-write / withX methods."
+      },
+      {
+        "id": "imm-q4",
+        "question": "A final List field can still be mutated if…",
+        "options": [
+          "It is private",
+          "The list implementation is mutable and exposed/shared",
+          "It is in a record",
+          "It holds Strings"
+        ],
+        "correctIndex": 1,
+        "explanation": "final reference ≠ immutable contents."
+      },
+      {
+        "id": "imm-q5",
+        "question": "Good fit for immutability?",
+        "options": [
+          "Money/value objects and DTOs",
+          "Live socket buffers mid-read only",
+          "Thread-local scratch only",
+          "None"
+        ],
+        "correctIndex": 0,
+        "explanation": "Values and messages are ideal immutable."
+      }
+    ],
+    "problems": [
+      {
+        "id": "imm-p1",
+        "title": "Broken immutable User",
+        "difficulty": "easy",
+        "prompt": "class User { final List<String> roles; User(List r){ roles=r; } } Explain the bug and fix.",
+        "hints": [
+          "caller retains reference"
+        ],
+        "solution": "Store List.copyOf(r) or Collections.unmodifiableList(new ArrayList<>(r)).",
+        "points": 10
+      },
+      {
+        "id": "imm-p2",
+        "title": "Atomic snapshot",
+        "difficulty": "medium",
+        "prompt": "Many threads read a Config object while a reloader updates it. How do you avoid locks on read path?",
+        "hints": [
+          "AtomicReference",
+          "immutable Config"
+        ],
+        "solution": "Keep AtomicReference<Config> with immutable Config; readers get(); writer builds new Config and compareAndSet.",
+        "points": 20
+      }
+    ]
+  }
+]

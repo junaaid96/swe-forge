@@ -1,0 +1,70 @@
+# Dependencies
+node_modules/
+server/node_modules/
+
+# Build outputs
+dist/
+dist-ssr/
+server/dist/
+build/
+coverage/
+*.tsbuildinfo
+.turbo/
+
+# Vite / tooling caches
+.vite/
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# OS files
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Editors / IDEs
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*~
+
+# Test / temp
+tmp/
+temp/
+.tmp/
+.temp/
+*.tmp
+*.temp
+
+# Optional local artifacts
+*.pem
+*.key
+.nyc_output/
+playwright-report/
+test-results/

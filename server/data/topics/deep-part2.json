@@ -1,0 +1,420 @@
+[
+  {
+    "id": "design-patterns",
+    "slug": "design-patterns",
+    "order": 22,
+    "emoji": "🧩",
+    "title": "Design Patterns",
+    "cat": "core",
+    "tag": "Factory, Decorator, Singleton, Observer — with real code",
+    "relatedSlugs": [
+      "programming-fundamentals",
+      "immutability",
+      "messaging-queues"
+    ],
+    "connections": [
+      "SOLID (patterns implement principles)",
+      "Spring (many patterns baked in)",
+      "Messaging (Observer at system scale)"
+    ],
+    "sections": [
+      {
+        "h": "Patterns are named solutions, not goals",
+        "b": "A design pattern captures a recurring structure and the intent behind it. Memorizing UML is useless; explaining WHY you reached for Factory vs new Foo() is what matters.\n\nFocus patterns for backends (GFG shortlist + daily Spring usage):\n• Singleton — one shared instance (careful with state)\n• Factory — decouple creation\n• Decorator — add behavior without rewriting the core\n• Observer — react to events\n\nAlso know Strategy (swap algorithms) — you already use it for payments."
+      },
+      {
+        "h": "Singleton — when and when not",
+        "b": "Intent: exactly one instance, global access.\n\nSpring: @Component/@Service beans are singleton by default — that is usually what you want for stateless services.\n\nDangers:\n• Mutable fields on singletons = request crosstalk under concurrency\n• Classic double-checked locking bugs (pre-modern Java)\n• Hard to test if accessed via static getInstance()\n\nPrefer dependency injection over static singletons. Treat “singleton” as a lifecycle, not a pattern to force everywhere."
+      },
+      {
+        "h": "Factory — create without coupling",
+        "b": "Intent: let callers ask for a product without knowing concrete classes.\n\nExamples:\n• PaymentFactory.create(\"bkash\") → BkashPayment\n• ObjectMapper / HttpClient builders\n• Spring BeanFactory / @Configuration @Bean methods\n\nUse when creation logic is non-trivial (config, env, feature flags) or when you need to swap implementations."
+      },
+      {
+        "h": "Decorator — extend without modify",
+        "b": "Intent: wrap an object to add behavior while keeping the same interface (Open/Closed).\n\nExamples:\n• Java I/O: new BufferedInputStream(new FileInputStream(...))\n• Spring: DataSource wrapping for metrics, caching decorator around a repository\n• HTTP middleware / servlet filters chain\n\nDecorator vs inheritance: wrapping composes at runtime; deep inheritance freezes hierarchy."
+      },
+      {
+        "h": "Observer — react to changes",
+        "b": "Intent: dependents get notified when a subject changes.\n\nIn-process: Spring ApplicationEventPublisher + @EventListener.\nAcross services: message broker topics (Kafka) — Observer at distributed scale.\n\nRules:\n• Keep listeners fast or hand off to async executors\n• Do not assume ordering unless the bus guarantees it\n• Make handlers idempotent if events can replay"
+      },
+      {
+        "h": "Choosing among them",
+        "b": "Need one shared stateless service? Singleton lifecycle via DI.\nNeed to construct variants? Factory/Strategy.\nNeed cross-cutting add-ons (logging, retry, metrics)? Decorator/middleware.\nNeed decoupled reactions? Observer/events.\n\nAnti-pattern: Pattern zoo — three Factories wrapping two Singletons for a simple CRUD."
+      }
+    ],
+    "code": "// Factory\npublic interface PaymentGateway { PaymentResult charge(Money m); }\npublic class PaymentFactory {\n  public PaymentGateway create(String type) {\n    return switch (type) {\n      case \"bkash\" -> new BkashGateway();\n      case \"card\" -> new CardGateway();\n      default -> throw new IllegalArgumentException(type);\n    };\n  }\n}\n\n// Decorator — caching repository\npublic class CachingUserRepository implements UserRepository {\n  private final UserRepository inner;\n  private final Cache cache;\n  public User findById(Long id) {\n    return cache.get(\"u:\"+id, () -> inner.findById(id));\n  }\n}\n\n// Observer — Spring style\n@Component\nclass OrderService {\n  private final ApplicationEventPublisher events;\n  public void place(Order o) {\n    repo.save(o);\n    events.publishEvent(new OrderPlaced(o.id()));\n  }\n}\n@Component\nclass EmailListener {\n  @EventListener @Async\n  void on(OrderPlaced e) { mail.send(e.orderId()); }\n}",
+    "tips": [
+      "Name the intent first, then the pattern — interviewers listen for intent.",
+      "Spring singletons must stay stateless or use thread-safe structures.",
+      "Decorator chains are middleware; keep each layer focused.",
+      "Distributed Observer = messaging; assume at-least-once delivery."
+    ],
+    "quiz": [
+      {
+        "id": "dp-q1",
+        "question": "Decorator primarily supports which SOLID principle?",
+        "options": [
+          "ISP",
+          "OCP Open/Closed",
+          "LSP only",
+          "DIP only"
+        ],
+        "correctIndex": 1,
+        "explanation": "Extend behavior without modifying the original class."
+      },
+      {
+        "id": "dp-q2",
+        "question": "Spring @Service default scope is…",
+        "options": [
+          "Prototype",
+          "Request",
+          "Singleton",
+          "Session"
+        ],
+        "correctIndex": 2,
+        "explanation": "One shared bean instance per container."
+      },
+      {
+        "id": "dp-q3",
+        "question": "Factory is best when…",
+        "options": [
+          "You need SQL",
+          "Creation logic/variants should be decoupled from callers",
+          "You want mutable globals",
+          "Logging only"
+        ],
+        "correctIndex": 1,
+        "explanation": "Callers depend on abstractions, not concretes."
+      },
+      {
+        "id": "dp-q4",
+        "question": "Observer across microservices is usually…",
+        "options": [
+          "static fields",
+          "message topics/queues",
+          "synchronized methods",
+          "finalizers"
+        ],
+        "correctIndex": 1,
+        "explanation": "Brokers realize distributed pub/sub."
+      },
+      {
+        "id": "dp-q5",
+        "question": "Danger of mutable singleton service fields?",
+        "options": [
+          "Slower GC",
+          "Cross-request races / data leaks",
+          "Cannot inject",
+          "No interfaces"
+        ],
+        "correctIndex": 1,
+        "explanation": "Shared mutable state under concurrency."
+      }
+    ],
+    "problems": [
+      {
+        "id": "dp-p1",
+        "title": "Pick a pattern",
+        "difficulty": "easy",
+        "prompt": "You need to add metrics timing around an existing UserRepository without editing its source. Which pattern?",
+        "hints": [
+          "same interface wrap"
+        ],
+        "solution": "Decorator: Caching/MetricsUserRepository implements UserRepository and delegates.",
+        "points": "10"
+      },
+      {
+        "id": "dp-p2",
+        "title": "Observer pitfall",
+        "difficulty": "medium",
+        "prompt": "An @EventListener sends email synchronously inside the request thread. What goes wrong and how do you fix?",
+        "hints": [
+          "latency",
+          "@Async or queue"
+        ],
+        "solution": "Email outages/latency block checkout. Publish event and process async (@Async or message queue) with retries/idempotency.",
+        "points": "20"
+      }
+    ]
+  },
+  {
+    "id": "caching",
+    "slug": "caching",
+    "order": 23,
+    "emoji": "⚡",
+    "title": "Caching",
+    "cat": "data",
+    "tag": "Redis, TTLs, invalidation — speed without lying",
+    "relatedSlugs": [
+      "databases",
+      "system-design",
+      "idempotency",
+      "observability"
+    ],
+    "connections": [
+      "Databases (cache is not source of truth)",
+      "System Design (hot-key and stampede)",
+      "Idempotency (cached responses for POSTs need care)"
+    ],
+    "sections": [
+      {
+        "h": "Why cache — and what breaks",
+        "b": "Caching stores expensive results closer to the caller: CPU L1, process memory, Redis, CDN. Goal: lower latency and protect the database.\n\nBroken caches cause:\n• Stale reads (users see old prices)\n• Cache stampede / thundering herd when a hot key expires\n• Cache as source of truth (data loss on flush)\n• Giant values / no TTL → OOM\n\nAlways know: what is authoritative? how fresh must it be? what is the invalidation story?"
+      },
+      {
+        "h": "Cache-aside vs write-through",
+        "b": "Cache-aside (lazy): app reads cache; on miss load DB and populate. On write, update DB then invalidate (or update) cache.\nWrite-through: write DB and cache together in the write path.\nWrite-behind: write cache first, flush DB async — dangerous for money.\n\nDefault for most CRUD APIs: cache-aside + invalidate on write."
+      },
+      {
+        "h": "TTL, eviction, and keys",
+        "b": "TTL: soft bound on staleness. Short TTL for volatile data; longer for reference data.\nEviction: LRU/LFU when memory pressure hits — size your Redis.\nKey design: namespace:entity:id:version — e.g. user:v2:42. Include version when schema changes.\nNever store secrets in shared caches without encryption + access control."
+      },
+      {
+        "h": "Thundering herd (stampede)",
+        "b": "When a popular key expires, 1,000 requests miss and stampede the DB.\n\nMitigations:\n• Singleflight / request coalescing — one loader, others wait\n• Probabilistic early expiration / soft TTL refresh\n• Lock around populate (SETNX) with short lock TTL\n• Stale-while-revalidate: serve stale briefly while refreshing\n\nMeasure: DB QPS spikes aligned with TTL boundaries."
+      },
+      {
+        "h": "Invalidation strategies",
+        "b": "Hardest problem in CS (joke with truth).\n\nPatterns:\n• Delete key on write (simple, brief miss storm possible)\n• Versioned keys: bump version so old keys become unreachable\n• Pub/sub invalidation across nodes for local Caffeine caches\n• Time-based only when occasional staleness is acceptable\n\nDocument freshness SLOs per endpoint (\"product name may lag 30s\")."
+      },
+      {
+        "h": "Practical Redis usage",
+        "b": "Use Redis for: session store, rate limits, hot entity cache, distributed locks (carefully), leaderboards (ZSET).\n\nDo not use Redis as your only database for durable business records.\n\nObservability: hit ratio, eviction rate, memory, p99 get latency, stampede indicators."
+      }
+    ],
+    "code": "// Cache-aside with singleflight-ish lock (Redis)\npublic User getUser(long id) {\n  String key = \"user:\" + id;\n  String cached = redis.get(key);\n  if (cached != null) return decode(cached);\n\n  String lock = \"lock:user:\" + id;\n  if (redis.setNx(lock, \"1\", Duration.ofSeconds(5))) {\n    try {\n      User u = db.findUser(id);\n      redis.setEx(key, Duration.ofMinutes(10), encode(u));\n      return u;\n    } finally {\n      redis.del(lock);\n    }\n  }\n  // someone else loading — brief wait + retry or return stale if available\n  Thread.sleep(20);\n  return getUser(id);\n}\n\n// Invalidate on write\n@Transactional\npublic void rename(long id, String name) {\n  db.updateName(id, name);\n  redis.del(\"user:\" + id);\n}",
+    "tips": [
+      "Invalidate-on-write beats hoping TTL is “good enough” for user-edited data.",
+      "Always bound memory and set TTLs — caches without eviction policies become outages.",
+      "Stampede control is mandatory for hot keys.",
+      "Cache hit ratio without latency/error context can mislead — watch the DB too."
+    ],
+    "quiz": [
+      {
+        "id": "cache-q1",
+        "question": "Cache-aside miss path should…",
+        "options": [
+          "Only read Redis",
+          "Load DB then populate cache",
+          "Delete the database",
+          "Disable TTL"
+        ],
+        "correctIndex": 1,
+        "explanation": "Lazy populate from source of truth."
+      },
+      {
+        "id": "cache-q2",
+        "question": "Thundering herd happens when…",
+        "options": [
+          "TTL is infinite",
+          "Many clients miss the same expired hot key together",
+          "You use HTTPS",
+          "Redis is empty forever"
+        ],
+        "correctIndex": 1,
+        "explanation": "Synchronized expiry storms the DB."
+      },
+      {
+        "id": "cache-q3",
+        "question": "Safest default after a write?",
+        "options": [
+          "Hope TTL expires",
+          "Invalidate/update the cache key",
+          "Flush entire Redis always",
+          "Double TTL"
+        ],
+        "correctIndex": 1,
+        "explanation": "Delete or version the key."
+      },
+      {
+        "id": "cache-q4",
+        "question": "Redis as sole store for bank balances?",
+        "options": [
+          "Yes always",
+          "No — not durable source of truth for critical records",
+          "Only on Fridays",
+          "If TTL is 1s"
+        ],
+        "correctIndex": 1,
+        "explanation": "Use a real database for durable money state."
+      },
+      {
+        "id": "cache-q5",
+        "question": "Singleflight/coalescing helps by…",
+        "options": [
+          "Encrypting keys",
+          "Allowing only one loader for a miss; others wait",
+          "Removing indexes",
+          "Skipping auth"
+        ],
+        "correctIndex": 1,
+        "explanation": "Collapse duplicate loads."
+      }
+    ],
+    "problems": [
+      {
+        "id": "cache-p1",
+        "title": "Choose TTL",
+        "difficulty": "easy",
+        "prompt": "Product catalog changes rarely; prices change often. How do you cache?",
+        "hints": [
+          "separate keys"
+        ],
+        "solution": "Split keys: catalog:product:id long TTL; price:product:id short TTL or invalidate on price write.",
+        "points": "10"
+      },
+      {
+        "id": "cache-p2",
+        "title": "Stampede design",
+        "difficulty": "medium",
+        "prompt": "Hot key leaderboard expires every 60s and DB spikes. Propose two mitigations.",
+        "hints": [
+          "lock",
+          "stale-while-revalidate"
+        ],
+        "solution": "Use SETNX singleflight populate; or serve stale for 10s while refreshing; jitter TTLs.",
+        "points": "20"
+      }
+    ]
+  },
+  {
+    "id": "messaging-queues",
+    "slug": "messaging-queues",
+    "order": 24,
+    "emoji": "📨",
+    "title": "Streaming & Messaging",
+    "cat": "arch",
+    "tag": "Kafka, outbox, DLQ — async that survives failure",
+    "relatedSlugs": [
+      "idempotency",
+      "system-design",
+      "observability",
+      "concurrency"
+    ],
+    "connections": [
+      "Idempotency (at-least-once requires it)",
+      "System Design (decouple producers/consumers)",
+      "Observability (consumer lag)"
+    ],
+    "sections": [
+      {
+        "h": "Why messaging exists",
+        "b": "Synchronous chains amplify latency and failure. Queues/streams decouple producers from consumers, absorb spikes, and enable multiple independent consumers.\n\nUse messaging for: emails, webhooks, search indexing, fan-out, workflow steps, event-driven integration.\n\nDo not use messaging to avoid designing an API — it adds operational complexity (ordering, duplicates, poison messages)."
+      },
+      {
+        "h": "Kafka mental model",
+        "b": "Topics + partitions. Partition key chooses ordering scope (e.g. orderId). Consumers in a group split partitions.\n\nGuarantees commonly relied on:\n• Durable log, replayable\n• At-least-once delivery to consumers (duplicates happen)\n• Ordering per partition, not global\n\nProducer idempotence (enable.idempotence=true, acks=all) prevents duplicate writes into Kafka — it does NOT make your DB side effects exactly-once."
+      },
+      {
+        "h": "Transactional Outbox (2026 must-know)",
+        "b": "Dual-write bug: update orders table, then publish to Kafka — process crashes between → lost event (or the opposite ordering publishes an event for rolled-back work).\n\nOutbox pattern:\n1) In one DB transaction: write business row + outbox row\n2) Relay process publishes outbox → Kafka and marks published\n3) Consumers process idempotently\n\nThis is the standard integrity pattern for event-driven microservices."
+      },
+      {
+        "h": "Idempotent consumers & DLQ",
+        "b": "Assume every message can arrive twice.\n\nConsumer pattern:\n• Derive stable eventId\n• Begin DB transaction; insert into processed_events(event_id) unique; if conflict, skip\n• Apply business effect; commit\n\nPoison messages: after N failures, push to Dead Letter Queue for inspection — do not block the partition forever. Alert on DLQ depth."
+      },
+      {
+        "h": "RabbitMQ vs Kafka (practical)",
+        "b": "RabbitMQ: flexible routing (exchanges), classic work queues, ack per message — great for task distribution.\nKafka: high-throughput log, replay, event streaming, many independent consumer groups.\n\nChoose Kafka when you need replay/fan-out history; choose Rabbit when you need complex routing and classic workers. Either way: idempotency + observability."
+      },
+      {
+        "h": "Ops metrics that matter",
+        "b": "• Consumer lag (Kafka) — are you falling behind?\n• Publish failure rate / relay lag (outbox age)\n• DLQ count\n• Handler p99 duration\n• Partition hot-key skew\n\nLag growing under stable traffic = under-provisioned consumers or stuck handler."
+      }
+    ],
+    "code": "// Outbox write (same transaction)\n@Transactional\npublic Order createOrder(CreateOrder cmd) {\n  Order o = orderRepo.save(Order.from(cmd));\n  outboxRepo.save(new OutboxEvent(\n    UUID.randomUUID(), \"OrderCreated\", o.id(), toJson(o), OutboxStatus.PENDING));\n  return o;\n}\n\n// Idempotent consumer\n@Transactional\npublic void onOrderCreated(Event e) {\n  try {\n    processedRepo.insert(e.id()); // unique(event_id)\n  } catch (DuplicateKeyException ex) {\n    return; // already processed\n  }\n  searchIndex.add(e.payload());\n}\n\n// Kafka producer essentials\nprops.put(\"acks\", \"all\");\nprops.put(\"enable.idempotence\", \"true\");",
+    "tips": [
+      "Kafka producer idempotence ≠ exactly-once business effects — still dedupe in the consumer/DB.",
+      "Outbox is mandatory when DB + event must not diverge.",
+      "Alert on consumer lag and DLQ depth, not only error logs.",
+      "Pick partition keys for the ordering you actually need."
+    ],
+    "quiz": [
+      {
+        "id": "msg-q1",
+        "question": "At-least-once delivery implies…",
+        "options": [
+          "No duplicates ever",
+          "Consumers must tolerate duplicates",
+          "Exactly-once DB writes automatic",
+          "No need for IDs"
+        ],
+        "correctIndex": 1,
+        "explanation": "Retries create duplicates."
+      },
+      {
+        "id": "msg-q2",
+        "question": "Transactional Outbox solves…",
+        "options": [
+          "DNS",
+          "Dual-write loss between DB and broker",
+          "CSS",
+          "GC pauses only"
+        ],
+        "correctIndex": 1,
+        "explanation": "Atomic business + event record in DB."
+      },
+      {
+        "id": "msg-q3",
+        "question": "Kafka ordering is guaranteed…",
+        "options": [
+          "Globally always",
+          "Per partition",
+          "Never",
+          "Only with Rabbit"
+        ],
+        "correctIndex": 1,
+        "explanation": "Order within a partition."
+      },
+      {
+        "id": "msg-q4",
+        "question": "DLQ is for…",
+        "options": [
+          "Faster happy path",
+          "Poison/failing messages after retries",
+          "Storing passwords",
+          "Replacing Redis"
+        ],
+        "correctIndex": 1,
+        "explanation": "Isolate bad messages."
+      },
+      {
+        "id": "msg-q5",
+        "question": "enable.idempotence=true mainly prevents…",
+        "options": [
+          "All business double charges",
+          "Duplicate records inside Kafka from producer retries",
+          "Network partitions",
+          "Schema evolution"
+        ],
+        "correctIndex": 1,
+        "explanation": "Producer-level Kafka duplicates, not app side effects."
+      }
+    ],
+    "problems": [
+      {
+        "id": "msg-p1",
+        "title": "Dual-write failure",
+        "difficulty": "medium",
+        "prompt": "Service saves Payment then publish PaymentCompleted; crash between. What is lost and how do you fix?",
+        "hints": [
+          "outbox"
+        ],
+        "solution": "Event never published → downstream never runs. Write outbox in same DB tx; relay publishes.",
+        "points": "20"
+      },
+      {
+        "id": "msg-p2",
+        "title": "Idempotent consumer",
+        "difficulty": "medium",
+        "prompt": "Sketch DB-backed dedupe for event handlers.",
+        "hints": [
+          "unique event id"
+        ],
+        "solution": "processed_events(event_id PK); insert first; on conflict skip; else apply effects in same transaction when possible.",
+        "points": "20"
+      }
+    ]
+  }
+]

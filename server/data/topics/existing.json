@@ -1,0 +1,1862 @@
+[
+  {
+    "id": "programming-fundamentals",
+    "slug": "programming-fundamentals",
+    "order": 1,
+    "emoji": "🧱",
+    "title": "Programming Fundamentals",
+    "cat": "core",
+    "tag": "The bedrock of everything you write",
+    "sections": [
+      {
+        "h": "OOP — 4 Pillars",
+        "b": "Encapsulation: hide internal state, expose behavior via public methods. Private fields + getters/setters. Data safety first.\n\nInheritance: subclass inherits from parent (extends). Prefer composition over inheritance — \"has-a\" is safer than \"is-a\". Avoid deep chains.\n\nPolymorphism: one interface, many implementations. Method overriding = runtime polymorphism (actual object type decides at runtime). Method overloading = compile-time.\n\nAbstraction: expose only what's necessary. Abstract class = shared state + partial behavior. Interface = pure contract (multiple allowed in Java)."
+      },
+      {
+        "h": "SOLID Principles",
+        "b": "S — Single Responsibility: one class = one reason to change. Don't mix DB logic + email logic + business logic.\nO — Open/Closed: open for extension, closed for modification. Add behavior via new class, not editing existing.\nL — Liskov Substitution: subclasses must be substitutable for their parent type without breaking behavior.\nI — Interface Segregation: don't force classes to implement unused methods. Split large interfaces into focused ones.\nD — Dependency Inversion: depend on abstractions (interfaces), not concrete implementations. Spring @Autowired enforces this."
+      },
+      {
+        "h": "Key Design Patterns",
+        "b": "Creational — HOW objects are created:\n• Singleton: one shared instance (Spring @Component beans are singleton by default)\n• Factory: decouple creation from usage\n• Builder: step-by-step construction (Lombok @Builder, HttpRequest.newBuilder())\n\nStructural — HOW objects are composed:\n• Adapter: bridge between incompatible interfaces\n• Decorator: add behavior without modifying class (Java I/O streams)\n\nBehavioral — HOW objects communicate:\n• Observer: pub/sub events (Spring ApplicationEvents, Kafka consumer)\n• Strategy: swap algorithm at runtime (payment methods: bKash/card/cash)\n• Command: encapsulate request as an object"
+      },
+      {
+        "h": "Clean Code Rules",
+        "b": "Meaningful names: processPayment() not p(). UserRepository not UR.\nSmall functions: one function = one thing, ~20 lines max.\nDRY: Don't Repeat Yourself — extract repeated logic into shared methods/utilities.\nKISS: Keep It Simple. Simplest working solution is usually best.\nComment WHY, not WHAT. Code should be self-documenting.\nNo magic numbers: use named constants (static final int MAX_RETRY = 3)."
+      }
+    ],
+    "code": "// SOLID applied with Spring Boot\n\n// BAD: one class, multiple responsibilities (SRP + DIP violated)\npublic class OrderService {\n    public void placeOrder(Order order) {\n        if (order.getAmount() <= 0) throw new RuntimeException(\"bad\");\n        DriverManager.getConnection(\"jdbc:...\");  // DB — violates SRP + DIP\n        new SmtpClient().send(\"order placed\");    // email — violates SRP\n    }\n}\n\n// GOOD: SOLID + Spring constructor injection\npublic interface OrderRepository    { void save(Order order); }      // I\npublic interface NotificationService { void notify(String msg); }    // I\n\n@Service\npublic class OrderService {                                  // S — one responsibility\n    private final OrderRepository repo;                     // D — interface, not impl\n    private final NotificationService notifier;             // D\n\n    public OrderService(OrderRepository repo,               // Spring resolves at runtime\n                        NotificationService notifier) {\n        this.repo = repo; this.notifier = notifier;\n    }\n\n    public void placeOrder(Order order) {\n        validate(order);\n        repo.save(order);                                   // SRP — delegates to repo\n        notifier.notify(\"Order placed: \" + order.getId());\n    }\n\n    private void validate(Order order) {\n        if (order.getAmount().compareTo(BigDecimal.ZERO) <= 0)\n            throw new IllegalArgumentException(\"Amount must be positive\");\n    }\n}\n\n// Strategy Pattern — O (Open/Closed): add new payment without editing existing code\npublic interface PaymentStrategy { PaymentResult pay(BigDecimal amount); }\n@Component(\"bkash\") public class BkashPayment implements PaymentStrategy { ... }\n@Component(\"card\")  public class CardPayment  implements PaymentStrategy { ... }\n\n@Service\npublic class CheckoutService {\n    private final Map<String, PaymentStrategy> strategies; // Spring injects ALL impls\n    public PaymentResult checkout(Order order, String method) {\n        return strategies.get(method).pay(order.getAmount());\n    }\n}",
+    "tips": [
+      "Explain SOLID with concrete code from your eGeneration work — showing a class that violates SRP and how you split it is very powerful in interviews",
+      "Abstract class vs interface: abstract class has state + partial implementation; interface is a pure contract. Java allows multiple interfaces.",
+      "Design pattern questions: always explain the INTENT (why it solves the problem), not just the structure (what it looks like)",
+      "Spring beans are Singleton by default — be aware of shared mutable state bugs in singleton services (never store request data in fields)"
+    ],
+    "connections": [
+      "Spring IoC / Dependency Injection (implements Dependency Inversion principle)",
+      "Java 8+ (lambdas enable Strategy pattern elegantly)",
+      "Testing (interfaces enable Mockito mocking — DIP is what makes unit testing possible)",
+      "Microservices (SOLID applies at service boundary level: one service = one responsibility)"
+    ],
+    "relatedSlugs": [
+      "design-patterns",
+      "tdd",
+      "concurrency"
+    ],
+    "quiz": [
+      {
+        "id": "pf-q1",
+        "question": "Which SOLID principle says a class should have only one reason to change?",
+        "options": [
+          "Open/Closed",
+          "Single Responsibility",
+          "Liskov Substitution",
+          "Dependency Inversion"
+        ],
+        "correctIndex": 1,
+        "explanation": "SRP: one class = one responsibility / one reason to change."
+      },
+      {
+        "id": "pf-q2",
+        "question": "Prefer composition over inheritance mainly because…",
+        "options": [
+          "Composition is always faster",
+          "Deep inheritance chains become fragile and hard to change",
+          "Inheritance is deprecated in modern languages",
+          "Composition uses less memory"
+        ],
+        "correctIndex": 1,
+        "explanation": "\"Has-a\" relationships stay flexible; deep \"is-a\" hierarchies couple types tightly."
+      },
+      {
+        "id": "pf-q3",
+        "question": "Dependency Inversion means you should…",
+        "options": [
+          "Depend on concrete classes only",
+          "Depend on abstractions (interfaces), not concrete implementations",
+          "Never use interfaces",
+          "Inject dependencies via static fields"
+        ],
+        "correctIndex": 1,
+        "explanation": "DIP: high-level modules depend on abstractions; Spring constructor injection enforces this."
+      },
+      {
+        "id": "pf-q4",
+        "question": "Which pattern lets you swap algorithms at runtime (e.g. payment methods)?",
+        "options": [
+          "Singleton",
+          "Adapter",
+          "Strategy",
+          "Decorator"
+        ],
+        "correctIndex": 2,
+        "explanation": "Strategy encapsulates interchangeable algorithms behind a common interface."
+      },
+      {
+        "id": "pf-q5",
+        "question": "Spring beans are Singleton by default. What risk does that create?",
+        "options": [
+          "They cannot be injected",
+          "Shared mutable request state in fields can cause race bugs",
+          "They are always thread-unsafe for reads",
+          "They cannot implement interfaces"
+        ],
+        "correctIndex": 1,
+        "explanation": "Never store per-request data in singleton service fields."
+      }
+    ],
+    "problems": [
+      {
+        "id": "pf-p1",
+        "title": "Refactor a God Service",
+        "difficulty": "medium",
+        "prompt": "An OrderService validates orders, writes to JDBC directly, and sends SMTP email. List the SOLID violations and sketch a cleaner design with interfaces.",
+        "hints": [
+          "SRP is violated by mixing validation, persistence, and notification.",
+          "DIP is violated by depending on DriverManager and SmtpClient concretely."
+        ],
+        "solution": "Split into OrderValidator, OrderRepository, NotificationService. OrderService orchestrates via constructor-injected interfaces. Add PaymentStrategy for payment methods (OCP).",
+        "points": 20
+      },
+      {
+        "id": "pf-p2",
+        "title": "Interface vs Abstract Class",
+        "difficulty": "easy",
+        "prompt": "When would you choose an abstract class over an interface for a payment base type? Give one concrete example.",
+        "hints": [
+          "Think shared state vs pure contract.",
+          "Java allows multiple interfaces, single class inheritance."
+        ],
+        "solution": "Use abstract class when you need shared fields + partial default behavior (e.g. BasePayment with amount + logging). Use interface when you only need a contract and multiple inheritance of type (PaymentStrategy).",
+        "points": 10
+      }
+    ]
+  },
+  {
+    "id": "data-structures",
+    "slug": "data-structures",
+    "order": 2,
+    "emoji": "🗂️",
+    "title": "Data Structures",
+    "cat": "core",
+    "tag": "Choosing the right container changes everything",
+    "sections": [
+      {
+        "h": "Arrays & Lists",
+        "b": "Array (int[]): fixed size, O(1) random access, O(n) insert/delete (shifting). Use when size is known.\nArrayList: dynamic array, O(1) amortized add to end, O(n) insert/delete in middle. Default choice for lists.\nLinkedList: doubly-linked nodes. O(1) add/remove at head/tail, O(n) search/random access. Use as Deque for queue/stack, not as general list.\n\nRule: default to ArrayList. Use LinkedList only when you need frequent O(1) head/tail operations with no random access."
+      },
+      {
+        "h": "Stack, Queue & PriorityQueue",
+        "b": "Stack (LIFO): use ArrayDeque, NOT the Stack class (legacy, synchronized overhead).\nUse cases: undo/redo, call stack simulation, DFS, expression evaluation, balanced parentheses.\n\nQueue (FIFO): use ArrayDeque or LinkedList as Queue.\nUse cases: BFS, task scheduling, producer-consumer, breadth-first traversal.\n\nPriorityQueue: min-heap by default. O(log n) offer/poll, O(1) peek.\nMax-heap: new PriorityQueue<>((a, b) -> b - a)\nUse cases: Dijkstra's algorithm, Top-K problems, priority task queues."
+      },
+      {
+        "h": "HashMap — Internals",
+        "b": "HashMap: array of buckets. key.hashCode() → bucket index. O(1) avg get/put.\nCollision: multiple keys in same bucket → LinkedList (Java 7) → Red-Black Tree when bucket > 8 entries (Java 8+).\nLoad factor 0.75: rehash (double capacity) when 75% full. O(n) operation — expensive.\n\nCritical: always override BOTH hashCode() AND equals() for custom keys.\nRule: if equals() returns true → hashCode() MUST return the same value.\n\nTreeMap: Red-Black Tree. Sorted keys. O(log n) all operations. Use for range queries.\nLinkedHashMap: insertion-order or access-order. Use for LRU cache implementation.\nConcurrentHashMap: thread-safe, segment locking. Use in multi-threaded Spring services."
+      },
+      {
+        "h": "Trees & Graphs",
+        "b": "BST: left < root < right. O(log n) avg, O(n) worst (degenerate/skewed tree).\nTraversals: In-order = sorted output. Pre-order = copy tree. Post-order = delete tree.\nHeap: complete binary tree in array. Min-heap: parent ≤ children. Java's PriorityQueue.\nTrie: prefix tree, O(L) operations (L = word length). Autocomplete, IP routing, spell check.\n\nGraphs:\nAdjacency List: Map<Node, List<Node>>. Sparse graphs. O(V+E) space.\nAdjacency Matrix: boolean[][]. Dense graphs. O(V²) space, O(1) edge lookup.\nBFS: Queue-based, level-by-level, finds shortest path in unweighted graphs.\nDFS: Stack/recursion, finds connected components, detects cycles."
+      }
+    ],
+    "code": "// Key Java collection idioms\n\n// 1. computeIfAbsent — group items by key cleanly\nMap<String, List<Order>> byStatus = new HashMap<>();\norders.forEach(o ->\n    byStatus.computeIfAbsent(o.getStatus().name(), k -> new ArrayList<>())\n            .add(o));\n\n// 2. TreeMap — sorted keys + range queries\nTreeMap<LocalDate, BigDecimal> dailySales = new TreeMap<>();\n// All entries in a date range (inclusive both ends)\nNavigableMap<LocalDate, BigDecimal> week =\n    dailySales.subMap(monday, true, sunday, true);\n// Nearest entry before a given date\nMap.Entry<LocalDate, BigDecimal> prev = dailySales.lowerEntry(today);\n\n// 3. LinkedHashMap as LRU Cache (access-order mode)\nMap<Long, UserDTO> lru = new LinkedHashMap<>(128, 0.75f, true) {\n    @Override\n    protected boolean removeEldestEntry(Map.Entry<Long, UserDTO> e) {\n        return size() > 100; // auto-evict least-recently-accessed entry\n    }\n};\n\n// 4. PriorityQueue — always pop minimum-cost node (Dijkstra)\n// int[] = {nodeId, distanceFromSource}\nPriorityQueue<int[]> pq =\n    new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));\npq.offer(new int[]{startNode, 0});\nwhile (!pq.isEmpty()) {\n    int[] cur = pq.poll(); // minimum-distance unvisited node\n    int node = cur[0], dist = cur[1];\n    // process neighbors...\n}\n\n// 5. ArrayDeque as Stack AND Queue (preferred over Stack/LinkedList)\nDeque<String> stack = new ArrayDeque<>();\nstack.push(\"a\"); stack.push(\"b\");\nString top = stack.pop();    // \"b\" — LIFO\n\nDeque<String> queue = new ArrayDeque<>();\nqueue.offer(\"a\"); queue.offer(\"b\");\nString front = queue.poll(); // \"a\" — FIFO",
+    "tips": [
+      "Always state time AND space complexity — interviewers want both. Big O alone is incomplete.",
+      "HashMap collision: two different keys can map to the same bucket. Java 8+ converts bucket to Red-Black Tree when it has >8 entries.",
+      "Never use Stack class — use ArrayDeque. Never use Vector — use ArrayList. Both are legacy synchronized classes.",
+      "ConcurrentHashMap for thread-safe maps in Spring services, NOT Collections.synchronizedMap() (full lock vs segment lock)"
+    ],
+    "connections": [
+      "Algorithms (data structures are the building blocks — they're inseparable)",
+      "Java Collections Framework (List, Map, Set, Queue interfaces)",
+      "Redis data types (String, List, Hash, Set, ZSet) directly mirror these structures",
+      "Spring Cache (internally uses Map-like structures for L1/L2 caching)"
+    ],
+    "relatedSlugs": [
+      "algorithms",
+      "caching"
+    ],
+    "quiz": [
+      {
+        "id": "ds-q1",
+        "question": "Default choice for a general-purpose list in Java?",
+        "options": [
+          "LinkedList",
+          "ArrayList",
+          "Vector",
+          "Stack"
+        ],
+        "correctIndex": 1,
+        "explanation": "ArrayList: O(1) amortized append and O(1) random access. Prefer ArrayDeque for stack/queue."
+      },
+      {
+        "id": "ds-q2",
+        "question": "HashMap average get/put complexity is…",
+        "options": [
+          "O(n)",
+          "O(log n)",
+          "O(1)",
+          "O(n log n)"
+        ],
+        "correctIndex": 2,
+        "explanation": "Average O(1); worst case degrades with collisions (treeified buckets in Java 8+)."
+      },
+      {
+        "id": "ds-q3",
+        "question": "Which structure finds shortest path in an unweighted graph?",
+        "options": [
+          "DFS",
+          "BFS",
+          "Binary search",
+          "Heap sort"
+        ],
+        "correctIndex": 1,
+        "explanation": "BFS explores level-by-level and yields shortest path in unweighted graphs."
+      },
+      {
+        "id": "ds-q4",
+        "question": "Best structure for an LRU cache in Java?",
+        "options": [
+          "TreeMap",
+          "HashSet",
+          "LinkedHashMap (access-order)",
+          "PriorityQueue"
+        ],
+        "correctIndex": 2,
+        "explanation": "LinkedHashMap in access-order mode + removeEldestEntry implements LRU cleanly."
+      },
+      {
+        "id": "ds-q5",
+        "question": "PriorityQueue in Java is by default a…",
+        "options": [
+          "Max-heap",
+          "Min-heap",
+          "Balanced BST",
+          "FIFO queue"
+        ],
+        "correctIndex": 1,
+        "explanation": "Default PriorityQueue is a min-heap; use a custom comparator for max-heap."
+      }
+    ],
+    "problems": [
+      {
+        "id": "ds-p1",
+        "title": "Choose the Right Structure",
+        "difficulty": "easy",
+        "prompt": "You need Top-K most expensive orders from a stream of millions. Which structure and why?",
+        "hints": [
+          "Think heap of size K.",
+          "Sorting everything is wasteful."
+        ],
+        "solution": "Min-heap (PriorityQueue) of size K: O(n log K). Keep the K largest by evicting the current minimum when a larger value arrives.",
+        "points": 15
+      },
+      {
+        "id": "ds-p2",
+        "title": "HashMap Contract",
+        "difficulty": "medium",
+        "prompt": "You use a custom UserKey as HashMap key but only override equals(). What breaks and how do you fix it?",
+        "hints": [
+          "hashCode/equals contract.",
+          "Equal objects must share hashCode."
+        ],
+        "solution": "Equal keys may land in different buckets → duplicates / failed lookups. Override both hashCode() and equals() consistently.",
+        "points": 15
+      }
+    ]
+  },
+  {
+    "id": "algorithms",
+    "slug": "algorithms",
+    "order": 3,
+    "emoji": "⚡",
+    "title": "Algorithms",
+    "cat": "core",
+    "tag": "Efficiency is a design choice, not an afterthought",
+    "sections": [
+      {
+        "h": "Big O Complexity",
+        "b": "Describes how runtime/space GROWS with input size n.\n\nO(1):        constant    — HashMap.get(), array[i]\nO(log n):    logarithmic — binary search, balanced BST operations\nO(n):        linear      — single loop, array scan\nO(n log n):  efficient   — merge sort, heap sort (optimal for comparison-based sort)\nO(n²):       quadratic   — nested loops, bubble/selection sort (avoid for n > 10,000)\nO(2ⁿ):       exponential — naive recursion without memoization\n\nRules: drop constants (O(2n) → O(n)), drop lower terms (O(n² + n) → O(n²)).\nAlways analyze BOTH time AND space. Recursion depth = O(depth) stack space."
+      },
+      {
+        "h": "Sorting Algorithms",
+        "b": "Merge Sort: O(n log n) always. Stable. O(n) extra space. Divide → sort halves → merge. Good for linked lists.\nQuick Sort: O(n log n) avg, O(n²) worst (sorted input + bad pivot). In-place. Cache-friendly. Java Arrays.sort() uses dual-pivot Quicksort.\nHeap Sort: O(n log n) always, O(1) extra space. Not cache-friendly.\nTimsort (Java Collections.sort()): hybrid merge + insertion. Stable. O(n) best case when nearly sorted.\nCounting/Radix Sort: O(n+k) non-comparison sort for integer keys in small range. O(nk) for Radix."
+      },
+      {
+        "h": "Binary Search Variants",
+        "b": "Classic: find element in sorted array. O(log n).\nAlways use: mid = left + (right - left) / 2 — avoids integer overflow.\n\nVariants (all O(log n)):\n• First occurrence: when arr[mid] == target, save mid and go LEFT (right = mid - 1)\n• Last occurrence: when arr[mid] == target, save mid and go RIGHT (left = mid + 1)\n• Rotated sorted array: identify which half is sorted, choose correct half\n\nBinary search on ANSWER SPACE (advanced):\nWhen you can express \"is X a valid answer? true/false\" for a monotonic condition → binary search on X.\nExample: \"minimum days to ship all packages\" — binary search days (1 → max). Check if feasible."
+      },
+      {
+        "h": "Dynamic Programming",
+        "b": "When to use: overlapping subproblems + optimal substructure.\n\nMemoization (top-down): recursive + HashMap/array cache. Natural recursion structure. Only solves needed subproblems.\nTabulation (bottom-up): iterative DP table. No recursion overhead. Often space-optimizable with rolling array.\n\nStandard approach: solve recursively → identify overlapping calls → add memoization → convert to tabulation.\n\nClassic patterns: Fibonacci, Coin Change, 0/1 Knapsack, Longest Common Subsequence, Longest Increasing Subsequence, Edit Distance, Matrix Chain Multiplication."
+      }
+    ],
+    "code": "// Core algorithm implementations\n\n// 1. Binary Search — FIRST occurrence\npublic int firstOccurrence(int[] arr, int target) {\n    int left = 0, right = arr.length - 1, result = -1;\n    while (left <= right) {\n        int mid = left + (right - left) / 2; // overflow-safe\n        if (arr[mid] == target) {\n            result = mid;\n            right = mid - 1; // keep looking LEFT for first occurrence\n        } else if (arr[mid] < target) left = mid + 1;\n        else right = mid - 1;\n    }\n    return result; // -1 if not found\n}\n\n// 2. Merge Sort — O(n log n) stable sort\npublic void mergeSort(int[] arr, int l, int r) {\n    if (l >= r) return;\n    int mid = l + (r - l) / 2;\n    mergeSort(arr, l, mid);\n    mergeSort(arr, mid + 1, r);\n    merge(arr, l, mid, r); // merge two sorted halves\n}\n\n// 3. DP — Coin Change (minimum coins to make amount)\npublic int coinChange(int[] coins, int amount) {\n    int[] dp = new int[amount + 1];\n    Arrays.fill(dp, amount + 1);  // initialize with \"infinity\"\n    dp[0] = 0;\n    for (int i = 1; i <= amount; i++)\n        for (int coin : coins)\n            if (coin <= i) dp[i] = Math.min(dp[i], dp[i - coin] + 1);\n    return dp[amount] > amount ? -1 : dp[amount];\n}\n\n// 4. BFS — shortest path, level-by-level\npublic int bfsShortestPath(Map<Integer, List<Integer>> graph, int src, int dst) {\n    Queue<Integer> q = new LinkedList<>();\n    Set<Integer> visited = new HashSet<>();\n    q.offer(src); visited.add(src);\n    int steps = 0;\n    while (!q.isEmpty()) {\n        int size = q.size(); // freeze current level\n        for (int i = 0; i < size; i++) {\n            int node = q.poll();\n            if (node == dst) return steps;\n            for (int nb : graph.getOrDefault(node, List.of()))\n                if (visited.add(nb)) q.offer(nb); // add() returns false if already present\n        }\n        steps++;\n    }\n    return -1;\n}",
+    "tips": [
+      "State Big O BEFORE coding in interviews — it shows you think about efficiency first, not as an afterthought",
+      "Binary search applies to ANY monotonic predicate, not just sorted arrays. 'Minimize maximum' and 'maximize minimum' problems → binary search on the answer space.",
+      "DP process: recursive brute force → identify overlapping calls → add memoization → convert to tabulation. Show this progression.",
+      "BFS = shortest path in unweighted graphs. Dijkstra = shortest path in weighted. Know when each applies."
+    ],
+    "connections": [
+      "Data Structures (algorithms operate on DS — inseparable)",
+      "Problem Solving patterns (Sliding Window, Two Pointers are algorithm patterns)",
+      "Competitive Programming / Codeforces (direct application of these concepts)",
+      "Database optimization (query planner uses cost-based algorithms internally)"
+    ],
+    "relatedSlugs": [
+      "data-structures",
+      "networking"
+    ],
+    "quiz": [
+      {
+        "id": "al-q1",
+        "question": "Binary search requires the input to be…",
+        "options": [
+          "Unique",
+          "Sorted",
+          "A linked list",
+          "A hash table"
+        ],
+        "correctIndex": 1,
+        "explanation": "Binary search halves a sorted search space each step → O(log n)."
+      },
+      {
+        "id": "al-q2",
+        "question": "Two-pointer technique is especially useful for…",
+        "options": [
+          "Sorting linked lists only",
+          "Problems on sorted arrays / strings with left-right scans",
+          "Graph coloring",
+          "Building heaps"
+        ],
+        "correctIndex": 1,
+        "explanation": "Classic for pair sums, palindromes, container-with-most-water, etc."
+      },
+      {
+        "id": "al-q3",
+        "question": "Sliding window typically improves which complexity?",
+        "options": [
+          "O(n²) nested scans → O(n) for contiguous subarray problems",
+          "O(n) → O(1) always",
+          "O(log n) → O(n)",
+          "Space only, never time"
+        ],
+        "correctIndex": 0,
+        "explanation": "Maintain a window and expand/shrink instead of recomputing from scratch."
+      },
+      {
+        "id": "al-q4",
+        "question": "Dijkstra’s algorithm needs which structure for efficiency?",
+        "options": [
+          "Stack",
+          "Queue only",
+          "Priority queue (min-heap)",
+          "Trie"
+        ],
+        "correctIndex": 2,
+        "explanation": "Always expand the currently closest unvisited node via a min-heap."
+      },
+      {
+        "id": "al-q5",
+        "question": "Dynamic programming is best described as…",
+        "options": [
+          "Greedy local choices only",
+          "Overlapping subproblems + optimal substructure with memo/tabulation",
+          "Randomized sampling",
+          "Only recursion without storage"
+        ],
+        "correctIndex": 1,
+        "explanation": "DP stores subproblem answers to avoid exponential recomputation."
+      }
+    ],
+    "problems": [
+      {
+        "id": "al-p1",
+        "title": "Complexity Callout",
+        "difficulty": "easy",
+        "prompt": "A nested loop over an array of size n does constant work inside. State time and space complexity.",
+        "hints": [
+          "Count iterations.",
+          "Extra arrays?"
+        ],
+        "solution": "Time O(n²), space O(1) if no extra structures proportional to n.",
+        "points": 10
+      },
+      {
+        "id": "al-p2",
+        "title": "Anagram Check Approach",
+        "difficulty": "medium",
+        "prompt": "Describe an O(n) approach to check if two strings are anagrams (same letters).",
+        "hints": [
+          "Counting beats sorting for ASCII/limited alphabet.",
+          "Hash map of frequencies."
+        ],
+        "solution": "Count character frequencies in one string (+1) and the other (−1). All counts zero ⇒ anagram. O(n) time, O(k) space.",
+        "points": 15
+      }
+    ]
+  },
+  {
+    "id": "databases",
+    "slug": "databases",
+    "order": 4,
+    "emoji": "🗄️",
+    "title": "Databases",
+    "cat": "data",
+    "tag": "Data persistence done right",
+    "sections": [
+      {
+        "h": "SQL — Core + Advanced",
+        "b": "Execution order (NOT the order you write it):\nFROM + JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT\nKnowing this resolves WHERE vs HAVING confusion: HAVING filters AFTER grouping.\n\nJOINs: INNER (matching rows only), LEFT (all left + matching right), RIGHT, FULL OUTER.\nPrefer JOINs over correlated subqueries — subqueries can be O(n²).\n\nPostgreSQL advanced:\nWindow functions: ROW_NUMBER(), RANK(), SUM() OVER(PARTITION BY...) — analytics without collapsing rows.\nCTEs (WITH clause): break complex queries into named readable steps.\nJSONB: semi-structured data with fast indexing. Use for flexible schemas.\nEXPLAIN ANALYZE: shows actual query plan, execution time, row estimates."
+      },
+      {
+        "h": "Indexing Strategy",
+        "b": "B-Tree index (default): turns O(n) sequential scan → O(log n) index lookup.\nAlways index: primary keys (auto), foreign keys, frequently filtered/joined columns.\n\nComposite index (col1, col2): leftmost prefix rule — effective for queries on col1 alone, or col1+col2 together. NOT effective for col2 alone.\n\nCovering index: all columns in the query are in the index — no table access (\"index-only scan\"). Fastest reads.\n\nWhen NOT to index: small tables (<10k rows), low-cardinality columns (e.g., gender with 2 values), heavily written columns (index maintenance overhead).\n\nEXPLAIN ANALYZE keywords: \"Seq Scan\" on large table = missing index. \"Index Scan\" = good."
+      },
+      {
+        "h": "ACID & @Transactional",
+        "b": "Atomicity: all-or-nothing. Any failure → full rollback. Bank transfer: both debit AND credit commit, or neither does.\nConsistency: DB moves from one valid state to another. FK, UNIQUE, CHECK constraints enforced.\nIsolation: concurrent transactions don't interfere. PostgreSQL default: READ COMMITTED.\nDurability: committed data survives crashes. PostgreSQL WAL (Write-Ahead Log) provides this.\n\nSpring @Transactional:\n• Default rollback: RuntimeException or Error. NOT checked exceptions.\n• @Transactional(rollbackFor = Exception.class) — rollback on any exception.\n• @Transactional(readOnly = true) — skip dirty checks, hint to use read replica.\n• Propagation: REQUIRED (join existing tx), REQUIRES_NEW (always start fresh tx).\n• GOTCHA: @Transactional on private method DOES NOTHING — Spring AOP only proxies public methods."
+      },
+      {
+        "h": "N+1 Problem — Critical",
+        "b": "Definition: fetch N entities → N more queries for their related collections = 1 + N total.\nExample: findAll() returns 1000 users → user.getOrders().size() fires 1000 extra queries.\nImpact: 1001 DB round trips. 8+ second API response. Most common JPA performance bug.\n\nSolutions:\n1. JOIN FETCH in JPQL (preferred): \"SELECT u FROM User u JOIN FETCH u.orders\"\n   → loads everything in ONE query\n2. @EntityGraph: declarative alternative to JOIN FETCH\n3. @BatchSize(size=25): N/25 queries instead of N (better but not ideal)\n4. DTO projection: SELECT only needed columns — avoid loading entity + associations\n\nDetection: spring.jpa.show-sql=true → count the queries in console output."
+      }
+    ],
+    "code": "// Spring Boot JPA — production patterns\n\n@Repository\npublic interface OrderRepository extends JpaRepository<Order, Long> {\n\n    // FIX N+1: JOIN FETCH loads Order + Items in ONE query\n    @Query(\"\"\"\n        SELECT DISTINCT o FROM Order o\n        JOIN FETCH o.items\n        WHERE o.userId = :userId\n        ORDER BY o.createdAt DESC\n        \"\"\")\n    List<Order> findByUserIdWithItems(@Param(\"userId\") Long userId);\n\n    // Pagination — ALWAYS use for list endpoints (never return unbounded lists)\n    Page<Order> findByStatus(OrderStatus status, Pageable pageable);\n\n    // DTO projection — fetch ONLY what's needed (faster than loading full entity)\n    @Query(\"SELECT new com.app.dto.OrderSummary(o.id, o.status, o.totalAmount) \" +\n           \"FROM Order o WHERE o.userId = :userId\")\n    List<OrderSummary> findSummariesByUser(@Param(\"userId\") Long userId);\n}\n\n// ACID bank transfer — @Transactional guarantees atomicity\n@Service\n@RequiredArgsConstructor\npublic class TransferService {\n\n    @Transactional // if anything throws → BOTH account changes rollback\n    public TransferResult transfer(Long fromId, Long toId, BigDecimal amount) {\n        Account from = accountRepo.findByIdForUpdate(fromId)  // pessimistic lock\n            .orElseThrow(() -> new ResourceNotFoundException(fromId));\n        Account to = accountRepo.findByIdForUpdate(toId)\n            .orElseThrow(() -> new ResourceNotFoundException(toId));\n\n        if (from.getBalance().compareTo(amount) < 0)\n            throw new InsufficientFundsException(); // triggers rollback\n\n        from.debit(amount);   // exception here → BOTH debit + credit rollback\n        to.credit(amount);\n        accountRepo.save(from);\n        accountRepo.save(to);\n        return TransferResult.success(from.getBalance());\n    }\n}\n\n-- PostgreSQL: detect missing index with EXPLAIN\n-- EXPLAIN ANALYZE SELECT * FROM orders WHERE user_id = 5 AND status = 'PENDING';\n-- Before: Seq Scan on orders (rows=500000)  ← very slow\n-- CREATE INDEX idx_orders_user_status ON orders(user_id, status);\n-- After:  Index Scan using idx_orders_user_status (rows=12) ← fast",
+    "tips": [
+      "N+1 is THE most common Spring JPA interview question — show JOIN FETCH as the fix and explain why it sends 1 query instead of N+1",
+      "Explain ACID with a bank transfer: atomicity means debit and credit both commit, or neither does — the classic example",
+      "@Transactional on private method = silent no-op. Spring AOP only intercepts public method calls on proxied beans.",
+      "Optimistic locking (@Version) vs pessimistic locking (SELECT FOR UPDATE) — both prevent lost updates, different tradeoffs"
+    ],
+    "connections": [
+      "Spring Data JPA / Hibernate (ORM abstraction over JDBC)",
+      "System Design (read replicas reduce primary DB load; sharding partitions data)",
+      "APIs (Pageable in service → LIMIT/OFFSET or keyset pagination in SQL)",
+      "Testing (@DataJpaTest uses H2 in-memory — fast repository tests without full Spring context)"
+    ],
+    "relatedSlugs": [
+      "caching",
+      "idempotency",
+      "messaging-queues"
+    ],
+    "quiz": [
+      {
+        "id": "db-q1",
+        "question": "SQL logical execution order starts with…",
+        "options": [
+          "SELECT",
+          "WHERE",
+          "FROM / JOIN",
+          "ORDER BY"
+        ],
+        "correctIndex": 2,
+        "explanation": "FROM/JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT."
+      },
+      {
+        "id": "db-q2",
+        "question": "The N+1 problem means…",
+        "options": [
+          "One query returns N+1 rows",
+          "1 query for parents + N queries for children/associations",
+          "N indexes on 1 table",
+          "N transactions in 1 request"
+        ],
+        "correctIndex": 1,
+        "explanation": "Classic ORM pitfall; fix with JOIN FETCH, EntityGraph, or DTO projections."
+      },
+      {
+        "id": "db-q3",
+        "question": "Composite index (user_id, status) helps queries that filter on…",
+        "options": [
+          "status alone only",
+          "user_id alone, or user_id + status (leftmost prefix)",
+          "any column in the table",
+          "created_at only"
+        ],
+        "correctIndex": 1,
+        "explanation": "B-tree composite indexes follow the leftmost-prefix rule."
+      },
+      {
+        "id": "db-q4",
+        "question": "@Transactional on a private method in Spring…",
+        "options": [
+          "Always works",
+          "Is a silent no-op (AOP proxies public methods)",
+          "Rolls back checked exceptions by default",
+          "Forces REQUIRES_NEW"
+        ],
+        "correctIndex": 1,
+        "explanation": "Spring AOP only intercepts calls through the proxy on public methods."
+      },
+      {
+        "id": "db-q5",
+        "question": "ACID Atomicity in a bank transfer means…",
+        "options": [
+          "Debit can succeed without credit",
+          "Both debit and credit commit, or neither does",
+          "Reads always see latest writes globally",
+          "Data is encrypted at rest"
+        ],
+        "correctIndex": 1,
+        "explanation": "All-or-nothing: failure rolls back the whole transaction."
+      }
+    ],
+    "problems": [
+      {
+        "id": "db-p1",
+        "title": "Fix N+1 in JPA",
+        "difficulty": "medium",
+        "prompt": "findAll() users then calling user.getOrders() causes 1001 queries. Write the JPQL approach to fix it.",
+        "hints": [
+          "JOIN FETCH",
+          "DISTINCT for collections"
+        ],
+        "solution": "@Query(\"SELECT DISTINCT u FROM User u JOIN FETCH u.orders\") — loads users + orders in one SQL round trip.",
+        "points": 20
+      },
+      {
+        "id": "db-p2",
+        "title": "Index Decision",
+        "difficulty": "easy",
+        "prompt": "EXPLAIN shows Seq Scan on a 500k-row orders table filtered by user_id and status. What index do you add?",
+        "hints": [
+          "Composite for both filters.",
+          "Order columns by selectivity / query pattern."
+        ],
+        "solution": "CREATE INDEX idx_orders_user_status ON orders(user_id, status);",
+        "points": 10
+      }
+    ]
+  },
+  {
+    "id": "apis",
+    "slug": "apis",
+    "order": 5,
+    "emoji": "🌐",
+    "title": "APIs",
+    "cat": "data",
+    "tag": "How systems talk to each other",
+    "sections": [
+      {
+        "h": "REST Principles",
+        "b": "REST = Representational State Transfer. Architectural style, not a protocol.\n\nStateless: each request is self-contained. NO server-side session. Auth info in header (JWT), not server memory.\nResource-based URLs: nouns not verbs.\n  ✓ GET /orders/5/items        ✗ GET /getOrderItems?id=5\n  ✓ POST /users                ✗ POST /createUser\nUniform interface: HTTP method defines the action on the resource.\nLayered: client doesn't know if talking to server, proxy, or cache.\n\nURL design:\n  /orders           GET = list, POST = create\n  /orders/{id}      GET = get one, PUT = replace, PATCH = update, DELETE = remove\n  /orders?status=PENDING&page=0&size=20  (filter + paginate via query params)"
+      },
+      {
+        "h": "HTTP Methods & Status Codes",
+        "b": "GET: read, idempotent, safe, cacheable. No body.\nPOST: create. NOT idempotent — calling twice may create two resources.\nPUT: full replace, idempotent. Client sends complete representation.\nPATCH: partial update. Send only changed fields.\nDELETE: remove, idempotent. Return 204 No Content.\n\nStatus codes you must know:\n200 OK | 201 Created (+ Location header) | 204 No Content\n400 Bad Request | 401 Unauthorized (no/invalid auth) | 403 Forbidden (no permission)\n404 Not Found | 409 Conflict | 422 Unprocessable Entity (validation failed)\n429 Too Many Requests (+ Retry-After header) | 500 Internal Server Error | 503 Service Unavailable\n\nKey: 401 = \"who are you?\" (not authenticated). 403 = \"I know you, but no.\" (not authorized)."
+      },
+      {
+        "h": "Authentication: JWT & OAuth2",
+        "b": "JWT: stateless auth. Structure: header.payload.signature (Base64 + dot-separated).\nServer validates signature cryptographically on EVERY request — no DB lookup needed.\nAccess token: short-lived (15min–1hr). Refresh token: long-lived (7–30d), stored in HttpOnly cookie.\nInclude in request: Authorization: Bearer <token>\n\nSpring Security JWT flow:\nRequest → JwtAuthFilter → extract token → validate signature + expiry → set SecurityContext → controller proceeds.\n\nOAuth2: authorization framework for delegating access to third-party apps.\nFlows: Authorization Code (web apps, most secure), Client Credentials (service-to-service), Implicit (deprecated — insecure).\nOpenID Connect (OIDC): OAuth2 + identity layer. Returns id_token with user info."
+      },
+      {
+        "h": "API Design Best Practices",
+        "b": "Versioning: /api/v1/users from day 1. Breaking changes → /api/v2/. Never break existing consumers.\nPagination: offset-based (page+size) or cursor-based (last-seen ID, efficient for large datasets). Always return totalCount + next link.\n\nError format — consistent for ALL errors:\n{\"error\": \"VALIDATION_ERROR\", \"message\": \"...\", \"details\": [\"field: reason\"]}\n\nRate limiting: return 429 + Retry-After header. Token bucket or sliding window algorithm.\nIdempotency keys: payment endpoints accept X-Idempotency-Key. Same key → same response. Safe retry on timeout.\nCORS: configure specific allowed origins in Spring Security. Never wildcard (*) in production."
+      }
+    ],
+    "code": "// Production Spring Boot REST API\n\n@RestController\n@RequestMapping(\"/api/v1/orders\")\n@RequiredArgsConstructor\n@Validated\npublic class OrderController {\n\n    private final OrderService orderService;\n\n    // GET with filtering + pagination\n    @GetMapping\n    public ResponseEntity<Page<OrderDTO>> getOrders(\n            @RequestParam(required = false) OrderStatus status,\n            @PageableDefault(size = 20, sort = \"createdAt\",\n                direction = Sort.Direction.DESC) Pageable pageable) {\n        return ResponseEntity.ok(orderService.getOrders(status, pageable));\n    }\n\n    // POST — 201 Created + Location header pointing to new resource\n    @PostMapping\n    public ResponseEntity<OrderDTO> createOrder(\n            @Valid @RequestBody CreateOrderRequest req,\n            @AuthenticationPrincipal UserDetails user) {\n        OrderDTO created = orderService.create(req, user.getUsername());\n        URI location = ServletUriComponentsBuilder.fromCurrentRequest()\n            .path(\"/{id}\").buildAndExpand(created.getId()).toUri();\n        return ResponseEntity.created(location).body(created); // HTTP 201\n    }\n\n    // PATCH — partial update, only changed fields\n    @PatchMapping(\"/{id}/status\")\n    public ResponseEntity<OrderDTO> updateStatus(@PathVariable Long id,\n            @Valid @RequestBody UpdateStatusRequest req) {\n        return ResponseEntity.ok(orderService.updateStatus(id, req));\n    }\n\n    // DELETE — 204 No Content on success\n    @DeleteMapping(\"/{id}\")\n    @ResponseStatus(HttpStatus.NO_CONTENT)\n    public void delete(@PathVariable Long id) { orderService.delete(id); }\n}\n\n// Global error handler — ALWAYS use this pattern\n@RestControllerAdvice\npublic class GlobalExceptionHandler {\n\n    @ExceptionHandler(ResourceNotFoundException.class)\n    public ResponseEntity<ErrorResponse> notFound(ResourceNotFoundException ex) {\n        return ResponseEntity.status(404)\n            .body(ErrorResponse.of(\"NOT_FOUND\", ex.getMessage()));\n    }\n\n    @ExceptionHandler(MethodArgumentNotValidException.class)\n    public ResponseEntity<ErrorResponse> validation(MethodArgumentNotValidException ex) {\n        var errors = ex.getBindingResult().getFieldErrors().stream()\n            .map(e -> e.getField() + \": \" + e.getDefaultMessage()).toList();\n        return ResponseEntity.badRequest()\n            .body(ErrorResponse.of(\"VALIDATION_ERROR\", \"Input invalid\", errors));\n    }\n\n    @ExceptionHandler(Exception.class)\n    public ResponseEntity<ErrorResponse> generic(Exception ex) {\n        log.error(\"Unhandled exception\", ex);\n        return ResponseEntity.status(500)\n            .body(ErrorResponse.of(\"INTERNAL_ERROR\", \"An unexpected error occurred\"));\n    }\n}",
+    "tips": [
+      "Nouns not verbs in URLs: /orders not /createOrder. The HTTP method IS the verb.",
+      "401 vs 403 distinction matters in interviews: 401 = unauthenticated (no/invalid token), 403 = authenticated but no permission to this resource",
+      "JWT is stateless — server NEVER stores tokens. Validation is purely cryptographic. This is what makes horizontal scaling possible.",
+      "Always use @RestControllerAdvice for global exception handling — raw Java exceptions must never reach the API consumer as stack traces"
+    ],
+    "connections": [
+      "Spring Security (JWT filter chain, OAuth2 resource server configuration)",
+      "System Design (API Gateway handles auth, rate limiting, routing before requests reach services)",
+      "Testing (MockMvc for controller unit tests, TestRestTemplate for integration tests)",
+      "Databases (Pageable in REST → LIMIT/OFFSET or keyset pagination in PostgreSQL)"
+    ],
+    "relatedSlugs": [
+      "auth-tls",
+      "idempotency",
+      "graphql-grpc"
+    ],
+    "quiz": [
+      {
+        "id": "api-q1",
+        "question": "REST resource URLs should prefer…",
+        "options": [
+          "Verbs: /getOrderItems",
+          "Nouns: /orders/5/items",
+          "RPC only: /doGetItems",
+          "Query strings for all actions"
+        ],
+        "correctIndex": 1,
+        "explanation": "Resources are nouns; HTTP methods express the action."
+      },
+      {
+        "id": "api-q2",
+        "question": "Idempotent HTTP methods include…",
+        "options": [
+          "POST only",
+          "GET, PUT, DELETE",
+          "POST and PATCH only",
+          "CONNECT"
+        ],
+        "correctIndex": 1,
+        "explanation": "Safe/idempotent: GET/HEAD/OPTIONS; idempotent writes: PUT/DELETE. POST is not idempotent."
+      },
+      {
+        "id": "api-q3",
+        "question": "JWT auth typically sends the token in…",
+        "options": [
+          "Server session memory only",
+          "Authorization: Bearer <token> header",
+          "URL path always",
+          "SQL cookies table"
+        ],
+        "correctIndex": 1,
+        "explanation": "Stateless REST: client sends JWT each request; server validates signature/claims."
+      },
+      {
+        "id": "api-q4",
+        "question": "Best status code for successfully creating a resource?",
+        "options": [
+          "200 with no body",
+          "201 Created",
+          "204 No Content always",
+          "302 Found"
+        ],
+        "correctIndex": 1,
+        "explanation": "201 Created (often with Location header) for successful POST create."
+      },
+      {
+        "id": "api-q5",
+        "question": "Pagination on list endpoints exists mainly to…",
+        "options": [
+          "Make URLs prettier",
+          "Bound response size and DB load",
+          "Replace indexes",
+          "Avoid authentication"
+        ],
+        "correctIndex": 1,
+        "explanation": "Never return unbounded lists in production APIs."
+      }
+    ],
+    "problems": [
+      {
+        "id": "api-p1",
+        "title": "Design Order Endpoints",
+        "difficulty": "medium",
+        "prompt": "Sketch REST endpoints for listing a user’s orders (paginated), creating an order, and canceling an order. Include status codes.",
+        "hints": [
+          "Nouns + methods",
+          "201 / 200 / 204 / 404"
+        ],
+        "solution": "GET /users/{id}/orders?page=&size= → 200; POST /orders → 201 + Location; POST /orders/{id}/cancel or PATCH status → 200; missing → 404.",
+        "points": 20
+      },
+      {
+        "id": "api-p2",
+        "title": "Idempotency Key",
+        "difficulty": "hard",
+        "prompt": "How would you make payment creation safe against double-submit from a flaky client?",
+        "hints": [
+          "Idempotency-Key header",
+          "Store request hash → response"
+        ],
+        "solution": "Require Idempotency-Key. Persist key + response. Retries with same key return the original result without charging twice.",
+        "points": 25
+      }
+    ]
+  },
+  {
+    "id": "system-design",
+    "slug": "system-design",
+    "order": 6,
+    "emoji": "🏗️",
+    "title": "System Design",
+    "cat": "arch",
+    "tag": "Building systems that scale and survive",
+    "sections": [
+      {
+        "h": "Scalability Fundamentals",
+        "b": "Vertical scaling (scale up): add CPU/RAM to one server. Simple but limited ceiling + single point of failure.\nHorizontal scaling (scale out): add more servers. Load balancer + stateless services. Theoretically unlimited.\n\nStateless = scalable: NO server-side session. Store session in Redis or use JWT. ANY server can handle ANY request.\n\nFind your bottleneck first (profile, don't guess):\nCPU-bound → threads, async processing, cache computed results\nDB-bound → indexing, read replicas, caching, query optimization\nNetwork-bound → CDN for static assets, gRPC instead of REST, compression\nMemory-bound → stream large files, paginate large results, efficient data structures"
+      },
+      {
+        "h": "CAP Theorem",
+        "b": "In a distributed system, pick 2 of 3:\nC — Consistency: every read returns the most recent write\nA — Availability: every request gets a response (may not be latest data)\nP — Partition Tolerance: system works despite network failures between nodes\n\nSince network partitions ALWAYS happen, you must have P. Real choice: CP or AP.\n\nCP — consistency over availability:\n→ MongoDB, HBase, ZooKeeper, etcd\n→ Use for: banking, inventory, booking (stale data = incorrect result)\n\nAP — availability over consistency (eventually consistent):\n→ Cassandra, DynamoDB, CouchDB\n→ Use for: social media, shopping cart, analytics (stale data = acceptable)\n\nBASE = Basically Available, Soft-state, Eventually Consistent. NoSQL alternative to ACID."
+      },
+      {
+        "h": "Caching Strategies",
+        "b": "Cache-aside (most common): app checks cache → hit: return. Miss: load from DB → store in cache → return.\nRisk: cache stampede on cold start. Fix: staggered TTL, mutex locking, pre-warming.\n\nWrite-through: write to cache AND DB simultaneously. Always consistent. Higher write latency.\nWrite-behind: write to cache → async write to DB. Fast writes. Risk: data loss if cache crashes before async write.\n\nCache invalidation strategies:\n• TTL-based: expire after time. Simple but may serve stale data briefly.\n• Event-based: invalidate cache when data changes. Consistent but complex.\n• Write-through: automatically consistent.\n\nRedis use cases: session storage, rate limiting (sliding window counter), distributed locks, pub/sub, leaderboards (sorted sets)."
+      },
+      {
+        "h": "Microservices & Resilience",
+        "b": "Monolith → Microservices tradeoffs:\nBenefits: independent deployment, scale individual services, fault isolation, technology freedom.\nCosts: network latency, distributed transactions, 12 services = 12 CI/CDs + 12 Dockerfiles + 12 monitoring configs.\n\nService communication:\nSync (REST, gRPC): immediate response. Simple. Creates coupling risk. Cascading failures if downstream is slow.\nAsync (Kafka, RabbitMQ): fire-and-forget. Decoupled. Resilient. Harder to trace.\n\nCircuit Breaker (Resilience4j): prevents cascading failures.\nCLOSED (normal) → OPEN (fast-fail after N failures) → HALF-OPEN (test recovery).\n\nSaga Pattern: distributed transaction without 2PC (two-phase commit).\nEach service: local transaction → publish event → next service reacts. On failure: compensating transactions."
+      }
+    ],
+    "code": "// System Design patterns in Spring Boot\n\n// 1. Redis caching with @Cacheable\n@Service\n@CacheConfig(cacheNames = \"patients\")\npublic class PatientService {\n\n    @Cacheable(key = \"#id\", unless = \"#result == null\")\n    @Transactional(readOnly = true)\n    public PatientDTO getPatient(Long id) {\n        // Called ONLY on cache MISS. Cache hit returns immediately — zero DB roundtrip.\n        return patientRepo.findById(id).map(PatientDTO::from)\n            .orElseThrow(() -> new ResourceNotFoundException(\"Patient \" + id));\n    }\n\n    @CacheEvict(key = \"#id\") // invalidate when patient data changes\n    public PatientDTO updatePatient(Long id, UpdatePatientRequest req) { ... }\n}\n// application.yml:\n// spring.cache.type: redis\n// spring.cache.redis.time-to-live: 3600000  # 1 hour TTL\n\n// 2. Circuit Breaker with Resilience4j\n@Service\npublic class DiagnosticsGateway {\n\n    @CircuitBreaker(name = \"diagnostics\", fallbackMethod = \"fallback\")\n    @Retry(name = \"diagnostics\", fallbackMethod = \"fallback\")\n    @TimeLimiter(name = \"diagnostics\")\n    public CompletableFuture<Report> fetchReport(Long patientId) {\n        return CompletableFuture.supplyAsync(() -> externalApi.getReport(patientId));\n    }\n\n    // Called when circuit is OPEN — serve stale cached data gracefully\n    private CompletableFuture<Report> fallback(Long patientId, Throwable ex) {\n        log.warn(\"Diagnostics API down, serving cache: {}\", ex.getMessage());\n        return CompletableFuture.completedFuture(Report.fromCache(patientId));\n    }\n}\n\n/*\n eG-Health Platform Architecture (simplified):\n\n Angular SPA → CDN (static assets, edge caching)\n             → Nginx (SSL termination, reverse proxy)\n                  → API Gateway (auth, rate limiting, routing)\n                       ┌──────────────┬────────────────┐\n                   Patient SVC    Diagnostic SVC   Billing SVC\n                  (Spring Boot)  (Spring Boot)   (Spring Boot)\n                       │              │                │\n                  PostgreSQL     PostgreSQL         Kafka\n                 (patient data)  (reports)       (async events)\n                       │              │                │\n                     Redis        Redis         Notification SVC\n                  (sessions)    (report cache)   (SMS/email)\n*/",
+    "tips": [
+      "System design interview order: clarify scope → estimate scale → high-level architecture → deep dive one component → identify bottlenecks",
+      "Start simple (monolith), scale when needed. Over-engineering from day one is a red flag.",
+      "CAP theorem: always ask 'what happens on network partition?' Bank account balance = CP (can't serve stale). Social media likes = AP (stale is fine).",
+      "Async (Kafka) vs sync (REST): use async when you don't need an immediate response. Async decouples services and improves resilience."
+    ],
+    "connections": [
+      "Databases (read replicas handle read traffic; sharding partitions data horizontally)",
+      "APIs (API Gateway is the single entry point handling auth, rate limiting, routing)",
+      "Testing (contract testing with Pact between microservices; integration tests per service)",
+      "Kafka/RabbitMQ (async messaging backbone of microservices communication)"
+    ],
+    "relatedSlugs": [
+      "caching",
+      "messaging-queues",
+      "networking",
+      "observability"
+    ],
+    "quiz": [
+      {
+        "id": "sd-q1",
+        "question": "Horizontal scaling means…",
+        "options": [
+          "Buying a bigger single machine",
+          "Adding more machines behind a load balancer",
+          "Only adding CPU cores",
+          "Sharding the UI"
+        ],
+        "correctIndex": 1,
+        "explanation": "Scale out with more nodes; prefer stateless services."
+      },
+      {
+        "id": "sd-q2",
+        "question": "Caching is primarily used to…",
+        "options": [
+          "Replace the database forever",
+          "Reduce latency and load for hot reads",
+          "Guarantee strong consistency",
+          "Encrypt traffic"
+        ],
+        "correctIndex": 1,
+        "explanation": "Cache hot data (Redis/CDN) with a clear invalidation strategy."
+      },
+      {
+        "id": "sd-q3",
+        "question": "Message queues help systems by…",
+        "options": [
+          "Making all calls synchronous",
+          "Decoupling producers/consumers and absorbing spikes",
+          "Removing the need for databases",
+          "Replacing load balancers"
+        ],
+        "correctIndex": 1,
+        "explanation": "Async processing for emails, feeds, webhooks, etc."
+      },
+      {
+        "id": "sd-q4",
+        "question": "CAP theorem forces a trade-off between…",
+        "options": [
+          "CPU and memory",
+          "Consistency and Availability during network Partition",
+          "Latency and throughput only",
+          "SQL and NoSQL syntax"
+        ],
+        "correctIndex": 1,
+        "explanation": "During partition, choose CP or AP; you cannot have perfect C+A."
+      },
+      {
+        "id": "sd-q5",
+        "question": "A classic first system-design interview problem is…",
+        "options": [
+          "Design a GPU cluster OS",
+          "URL shortener",
+          "Design TCP",
+          "Write a compiler"
+        ],
+        "correctIndex": 1,
+        "explanation": "URL shortener still appears constantly; then feed, chat, rate limiter, etc."
+      }
+    ],
+    "problems": [
+      {
+        "id": "sd-p1",
+        "title": "URL Shortener Sketch",
+        "difficulty": "medium",
+        "prompt": "Outline components for a URL shortener at 1k RPS write / 10k RPS read. Mention ID generation and storage.",
+        "hints": [
+          "Base62 IDs",
+          "Cache redirects",
+          "SQL/NoSQL for mappings"
+        ],
+        "solution": "API → hash/base62 ID service → KV or DB mapping short→long; Redis cache for hot redirects; CDN optional; analytics via async queue.",
+        "points": 25
+      },
+      {
+        "id": "sd-p2",
+        "title": "Rate Limiter Choice",
+        "difficulty": "medium",
+        "prompt": "Compare token bucket vs fixed window for API rate limiting. When pick which?",
+        "hints": [
+          "Bursts",
+          "Boundary spikes"
+        ],
+        "solution": "Fixed window is simple but allows 2× burst at boundaries. Token bucket allows controlled bursts and smoother refill — preferred for public APIs.",
+        "points": 20
+      }
+    ]
+  },
+  {
+    "id": "testing",
+    "slug": "testing",
+    "order": 7,
+    "emoji": "🧪",
+    "title": "Testing",
+    "cat": "practice",
+    "tag": "Confidence through verification",
+    "sections": [
+      {
+        "h": "Testing Pyramid",
+        "b": "Unit Tests (~70%, base): test ONE class in isolation. Mock all dependencies. No Spring context, no DB.\nFast (<100ms each). Run on every save. Foundation.\n\nIntegration Tests (~20%, middle): test components working together (Service + DB, Controller + Service).\nSlower (needs Spring context or embedded DB). Run before push / in CI.\n\nE2E Tests (~10%, top): full system through API or UI. Slowest, most fragile, most realistic.\nRun in CI on PR merge.\n\nAnti-pattern — Ice Cream Cone (inverted pyramid): too many E2E, too few unit.\n→ Slow feedback loop (30min CI), fragile tests, expensive maintenance.\n\nGoal: fast feedback. Developers skip slow tests. Fast tests get run."
+      },
+      {
+        "h": "JUnit 5 Essentials",
+        "b": "Lifecycle: @BeforeEach → @Test → @AfterEach per method. @BeforeAll / @AfterAll once per class (must be static).\n\nCore assertions:\nassertEquals(expected, actual)\nassertThrows(Exception.class, () -> method()) — test that exception IS thrown\nassertAll(\"group\", () -> assert1, () -> assert2) — ALL assertions run, collect ALL failures\nassertNotNull / assertTrue / assertFalse / assertIterableEquals\n\nParameterized tests:\n@ParameterizedTest + @CsvSource({\"0,false\", \"1,true\", \"-1,false\"}) — multiple inputs, one test method\n@MethodSource(\"provideTestData\") — method returns Stream<Arguments>\n\nOrganization: @DisplayName(\"human readable\"), @Nested for grouping, @Disabled for skipping."
+      },
+      {
+        "h": "Mockito — Isolation",
+        "b": "@Mock: creates mock object. All methods return null/0/false by default.\n@InjectMocks: creates class under test + injects @Mock fields automatically.\n@Spy: partial mock — real implementation, stub specific methods + verify calls.\n@Captor: capture arguments passed to mock for assertion.\n\nStubbing:\nwhen(mock.method(any())).thenReturn(value)\nwhen(mock.method(arg)).thenThrow(new RuntimeException())\ndoReturn(value).when(spy).method()  — use for spies (avoids calling real method)\n\nVerification:\nverify(mock).method(arg)              — called exactly once\nverify(mock, times(2)).method(any())  — called exactly N times\nverify(mock, never()).method(any())   — never called\nverifyNoInteractions(mock)            — no methods called at all on this mock"
+      },
+      {
+        "h": "Spring Boot Test Slices",
+        "b": "@SpringBootTest: loads full application context. Full-stack integration tests. Slowest.\n@WebMvcTest(Controller.class): only web layer. Use MockMvc. Fast controller tests.\n@DataJpaTest: only JPA layer + H2 in-memory. Fast repository/query tests.\nTestcontainers: real PostgreSQL/Redis in Docker. Slower but authentic.\n\n@Transactional on test class: DB changes rollback after each test — clean slate.\n@Sql(\"/seed.sql\"): run SQL scripts before/after test method.\n@MockBean: replace Spring bean with Mockito mock (use in @WebMvcTest).\n\nTDD — Red-Green-Refactor:\n1. Write failing test (RED) — defines behavior before code\n2. Minimum code to pass (GREEN) — just enough to pass\n3. Refactor (REFACTOR) — clean up without breaking tests\nBenefit: forces design thinking first. Tests become the living specification."
+      }
+    ],
+    "code": "// Complete test suite for OrderService\n\n// ── UNIT TEST (JUnit 5 + Mockito) ─────────────────────────\n@ExtendWith(MockitoExtension.class)\nclass OrderServiceTest {\n\n    @Mock private OrderRepository orderRepository;\n    @Mock private NotificationService notificationService;\n    @InjectMocks private OrderService orderService; // mocks auto-injected\n\n    @Test\n    @DisplayName(\"Should persist order and send notification on success\")\n    void createOrder_ValidRequest_ShouldPersistAndNotify() {\n        // Arrange\n        var req = new CreateOrderRequest(1L, new BigDecimal(\"50.00\"));\n        var saved = Order.builder().id(100L).amount(new BigDecimal(\"50.00\")).build();\n        when(orderRepository.save(any(Order.class))).thenReturn(saved);\n\n        // Act\n        OrderDTO result = orderService.createOrder(req, \"user@test.com\");\n\n        // Assert — assertAll runs ALL checks even if one fails\n        assertAll(\"order creation\",\n            () -> assertNotNull(result),\n            () -> assertEquals(100L, result.getId()),\n            () -> assertEquals(new BigDecimal(\"50.00\"), result.getAmount())\n        );\n        verify(orderRepository, times(1)).save(any(Order.class));\n        verify(notificationService).notify(contains(\"100\"));\n    }\n\n    @Test\n    @DisplayName(\"Should throw and NOT call DB when amount is zero or negative\")\n    void createOrder_NegativeAmount_ShouldThrowWithoutPersisting() {\n        var req = new CreateOrderRequest(1L, BigDecimal.ZERO);\n        assertThrows(IllegalArgumentException.class,\n            () -> orderService.createOrder(req, \"user@test.com\"));\n        verifyNoInteractions(orderRepository); // DB must NOT be called on invalid input\n    }\n\n    @ParameterizedTest\n    @CsvSource({\"0.00,false\", \"0.01,true\", \"999.99,true\", \"-1.00,false\"})\n    void isValidAmount(BigDecimal amount, boolean expected) {\n        assertEquals(expected, orderService.isValidAmount(amount));\n    }\n}\n\n// ── CONTROLLER TEST (@WebMvcTest — web layer only) ────────\n@WebMvcTest(OrderController.class)\nclass OrderControllerTest {\n    @Autowired MockMvc mockMvc;\n    @MockBean  OrderService orderService;\n\n    @Test\n    void createOrder_ValidRequest_Returns201WithLocation() throws Exception {\n        var order = new OrderDTO(1L, new BigDecimal(\"50.00\"), OrderStatus.PENDING);\n        when(orderService.create(any(), any())).thenReturn(order);\n\n        mockMvc.perform(post(\"/api/v1/orders\")\n                .contentType(MediaType.APPLICATION_JSON)\n                .content(\"\"\"{\"userId\":1,\"amount\":\"50.00\"}\"\"\"))\n            .andExpect(status().isCreated())\n            .andExpect(jsonPath(\"$.id\").value(1))\n            .andExpect(header().exists(\"Location\"));\n    }\n}",
+    "tips": [
+      "Test BEHAVIOR not implementation. Tests that know too much about internals (e.g., verify every internal method call) break on refactoring.",
+      "@DataJpaTest is MUCH faster than @SpringBootTest for repository tests — loads only the JPA layer with H2. Use it aggressively.",
+      "Test naming pattern: methodName_Condition_ExpectedBehavior. E.g.: createOrder_WhenAmountNegative_ShouldThrowAndNotPersist",
+      "verifyNoInteractions(db) is powerful: assert that a validation failure never touches the database — confirms your business logic isolation"
+    ],
+    "connections": [
+      "Spring Boot Test framework (@SpringBootTest, @WebMvcTest, @DataJpaTest)",
+      "Databases (H2 in-memory for fast tests; Testcontainers for real PostgreSQL integration tests)",
+      "Git (CI runs tests on every push — good test coverage = safe to merge and deploy)",
+      "Debugging (a failing test with a clear assertion message is the most informative debugging tool you have)"
+    ],
+    "relatedSlugs": [
+      "tdd",
+      "programming-fundamentals"
+    ],
+    "quiz": [
+      {
+        "id": "te-q1",
+        "question": "The test pyramid puts most tests at…",
+        "options": [
+          "E2E UI",
+          "Unit tests",
+          "Manual QA only",
+          "Production canaries only"
+        ],
+        "correctIndex": 1,
+        "explanation": "Many fast unit tests, fewer integration, fewest E2E."
+      },
+      {
+        "id": "te-q2",
+        "question": "Mocks are useful when…",
+        "options": [
+          "You want to hit the real payment gateway every time",
+          "Isolating a unit from slow/external dependencies",
+          "Replacing assertions",
+          "Avoiding writing tests"
+        ],
+        "correctIndex": 1,
+        "explanation": "Mockito stubs collaborators so you test one unit’s behavior."
+      },
+      {
+        "id": "te-q3",
+        "question": "@WebMvcTest focuses on…",
+        "options": [
+          "Full application context + DB",
+          "Controller layer (MVC slice)",
+          "Only repositories",
+          "Only Kafka listeners"
+        ],
+        "correctIndex": 1,
+        "explanation": "Slice test for controllers; mock services underneath."
+      },
+      {
+        "id": "te-q4",
+        "question": "Flaky tests usually hurt teams because…",
+        "options": [
+          "They make CI green always",
+          "They erode trust in the suite and slow delivery",
+          "They improve coverage metrics",
+          "They replace code review"
+        ],
+        "correctIndex": 1,
+        "explanation": "Fix or quarantine flakes; never ignore red CI."
+      },
+      {
+        "id": "te-q5",
+        "question": "AAA in tests stands for…",
+        "options": [
+          "Arrange, Act, Assert",
+          "Always Add Annotations",
+          "Async, Await, Assert",
+          "API, Auth, Audit"
+        ],
+        "correctIndex": 0,
+        "explanation": "Structure every test: set up, exercise, verify."
+      }
+    ],
+    "problems": [
+      {
+        "id": "te-p1",
+        "title": "Unit Test Outline",
+        "difficulty": "easy",
+        "prompt": "Write AAA steps for testing OrderService.placeOrder when amount is negative (should throw).",
+        "hints": [
+          "Mock repo/notifier",
+          "Assert exception + no save"
+        ],
+        "solution": "Arrange: mock deps, order with amount < 0. Act: call placeOrder. Assert: throws IllegalArgumentException; verify repo.save never called.",
+        "points": 10
+      },
+      {
+        "id": "te-p2",
+        "title": "What to Mock",
+        "difficulty": "medium",
+        "prompt": "In a service test, should you mock the database or use @DataJpaTest? Explain trade-offs.",
+        "hints": [
+          "Speed vs realism",
+          "Layer under test"
+        ],
+        "solution": "Pure unit: mock repository (fast, isolated). Repository correctness: @DataJpaTest with real SQL dialect/H2. Don’t mix concerns in one test.",
+        "points": 15
+      }
+    ]
+  },
+  {
+    "id": "git",
+    "slug": "git",
+    "order": 8,
+    "emoji": "🔀",
+    "title": "Git",
+    "cat": "practice",
+    "tag": "Collaboration and history that makes sense",
+    "sections": [
+      {
+        "h": "Core Commands",
+        "b": "Stage & commit:\ngit add -p                # interactive staging — add specific hunks, not entire files\ngit commit -m \"...\"       # commit with message\ngit commit --amend        # fix last commit message OR add a forgotten file\n\nBranch:\ngit checkout -b feature/x     # create + switch in one command\ngit branch -d feature/x       # delete branch after merge\n\nSync with remote:\ngit fetch origin               # download changes, DON'T merge (safe to inspect first)\ngit pull --rebase origin main  # fetch + rebase local commits on top (cleaner history)\ngit push --force-with-lease    # safe force push — fails if remote has new commits\n\nHistory:\ngit log --oneline --graph --all  # visual branch tree in terminal\ngit blame File.java              # who changed each line, and when\ngit diff main..feature/x         # all changes between branches"
+      },
+      {
+        "h": "Branching Strategies",
+        "b": "GitFlow: main + develop + feature/* + release/* + hotfix/*.\nGood for products with scheduled release cycles. Complex — many long-lived branches.\nFeature PR → develop. Release PR → main + develop. Hotfix → main + develop.\n\nTrunk-Based Development (TBD): everyone commits to main (or <1 day feature branches).\nRequires: feature flags for incomplete work, fast CI (<10min), comprehensive tests.\nBenefits: no merge conflicts, always-shippable main, fast feedback loops.\nPreferred for modern CI/CD teams.\n\nGitHub Flow (most common for web apps): main + feature branches + PR → deploy.\nSimple and effective. No separate develop branch.\n\nAt eGeneration: likely GitHub Flow or GitFlow with feature branches + PRs into develop/main."
+      },
+      {
+        "h": "Rebase vs Merge",
+        "b": "Merge: creates a merge commit, preserves full history, non-destructive.\ngit merge feature/x\n→ Result: feature history intact + merge commit visible. Safe for shared branches.\n\nRebase: replays feature commits on top of target, linear history, no merge commit.\ngit rebase main\n→ Result: feature commits rewritten on latest main. Clean, linear.\n\nGOLDEN RULE: NEVER rebase a branch that others are working on.\nRebase rewrites commit SHAs. Co-workers' branches break if you force-push.\n\nWhen to use:\n• Rebase your feature branch on main before raising a PR (clean history)\n• Merge when integrating completed feature into main or develop\n\nInteractive rebase (git rebase -i HEAD~3):\npick = keep, squash = merge with previous, reword = edit message, drop = delete."
+      },
+      {
+        "h": "Conventional Commits & Recovery",
+        "b": "Format: type(scope): description\n\nTypes: feat, fix, docs, style, refactor, test, chore, perf, ci\nExamples:\nfeat(auth): implement JWT refresh token rotation\nfix(order): prevent duplicate creation on concurrent retry\nrefactor(payment): extract bKash gateway into adapter\nchore(deps): upgrade Spring Boot 3.1 → 3.3\n\nBenefits: auto-generate CHANGELOG, enable semantic versioning, clear PR history.\n\nRecovery commands:\ngit stash / git stash pop           # shelve and restore uncommitted changes\ngit cherry-pick <sha>               # apply one specific commit to current branch\ngit bisect start/bad/good <sha>     # binary search for bug-introducing commit\ngit reflog                          # ALL HEAD movements — recover \"lost\" commits\ngit reset --soft HEAD~1             # undo last commit, keep changes staged (safe)\ngit revert <sha>                    # new commit that undoes another (safe on shared branches)"
+      }
+    ],
+    "code": "# ── Complete feature workflow ─────────────────────────────\n# 1. Start fresh from updated main\ngit checkout main && git pull --rebase origin main\ngit checkout -b feature/patient-bulk-import\n\n# 2. Atomic, conventional commits\ngit add src/main/java/com/egeneration/patient/\ngit commit -m \"feat(patient): add CSV bulk import endpoint\"\n\ngit add src/test/\ngit commit -m \"test(patient): add unit tests for bulk import service\"\n\ngit add src/main/resources/db/migration/\ngit commit -m \"chore(db): add import_log table migration V12\"\n\n# 3. Sync with main before PR (prevent conflicts)\ngit fetch origin && git rebase origin/main\n# On conflict: edit file → git add → git rebase --continue\n\n# 4. Clean up WIP commits before PR (squash into logical units)\ngit rebase -i HEAD~4\n# Editor opens:\n#   pick a1b2c3 feat(patient): add CSV bulk import endpoint\n#   squash d4e5f6 fix typo in import service         ← merge into previous\n#   squash 789abc forgot to add null check            ← merge into previous\n#   pick 012def test(patient): add unit tests\n\n# 5. Push and open PR\ngit push origin feature/patient-bulk-import --force-with-lease\n# --force-with-lease: rejects if remote has new commits — much safer than --force\n\n# ── Recovery commands ──────────────────────────────────────\n# Undo last commit, keep changes staged (safe)\ngit reset --soft HEAD~1\n\n# Recover a \"lost\" commit after accidental reset\ngit reflog                             # find SHA of lost commit: e.g. abc1234\ngit checkout -b recovery-branch abc1234  # create branch from that exact point\n\n# Find which commit introduced a bug (binary search — 7 steps for 100 commits!)\ngit bisect start\ngit bisect bad HEAD                    # current state is broken\ngit bisect good v2.1.0                # last known working version\n# Git checks out midpoint → test it → git bisect good OR git bisect bad\n# Repeat until Git prints: \"abc1234 is the first bad commit\"\ngit bisect reset\n\n# .gitignore for Spring Boot\n# target/  *.class  .env\n# application-local.yml   ← local overrides, NEVER commit API keys or passwords!\n# .idea/   *.iml   logs/",
+    "tips": [
+      "git reflog is your safety net — almost nothing in Git is truly lost within 30 days of doing it",
+      "--force-with-lease is always safer than --force: it rejects the push if someone else pushed to that branch since your last fetch",
+      "Never commit secrets — .env, passwords, API keys. Use Spring profiles + environment variables. Add *.env to .gitignore immediately.",
+      "git bisect is underrated: binary search through 128 commits finds the breaking one in just 7 steps (log₂ 128 = 7)"
+    ],
+    "connections": [
+      "Testing (CI runs tests on every push; pre-commit hooks run linting/formatting)",
+      "Debugging (git blame traces who changed a line; git bisect finds which commit broke behavior)",
+      "System Design (GitOps: Git as single source of truth for infrastructure and deployment config)",
+      "APIs (PR merge triggers API documentation regeneration via Swagger/OpenAPI)"
+    ],
+    "relatedSlugs": [
+      "cloud-devops"
+    ],
+    "quiz": [
+      {
+        "id": "gi-q1",
+        "question": "git rebase is typically used to…",
+        "options": [
+          "Delete remote history safely always",
+          "Replay commits on top of another base for a linear history",
+          "Create a new remote",
+          "Replace merge conflicts automatically"
+        ],
+        "correctIndex": 1,
+        "explanation": "Rebase rewrites local commit history onto updated main; don’t rebase shared public history casually."
+      },
+      {
+        "id": "gi-q2",
+        "question": "A pull request should primarily…",
+        "options": [
+          "Contain unrelated mega-changes",
+          "Be reviewable: focused diff + clear why",
+          "Skip tests",
+          "Force-push to main directly"
+        ],
+        "correctIndex": 1,
+        "explanation": "Small, intentional PRs review faster and revert cleaner."
+      },
+      {
+        "id": "gi-q3",
+        "question": "git stash is for…",
+        "options": [
+          "Permanently deleting changes",
+          "Temporarily shelving uncommitted work",
+          "Creating tags",
+          "Squashing remotes"
+        ],
+        "correctIndex": 1,
+        "explanation": "Stash WIP, switch branches, then pop/apply later."
+      },
+      {
+        "id": "gi-q4",
+        "question": "Conventional commit style example:",
+        "options": [
+          "fixed stuff",
+          "feat(api): add order cancellation endpoint",
+          "Update",
+          "asdf"
+        ],
+        "correctIndex": 1,
+        "explanation": "type(scope): summary — helps changelog and review."
+      },
+      {
+        "id": "gi-q5",
+        "question": "Force-push to main/master is…",
+        "options": [
+          "Always fine",
+          "Dangerous; avoid unless explicitly coordinated",
+          "Required for every PR",
+          "The same as merge"
+        ],
+        "correctIndex": 1,
+        "explanation": "Rewriting protected branch history breaks collaborators and CI."
+      }
+    ],
+    "problems": [
+      {
+        "id": "gi-p1",
+        "title": "Recover a Bad Commit",
+        "difficulty": "medium",
+        "prompt": "You committed a secret to the last local commit (not pushed). How do you undo safely?",
+        "hints": [
+          "reset / restore",
+          "Don’t push secrets"
+        ],
+        "solution": "Remove secret from file, `git add`, `git commit --amend` (or soft reset + recommit) before push. Rotate the secret anyway.",
+        "points": 15
+      },
+      {
+        "id": "gi-p2",
+        "title": "Branch Strategy",
+        "difficulty": "easy",
+        "prompt": "Describe a simple trunk-based flow for a small team shipping daily.",
+        "hints": [
+          "Short-lived branches",
+          "PR + CI"
+        ],
+        "solution": "Short feature branches from main → PR → CI → squash merge. Prefer feature flags over long-lived branches.",
+        "points": 10
+      }
+    ]
+  },
+  {
+    "id": "debugging",
+    "slug": "debugging",
+    "order": 9,
+    "emoji": "🔍",
+    "title": "Debugging",
+    "cat": "practice",
+    "tag": "Finding truth in a system that lies to you",
+    "sections": [
+      {
+        "h": "Systematic Process",
+        "b": "1. Reproduce: make the bug happen consistently. If you can't reproduce it, you can't fix it. Find the minimal reproduction case.\n\n2. Isolate: binary search your codebase. Add logging to narrow down — is it in the controller? Service? DB query? External API call?\n\n3. Identify ROOT CAUSE: symptom ≠ cause. NullPointerException at line 42 means something BEFORE line 42 returned null. Ask \"why?\" 5 times.\n\n4. Fix the ROOT CAUSE, not the symptom. Adding a null check without understanding why the object was null = hiding the bug, not fixing it.\n\n5. Verify: confirm fix resolves the issue AND doesn't break other things. Run full test suite.\n\n6. Prevent: write a test that would have caught this. The bug reveals a gap in test coverage."
+      },
+      {
+        "h": "IntelliJ IDE Debugging",
+        "b": "Breakpoints: click in gutter (red circle). Right-click for options:\n• Conditional: only pause when condition is true (userId.equals(42L))\n• Log: evaluate + print expression without stopping execution\n• Exception breakpoint: pause when specific exception is thrown (even if caught)\n\nNavigation:\nF8   Step Over — execute current line, go to next\nF7   Step Into — enter the method being called\nShift+F8  Step Out — exit current method, return to caller\nF9   Resume — run until next breakpoint\nAlt+F8  Evaluate Expression — run arbitrary code in current context\n\nWatches: monitor expression values at each step.\nHot Code Swap: edit method body while debugging — no restart needed for method body changes."
+      },
+      {
+        "h": "Logging Best Practices",
+        "b": "Always use SLF4J + Logback (Spring Boot default). NEVER System.out.println() in production code.\nWith Lombok: @Slf4j on class → auto-generates static Logger field.\n\nLog levels (ascending severity):\nTRACE: finest detail — disabled in production\nDEBUG: developer info (intermediate values, cache hit/miss)\nINFO: business events (\"Order created: 123\", \"Payment processed\", \"User logged in\")\nWARN: unexpected but recoverable (\"Retry 2/3\", \"Cache miss for hot key\")\nERROR: failure requiring attention — pass exception as LAST argument → SLF4J logs full stack trace\n\nMDC (Mapped Diagnostic Context): attach correlation ID to ALL log lines in a request thread.\nPattern in logback.xml: [%X{correlationId}] %-5level %logger - %msg%n\nEssential in microservices — trace a single request across 5 services in logs."
+      },
+      {
+        "h": "Common Java Bugs",
+        "b": "NullPointerException: use Optional<>, @NonNull, Objects.requireNonNull(), defensive null checks.\nConcurrentModificationException: modifying collection while iterating it. Fix: Iterator.remove(), stream filter+collect, CopyOnWriteArrayList.\nLazyInitializationException (JPA): accessing lazy association after Hibernate session closes. Fix: JOIN FETCH in query, or @Transactional on service method.\nStackOverflowError: infinite recursion. Check your base case — it's always missing or wrong.\nOutOfMemoryError: memory leak — unclosed streams, static collections growing forever. Fix: try-with-resources.\nDeadlock: two threads waiting for each other's locks. Fix: consistent lock ordering, tryLock() with timeout.\n\nProduction tools:\njstack <pid>: thread dump → find BLOCKED threads (deadlock detection).\njmap -dump:file=h.hprof <pid>: heap dump → analyze in VisualVM or Eclipse MAT.\nSpring Actuator /actuator/loggers: change log level at runtime without restart."
+      }
+    ],
+    "code": "// Production debugging patterns in Spring Boot\n\n// 1. @Slf4j + structured logging (Lombok)\n@Service\n@Slf4j\npublic class PaymentService {\n\n    public PaymentResult processPayment(PaymentRequest request) {\n        // {} placeholders are lazily evaluated — safe and performant\n        log.debug(\"Processing payment: requestId={}, amount={}, userId={}\",\n                  request.getId(), request.getAmount(), request.getUserId());\n        try {\n            PaymentResult result = gateway.charge(request);\n            log.info(\"Payment successful: requestId={}, transactionId={}\",\n                     request.getId(), result.getTransactionId());\n            return result;\n        } catch (GatewayTimeoutException ex) {\n            log.warn(\"Gateway timeout, retry pending: requestId={}\", request.getId());\n            throw ex;\n        } catch (Exception ex) {\n            // Pass exception as LAST argument → SLF4J prints the full stack trace\n            log.error(\"Unexpected payment failure: requestId={}\", request.getId(), ex);\n            throw new PaymentException(\"Payment failed\", ex);\n        }\n    }\n}\n\n// 2. Correlation ID via MDC — trace requests across microservices\n@Component\npublic class CorrelationFilter implements OncePerRequestFilter {\n    @Override\n    protected void doFilterInternal(HttpServletRequest req,\n            HttpServletResponse res, FilterChain chain) throws IOException, ServletException {\n        String id = Optional.ofNullable(req.getHeader(\"X-Correlation-Id\"))\n            .orElse(UUID.randomUUID().toString());\n        MDC.put(\"correlationId\", id);         // appended to ALL log lines in this thread\n        res.setHeader(\"X-Correlation-Id\", id);\n        try   { chain.doFilter(req, res); }\n        finally { MDC.clear(); }              // MUST clear — thread pool reuses threads!\n    }\n}\n// logback.xml pattern: %d [%X{correlationId}] %-5level %logger - %msg%n\n// Output: 2024-01-15 [req-abc-123] INFO  PaymentService - Payment successful: tx-456\n\n// 3. LazyInitializationException — most common Spring JPA bug\n// WRONG: Hibernate session closes after findById() returns\n@RestController\npublic class OrderController {\n    public OrderDTO getOrder(@PathVariable Long id) {\n        Order order = orderRepo.findById(id).get(); // transaction + session ends here\n        order.getItems().size(); // 💥 LazyInitializationException — session is closed!\n    }\n}\n\n// FIX 1: JOIN FETCH — loads Order + Items in ONE query (preferred)\n@Query(\"SELECT o FROM Order o JOIN FETCH o.items WHERE o.id = :id\")\nOptional<Order> findByIdWithItems(@Param(\"id\") Long id);\n\n// FIX 2: @Transactional on service — keeps session open until method returns\n@Service\npublic class OrderService {\n    @Transactional(readOnly = true)\n    public OrderDTO getOrderWithItems(Long id) {\n        Order order = orderRepo.findById(id).orElseThrow();\n        order.getItems().size(); // session still open — works correctly\n        return OrderDTO.from(order);\n    }\n}",
+    "tips": [
+      "When you find a bug, ask 'what test would have caught this?' then write that test. Every bug reveals a coverage gap.",
+      "NEVER System.out.println in production — no log level, no timestamp, no context, can't be filtered, can't be aggregated by log tooling",
+      "LazyInitializationException = JPA association accessed after session closed. 95% of the time: add JOIN FETCH to your JPQL query.",
+      "Correlation IDs are essential in microservices — without them, tracing one request through 5 services' logs is nearly impossible"
+    ],
+    "connections": [
+      "Testing (a failing test that reproduces the bug is the best debugging starting point)",
+      "Git (git blame traces who changed a line and when; git bisect finds which commit introduced the bug)",
+      "Databases (EXPLAIN ANALYZE is debugging for slow SQL queries)",
+      "System Design (Zipkin/Jaeger distributed tracing = debugging across microservices)"
+    ],
+    "relatedSlugs": [
+      "observability",
+      "concurrency"
+    ],
+    "quiz": [
+      {
+        "id": "de-q1",
+        "question": "First step when production latency spikes?",
+        "options": [
+          "Rewrite the service immediately",
+          "Gather evidence: metrics, logs, traces, recent deploys",
+          "Restart all pods blindly forever",
+          "Disable monitoring"
+        ],
+        "correctIndex": 1,
+        "explanation": "Observe → hypothesize → experiment. Check dashboards and recent changes first."
+      },
+      {
+        "id": "de-q2",
+        "question": "A stack trace’s most useful frame is usually…",
+        "options": [
+          "The deepest JDK frame only",
+          "The first frame in your application code",
+          "Random middle frames",
+          "The classloader name"
+        ],
+        "correctIndex": 1,
+        "explanation": "Find where your code threw; then walk causes (getCause)."
+      },
+      {
+        "id": "de-q3",
+        "question": "Heisenbugs that disappear under a debugger often involve…",
+        "options": [
+          "Race conditions / timing",
+          "Missing semicolons only",
+          "CSS",
+          "DNS TTLs only"
+        ],
+        "correctIndex": 0,
+        "explanation": "Debugger timing changes concurrency; add logging, stress tests, thread dumps."
+      },
+      {
+        "id": "de-q4",
+        "question": "Binary search debugging means…",
+        "options": [
+          "Only using binary search algorithms",
+          "Narrowing the faulty change/region by halves",
+          "Deleting half the codebase",
+          "Sorting logs alphabetically"
+        ],
+        "correctIndex": 1,
+        "explanation": "git bisect or comment/disable half the suspects until isolated."
+      },
+      {
+        "id": "de-q5",
+        "question": "Correlation IDs help because…",
+        "options": [
+          "They encrypt payloads",
+          "They tie logs across services for one request",
+          "They replace metrics",
+          "They speed SQL"
+        ],
+        "correctIndex": 1,
+        "explanation": "Propagate a request ID through headers and log it everywhere."
+      }
+    ],
+    "problems": [
+      {
+        "id": "de-p1",
+        "title": "NullPointer Hunt",
+        "difficulty": "easy",
+        "prompt": "NPE at OrderService.java:42 on order.getUser().getEmail(). List three defensive fixes.",
+        "hints": [
+          "Null checks",
+          "Optional",
+          "DB constraints"
+        ],
+        "solution": "Validate/load user before use; use Optional; enforce NOT NULL FK; fail fast with clear domain exception instead of NPE.",
+        "points": 10
+      },
+      {
+        "id": "de-p2",
+        "title": "Intermittent 500s",
+        "difficulty": "hard",
+        "prompt": "API returns 500 ~1% of the time under load. Outline a debugging plan across app + DB + infra.",
+        "hints": [
+          "Metrics first",
+          "Pool exhaustion",
+          "Timeouts"
+        ],
+        "solution": "Check error rate by endpoint, DB pool wait, GC, timeouts. Capture traces for failing requests. Reproduce with load test; inspect connection pool & lock waits; add circuit breakers/timeouts.",
+        "points": 25
+      }
+    ]
+  },
+  {
+    "id": "problem-solving",
+    "slug": "problem-solving",
+    "order": 10,
+    "emoji": "🧠",
+    "title": "Problem Solving",
+    "cat": "practice",
+    "tag": "The meta-skill that powers all others",
+    "sections": [
+      {
+        "h": "Structured Framework",
+        "b": "1. Understand (2 min): read twice. Identify inputs, outputs, constraints, edge cases. Ask: \"Is input always sorted?\", \"Can values be negative?\", \"What if no solution exists?\", \"Are values unique?\"\n\n2. Examples (2 min): trace 2-3 cases manually. Include: normal case, edge case (empty/single element/zero), tricky case (duplicates, max values, negatives).\n\n3. Plan (3 min): brute force first, then optimize.\nSay: \"Brute force: O(n²). I can improve with a HashMap — O(n) time, O(n) space. Let me go with the optimized approach.\"\n\n4. Code (10-15 min): clean code, meaningful variable names. Narrate as you write.\n\n5. Test (3 min): dry-run your examples. Fix bugs explicitly.\n\n6. Analyze: \"Time O(n), space O(n). Can we reduce space? Tradeoff would be higher time complexity.\""
+      },
+      {
+        "h": "Must-Know Patterns",
+        "b": "Sliding Window: variable/fixed window over array/string.\nWhen: max sum of k elements, longest substring with constraint, minimum subarray with sum ≥ target.\n\nTwo Pointers: from both ends or same direction.\nWhen: sorted array pair sum, palindrome check, remove duplicates.\n\nFast & Slow Pointers: two speeds.\nWhen: detect cycle in linked list, find middle node.\n\nMerge Intervals: sort by start, merge overlapping.\nWhen: calendar free slots, meeting rooms, insert interval.\n\nBinary Search on Answer: search the answer space, not the array.\nWhen: \"minimum X such that condition Y holds\" (monotonic property).\n\nBFS: level-by-level. When: shortest path/hops, minimum steps, word ladder.\nDFS: depth-first. When: all paths, connected components, cycle detection, topological sort.\n\nDP: overlapping subproblems. When: \"how many ways\", \"min cost\", \"max value\" with choices.\nBacktracking: try all, undo on dead end. When: permutations, combinations, N-Queens."
+      },
+      {
+        "h": "Interview Communication",
+        "b": "Think out loud — interviewers evaluate your PROCESS, not just the final answer.\n\"I'm thinking HashMap here because we need O(1) lookup for the complement value...\"\n\nState complexity BEFORE coding: \"My approach is O(n) time and O(n) space.\"\n\nWhen stuck: \"Let me start with the brute force approach and see if a pattern emerges that helps me optimize.\" Never go silent for 5+ minutes.\n\nOn edge cases: \"Let me also consider the case where the array is empty...\" Shows thoroughness.\n\nAfter coding: \"Let me trace through my example: i=0, complement=7, seen={}... i=1, complement=2, seen has key 2 → return [0,1]. Correct.\"\n\nSTAR Method for behavioral questions:\nS: Situation — brief context (1-2 sentences)\nT: Task — what you needed to achieve\nA: Action — what YOU specifically did (use \"I\", not \"we\")\nR: Result — quantify if possible (\"response time: 8s → 340ms, 97% improvement\")"
+      },
+      {
+        "h": "Building Intuition",
+        "b": "Practice deliberately: after solving, ask WHY this approach works. What's the key insight that makes it efficient?\n\nPattern triggers to memorize:\n\"Find pair summing to X\" → HashMap or Two Pointers (if sorted)\n\"Minimum hops/steps from A to B\" → BFS\n\"All valid combinations or subsets\" → Backtracking\n\"Maximum/minimum of subarray\" → Sliding Window\n\"Optimal value with limited capacity\" → DP 0/1 Knapsack\n\"Sort + merge overlapping ranges\" → Intervals pattern\n\"Dependency ordering\" → Topological Sort\n\nFrom your Codeforces experience: this transfers directly. 80+ problems = strong intuition foundation. Interview difference: communicate your thought process, write cleaner code, handle edge cases explicitly.\n\nReal-world problem solving is the same skill:\nDebugging production issue = reproduce → isolate → hypothesize → test → fix.\nDesigning a feature = decompose → edge cases → prototype → test → iterate."
+      }
+    ],
+    "code": "// Two Sum — full interview thought process documented\n\n// Understand: int[] nums, int target → return indices of two numbers summing to target.\n// Exactly one solution. Cannot reuse the same element.\n// Examples: [2,7,11,15] target=9 → [0,1].  [3,2,4] target=6 → [1,2]\n\n// Plan 1 — Brute force O(n²): check every pair\npublic int[] twoSumBrute(int[] nums, int target) {\n    for (int i = 0; i < nums.length; i++)\n        for (int j = i + 1; j < nums.length; j++)\n            if (nums[i] + nums[j] == target) return new int[]{i, j};\n    return new int[]{};\n}\n\n// Plan 2 — Optimize with HashMap: O(n) time, O(n) space\n// Insight: for each nums[i], I need (target - nums[i]).\n//          Store what I've seen in a HashMap → O(1) lookup.\n\npublic int[] twoSum(int[] nums, int target) {\n    Map<Integer, Integer> seen = new HashMap<>(); // value → index\n\n    for (int i = 0; i < nums.length; i++) {\n        int complement = target - nums[i];\n\n        if (seen.containsKey(complement)) {\n            return new int[]{seen.get(complement), i}; // found!\n        }\n        seen.put(nums[i], i); // store for future lookups\n    }\n    return new int[]{};\n}\n\n// Trace: [2,7,11,15], target=9\n// i=0: complement=7, seen={}, put {2→0}\n// i=1: complement=2, seen has 2 at index 0 → return [0,1] ✓\n\n// ── STAR method — real story from eGeneration ─────────────\n/*\nQ: \"Tell me about a complex technical problem you solved.\"\n\nS: At eGeneration, our Popular Diagnostic Center patient\n   report API was responding in 8+ seconds for patients\n   with long test histories.\n\nT: Reduce response time to under 1 second without changing\n   the API contract or breaking existing integrations.\n\nA: I enabled spring.jpa.show-sql=true and discovered N+1\n   queries — one query per test result (up to 400 queries\n   per request). I fixed it with JOIN FETCH in JPQL, added\n   a composite index on (patient_id, created_at DESC), and\n   added Redis caching with a 15-minute TTL for frequently\n   accessed reports.\n\nR: Response time dropped from 8.3s to 280ms — a 97%\n   improvement. DB load reduced by 85%. Zero API changes.\n*/",
+    "tips": [
+      "A correct O(n²) solution with clear narration beats an incomplete O(n) solution. Correctness + communication comes before optimization.",
+      "Pattern matching is trainable: after 50+ problems you start recognizing patterns in the first 30 seconds. Deliberate practice is the path.",
+      "Your 80+ Codeforces problems are a genuine asset — mention it. It shows sustained, structured algorithmic thinking over time.",
+      "Build real STAR stories from your eGeneration work: the N+1 fix, bKash integration, or eG-Health microservices give you concrete, quantified examples"
+    ],
+    "connections": [
+      "Algorithms (patterns ARE algorithmic paradigms applied to interview format)",
+      "Data Structures (choosing the right DS is the core problem-solving insight in most problems)",
+      "Testing (edge-case thinking for interview problems = test-case thinking for production code)",
+      "Debugging (systematic debugging uses the same decomposition framework as problem solving)"
+    ],
+    "relatedSlugs": [
+      "algorithms",
+      "system-design"
+    ],
+    "quiz": [
+      {
+        "id": "ps-q1",
+        "question": "Best first step on a vague interview problem?",
+        "options": [
+          "Code immediately",
+          "Clarify inputs, outputs, constraints, examples",
+          "Memorize a random algorithm",
+          "Skip edge cases"
+        ],
+        "correctIndex": 1,
+        "explanation": "Requirements clarity prevents solving the wrong problem."
+      },
+      {
+        "id": "ps-q2",
+        "question": "When stuck, a strong tactic is…",
+        "options": [
+          "Stay silent",
+          "Work a tiny example aloud and state invariants",
+          "Delete the question",
+          "Only optimize Big O first"
+        ],
+        "correctIndex": 1,
+        "explanation": "Communicate thinking; examples reveal patterns."
+      },
+      {
+        "id": "ps-q3",
+        "question": "After a brute-force solution you should…",
+        "options": [
+          "Stop",
+          "Analyze complexity and optimize bottlenecks",
+          "Remove tests",
+          "Hide edge cases"
+        ],
+        "correctIndex": 1,
+        "explanation": "Correct → then efficient. Interviewers value the path."
+      },
+      {
+        "id": "ps-q4",
+        "question": "Rubber-duck debugging is…",
+        "options": [
+          "A database engine",
+          "Explaining the problem out loud to find gaps",
+          "A sorting algorithm",
+          "Only for frontend"
+        ],
+        "correctIndex": 1,
+        "explanation": "Articulating assumptions often reveals the bug."
+      },
+      {
+        "id": "ps-q5",
+        "question": "Trade-off questions test whether you can…",
+        "options": [
+          "Pick randomly",
+          "Name costs/benefits and choose for the context",
+          "Always pick the newest tech",
+          "Avoid decisions"
+        ],
+        "correctIndex": 1,
+        "explanation": "Engineering is trade-offs under constraints (latency, cost, complexity)."
+      }
+    ],
+    "problems": [
+      {
+        "id": "ps-p1",
+        "title": "Clarify the Prompt",
+        "difficulty": "easy",
+        "prompt": "Interviewer: “Design a feed.” List 8 clarifying questions you ask before drawing boxes.",
+        "hints": [
+          "Scale",
+          "Read vs write",
+          "Fan-out"
+        ],
+        "solution": "DAU? RPS? Media? Ranking? Real-time? Consistency? Personalization? Retention window? Mobile offline? Abuse?",
+        "points": 15
+      },
+      {
+        "id": "ps-p2",
+        "title": "Brute → Better",
+        "difficulty": "medium",
+        "prompt": "Find two numbers in an array that sum to target. Give O(n²) then O(n) approaches.",
+        "hints": [
+          "Hash map of complements"
+        ],
+        "solution": "Brute: nested loops. Better: one pass HashMap value→index; check target−x seen. O(n) time, O(n) space.",
+        "points": 15
+      }
+    ]
+  },
+  {
+    "id": "cloud-devops",
+    "slug": "cloud-devops",
+    "order": 11,
+    "emoji": "☁️",
+    "title": "Cloud & DevOps",
+    "cat": "ops",
+    "tag": "Ship reliably — containers, CI/CD, and cloud primitives",
+    "sections": [
+      {
+        "h": "Why Cloud + DevOps Dominate 2026 Job Posts",
+        "b": "Job-market analyses keep ranking AWS/Azure, Docker, Kubernetes, CI/CD, Terraform, and monitoring near the top of Software Engineer postings.\n\nYou are expected to:\n• Package apps so they run the same in every environment\n• Automate test → build → deploy\n• Reason about health checks, rollbacks, and config/secrets\n• Speak the language of cloud services (compute, storage, networking, IAM)\n\nThis topic is the bridge from “it works on my machine” to “it works in production.”"
+      },
+      {
+        "h": "Containers & Orchestration",
+        "b": "Docker image = app + runtime + deps. Tag immutably (git SHA). Keep images small (multi-stage builds).\n\nKubernetes concepts you must know:\n• Pod: smallest deployable unit\n• Deployment: desired replica count + rolling updates\n• Service: stable networking to pods\n• Ingress / Gateway: HTTP entry\n• ConfigMap / Secret: configuration injection\n• Liveness vs Readiness probes: restart vs stop traffic\n\nStateless services scale horizontally. Put session/state in Redis/DB — not in the pod filesystem (ephemeral)."
+      },
+      {
+        "h": "CI/CD & Infrastructure as Code",
+        "b": "CI (Continuous Integration): every push runs lint, unit/integration tests, builds artifacts.\nCD (Continuous Delivery/Deployment): promote artifacts to staging/prod with gates.\n\nTypical pipeline:\ncheckout → test → build image → scan vulnerabilities → push registry → deploy → smoke test → notify\n\nIaC (Terraform/Pulumi/CloudFormation):\n• Infra is versioned and reviewable\n• Environments are reproducible\n• Drift is detectable\n\nSecrets: inject from a secret manager. Never commit .env with real keys."
+      },
+      {
+        "h": "Cloud Building Blocks",
+        "b": "Compute: VMs, containers, serverless functions\nStorage: object (S3), block, file\nData: managed Postgres, caches (Redis), queues (SQS/Kafka)\nNetworking: VPC, subnets, load balancers, DNS, TLS termination\nIdentity: IAM roles with least privilege\n\nDesign habit: prefer managed services when ops cost > control benefit. Know when you need Kubernetes vs a simpler PaaS (Render, Railway, Elastic Beanstalk, Cloud Run)."
+      }
+    ],
+    "code": "# Dockerfile — multi-stage Spring Boot example\nFROM eclipse-temurin:21-jdk AS build\nWORKDIR /app\nCOPY . .\nRUN ./mvnw -q -DskipTests package\n\nFROM eclipse-temurin:21-jre\nWORKDIR /app\nCOPY --from=build /app/target/app.jar app.jar\nENV PORT=8080\nEXPOSE 8080\n# Bind 0.0.0.0 for cloud platforms (Render, etc.)\nENTRYPOINT [\"java\",\"-jar\",\"app.jar\"]\n\n# GitHub Actions sketch\n# on: [push]\n# jobs:\n#   build:\n#     runs-on: ubuntu-latest\n#     steps:\n#       - uses: actions/checkout@v4\n#       - run: ./mvnw test\n#       - run: docker build -t ghcr.io/org/api:$GITHUB_SHA .\n#       - run: helm upgrade --install api ./chart --set image.tag=$GITHUB_SHA",
+    "tips": [
+      "In interviews, describe a pipeline you actually ran: tests that gate merges, image tags, and how you roll back.",
+      "Know liveness vs readiness — confusing them causes restart loops or black-hole traffic.",
+      "Ephemeral filesystems: local disk is not durable. Use object storage or a database.",
+      "Say “IAM least privilege” when discussing cloud access — seniors listen for that phrase."
+    ],
+    "connections": [
+      "Observability (you cannot operate what you cannot see)",
+      "Security (secrets, IAM, image scanning)",
+      "System Design (deployment topology is part of the design)",
+      "APIs (health endpoints /health for load balancers)"
+    ],
+    "relatedSlugs": [
+      "observability",
+      "security",
+      "auth-tls"
+    ],
+    "quiz": [
+      {
+        "id": "cd-q1",
+        "question": "Containers (Docker) primarily solve…",
+        "options": [
+          "Business requirements gathering",
+          "Packaging app + deps for consistent runtimes",
+          "Replacing all databases",
+          "DNS only"
+        ],
+        "correctIndex": 1,
+        "explanation": "Image = reproducible environment from laptop to prod."
+      },
+      {
+        "id": "cd-q2",
+        "question": "Kubernetes is mainly for…",
+        "options": [
+          "Writing CSS",
+          "Orchestrating containers (schedule, scale, heal)",
+          "Replacing Git",
+          "Compiling Java"
+        ],
+        "correctIndex": 1,
+        "explanation": "K8s schedules pods, restarts failures, scales replicas, exposes services."
+      },
+      {
+        "id": "cd-q3",
+        "question": "CI/CD pipelines should…",
+        "options": [
+          "Deploy untested main on Fridays only",
+          "Build, test, and safely deliver changes continuously",
+          "Skip linting",
+          "Store secrets in the repo"
+        ],
+        "correctIndex": 1,
+        "explanation": "Automate quality gates then deploy (GitHub Actions, GitLab CI, etc.)."
+      },
+      {
+        "id": "cd-q4",
+        "question": "Infrastructure as Code (Terraform) helps by…",
+        "options": [
+          "Clicking cloud consoles faster",
+          "Versioning and reviewing infra changes like code",
+          "Removing the need for IAM",
+          "Encrypting only local disks"
+        ],
+        "correctIndex": 1,
+        "explanation": "Declarative, reviewable, repeatable environments."
+      },
+      {
+        "id": "cd-q5",
+        "question": "A readiness probe failing means…",
+        "options": [
+          "The node is deleted forever",
+          "Traffic should not be sent until the app is ready",
+          "CI is broken",
+          "DNS is poisoned"
+        ],
+        "correctIndex": 1,
+        "explanation": "Readiness ≠ liveness; ready gates service membership."
+      }
+    ],
+    "problems": [
+      {
+        "id": "cd-p1",
+        "title": "Pipeline Sketch",
+        "difficulty": "medium",
+        "prompt": "List stages for a Spring Boot service CI/CD to Kubernetes.",
+        "hints": [
+          "Test → image → scan → deploy"
+        ],
+        "solution": "lint/test → build JAR → Docker image → vulnerability scan → push registry → deploy via Helm/manifests → smoke test → rollback on failure.",
+        "points": 20
+      },
+      {
+        "id": "cd-p2",
+        "title": "12-Factor Config",
+        "difficulty": "easy",
+        "prompt": "Where should DB URLs and API keys live in a cloud-native app?",
+        "hints": [
+          "Env vars / secret store",
+          "Not in git"
+        ],
+        "solution": "Environment variables or secret managers (AWS SM, Vault). Never commit secrets; inject at runtime.",
+        "points": 10
+      }
+    ]
+  },
+  {
+    "id": "security",
+    "slug": "security",
+    "order": 12,
+    "emoji": "🔐",
+    "title": "Security",
+    "cat": "ops",
+    "tag": "Secure by default — auth, injection, and least privilege",
+    "sections": [
+      {
+        "h": "Security Is Now a Core SWE Skill",
+        "b": "Cybersecurity ranks among the most important upskill areas for practitioners. You do not need to be a pentester — you need secure defaults:\n\n• Authenticate and authorize every sensitive action\n• Validate and encode untrusted input/output\n• Protect secrets and use HTTPS everywhere\n• Limit blast radius with least privilege\n• Log security-relevant events for forensics\n\nOWASP Top 10 is still the practical checklist for web APIs."
+      },
+      {
+        "h": "AuthN vs AuthZ",
+        "b": "Authentication (AuthN): who are you? (password, OAuth2/OIDC, passkeys, JWT)\nAuthorization (AuthZ): what can you do? (RBAC, ABAC, ownership checks)\n\nJWT tips:\n• Short-lived access tokens + refresh rotation\n• Validate signature, iss, aud, exp\n• Do not store sensitive PII in claims\n• Prefer opaque tokens + introspection for high-security cases\n\nNever trust the client: check resource ownership on the server (userId from token ≠ userId from body blindly)."
+      },
+      {
+        "h": "Injection, XSS, CSRF",
+        "b": "SQL/NoSQL injection: parameterized queries / ORM bind variables. Never string-concat user input into queries.\n\nXSS: escape output by context (HTML/attr/JS). Prefer frameworks that auto-escape. Content-Security-Policy as defense in depth.\n\nCSRF: dangerous when browsers auto-send cookies. Mitigate with SameSite cookies and/or anti-CSRF tokens. Pure Bearer-token APIs are less exposed to classic CSRF.\n\nSSRF, path traversal, mass assignment: validate URLs, canonicalize paths, use allow-lists and DTOs (never bind entities directly)."
+      },
+      {
+        "h": "Secrets, Crypto, Supply Chain",
+        "b": "Passwords: bcrypt/argon2 with unique salts — never reversible encryption for passwords.\nSecrets: rotate on leak; use secret managers; enable git secret scanning.\nDependencies: lockfiles, vulnerability scans (SCA), pin versions in CI images.\nTransport: TLS everywhere; HSTS on public sites.\nDefense in depth: WAF/rate limits help, but app-layer fixes are mandatory."
+      }
+    ],
+    "code": "// Spring Security — parameterized query + ownership check\n\n@RestController\n@RequiredArgsConstructor\npublic class TransferController {\n  private final TransferService transfers;\n\n  @PostMapping(\"/api/transfers\")\n  public TransferResult transfer(@AuthenticationPrincipal UserPrincipal user,\n                                 @Valid @RequestBody TransferRequest req) {\n    // AuthZ: payer must own the from-account (never trust body alone)\n    return transfers.transfer(user.getId(), req.fromAccountId(), req.toAccountId(), req.amount());\n  }\n}\n\n// JDBC — SAFE\njdbcTemplate.update(\n  \"INSERT INTO audit(user_id, action) VALUES (?, ?)\",\n  userId, action);\n\n// JDBC — UNSAFE (SQL injection)\n// jdbcTemplate.update(\"INSERT INTO audit VALUES (\" + userId + \", '\" + action + \"')\");",
+    "tips": [
+      "Interviewers love: “parameterized queries + least privilege + short-lived tokens.”",
+      "Separate AuthN failure (401) from AuthZ failure (403).",
+      "If a secret hits git: rotate first, then clean history — order matters.",
+      "Mass assignment: accept DTOs, not JPA entities, on controllers."
+    ],
+    "connections": [
+      "APIs (status codes, JWT headers, rate limiting)",
+      "Cloud & DevOps (IAM, secret injection, image scanning)",
+      "Databases (SQL injection, encryption at rest)",
+      "Testing (security regression tests for authz)"
+    ],
+    "relatedSlugs": [
+      "auth-tls",
+      "apis"
+    ],
+    "quiz": [
+      {
+        "id": "se-q1",
+        "question": "SQL injection is best prevented by…",
+        "options": [
+          "String concatenation of user input",
+          "Parameterized queries / prepared statements",
+          "Disabling HTTPS",
+          "Base64 encoding only"
+        ],
+        "correctIndex": 1,
+        "explanation": "Never concatenate untrusted input into SQL."
+      },
+      {
+        "id": "se-q2",
+        "question": "XSS attacks inject…",
+        "options": [
+          "SQL into databases only",
+          "Malicious scripts into pages viewed by others",
+          "Only binary firmware",
+          "BGP routes"
+        ],
+        "correctIndex": 1,
+        "explanation": "Escape/encode output; use CSP; sanitize HTML carefully."
+      },
+      {
+        "id": "se-q3",
+        "question": "CSRF protection for cookie sessions often uses…",
+        "options": [
+          "No tokens",
+          "Anti-CSRF tokens or SameSite cookies",
+          "Disabling CORS forever",
+          "MD5 passwords"
+        ],
+        "correctIndex": 1,
+        "explanation": "Browser sends cookies automatically; CSRF tokens / SameSite mitigate."
+      },
+      {
+        "id": "se-q4",
+        "question": "Principle of least privilege means…",
+        "options": [
+          "Everyone is admin",
+          "Grant only the minimum permissions needed",
+          "Share one DB user for all apps",
+          "Disable auth in staging copies of prod data"
+        ],
+        "correctIndex": 1,
+        "explanation": "Limit blast radius of compromised credentials."
+      },
+      {
+        "id": "se-q5",
+        "question": "Store passwords using…",
+        "options": [
+          "Plain text",
+          "Reversible encryption only",
+          "Strong salted hashing (bcrypt/argon2)",
+          "SHA1 without salt"
+        ],
+        "correctIndex": 2,
+        "explanation": "One-way slow hashes with unique salts; never reversible “encryption” for passwords."
+      }
+    ],
+    "problems": [
+      {
+        "id": "se-p1",
+        "title": "Secure an Endpoint",
+        "difficulty": "medium",
+        "prompt": "POST /transfer moves money. List security controls you require before production.",
+        "hints": [
+          "Authn/z",
+          "Idempotency",
+          "Validation",
+          "Audit"
+        ],
+        "solution": "AuthN (JWT/session), AuthZ (own accounts only), input validation, HTTPS, rate limit, idempotency key, audit log, fraud checks, CSRF if cookie-based.",
+        "points": 20
+      },
+      {
+        "id": "se-p2",
+        "title": "Secret Leak Response",
+        "difficulty": "easy",
+        "prompt": "An AWS key was committed to GitHub. Immediate steps?",
+        "hints": [
+          "Rotate first",
+          "Purge history"
+        ],
+        "solution": "Revoke/rotate key immediately; check CloudTrail for abuse; remove from git history; add secret scanning; educate the team.",
+        "points": 15
+      }
+    ]
+  },
+  {
+    "id": "observability",
+    "slug": "observability",
+    "order": 13,
+    "emoji": "📡",
+    "title": "Observability",
+    "cat": "ops",
+    "tag": "Logs, metrics, traces — know what production is doing",
+    "sections": [
+      {
+        "h": "Why Observability Shows Up in Interviews",
+        "b": "Modern system design rubrics explicitly grade operational maturity: how you detect failure, measure latency, and roll back safely.\n\nObservability ≠ just “we have logs.” It means you can answer:\n• Is the user experience healthy right now?\n• Where is time spent on a slow request?\n• What changed (deploy, config, traffic)?\n• Are we burning our error budget?\n\nTools: Prometheus/Grafana, OpenTelemetry, Datadog, ELK/Loki, CloudWatch — concepts transfer across vendors."
+      },
+      {
+        "h": "Logs, Metrics, Traces",
+        "b": "Logs: discrete events. Structured JSON + correlation/request IDs. Levels matter (INFO vs ERROR).\n\nMetrics: aggregates over time. RED for services (Rate, Errors, Duration). USE for resources (Utilization, Saturation, Errors).\n\nTraces: request journey across services as spans. Essential for microservices latency debugging.\n\nGolden rule: propagate a correlation ID on every hop (HTTP header / message attribute)."
+      },
+      {
+        "h": "SLIs, SLOs, Alerts",
+        "b": "SLI: quantitative measure of user happiness (e.g. successful requests / total).\nSLO: target (e.g. 99.9% success over 30 days).\nError budget: how much unreliability you can “spend” on changes.\n\nAlert on SLO burn / user symptoms, not every CPU spike. Include runbooks. Page humans for actionable pain; ticket the rest.\n\nDashboards should show deploy markers so you can correlate regressions instantly."
+      },
+      {
+        "h": "Debugging with Telemetry",
+        "b": "Slow p99?\n1. Check RED dashboard + recent deploys\n2. Open a slow trace — find the longest span\n3. Confirm with DB metrics (locks, pool waits) or dependency errors\n4. Fix (query, timeout, cache, capacity)\n5. Verify p99 and error rate recover\n\nLogging pitfalls: logging secrets/PII; unbounded debug logs in prod; missing IDs so you cannot stitch a story."
+      }
+    ],
+    "code": "// OpenTelemetry-style mental model (pseudo)\nSpan root = tracer.spanBuilder(\"POST /orders\").startSpan();\ntry (Scope s = root.makeCurrent()) {\n  Span db = tracer.spanBuilder(\"db.findUser\").startSpan();\n  try { userRepo.find(userId); }\n  finally { db.end(); }\n\n  Span pay = tracer.spanBuilder(\"http.payment\").startSpan();\n  try { paymentClient.charge(order); }\n  finally { pay.end(); }\n\n  meter.counter(\"orders.created\").add(1);\n  log.info(\"order_created\", Map.of(\"orderId\", id, \"traceId\", root.getSpanContext().getTraceId()));\n} finally {\n  root.end();\n}\n\n// Prometheus RED (conceptual)\n// http_requests_total{status}\n// http_request_duration_seconds_bucket\n// http_requests_errors_total",
+    "tips": [
+      "In system design, dedicate 60 seconds to monitoring, alerts, and rollback — interviewers notice.",
+      "Prefer structured logs with requestId over free-text paragraphs.",
+      "p50 can look fine while p99 burns users — always quote tail latency.",
+      "Correlation IDs are the cheapest high-leverage observability feature."
+    ],
+    "connections": [
+      "Debugging (telemetry is how you debug production)",
+      "System Design (SLOs and failure modes are part of the design)",
+      "Cloud & DevOps (probes, dashboards, deploy markers)",
+      "AI Engineering (token cost and latency budgets need metrics too)"
+    ],
+    "relatedSlugs": [
+      "cloud-devops",
+      "debugging",
+      "messaging-queues"
+    ],
+    "quiz": [
+      {
+        "id": "ob-q1",
+        "question": "The three pillars of observability are…",
+        "options": [
+          "CPU, RAM, Disk",
+          "Logs, metrics, traces",
+          "Git, CI, CD",
+          "SQL, NoSQL, Cache"
+        ],
+        "correctIndex": 1,
+        "explanation": "Together they explain system behavior in production."
+      },
+      {
+        "id": "ob-q2",
+        "question": "RED metrics for services stand for…",
+        "options": [
+          "RAM, Errors, Disk",
+          "Rate, Errors, Duration",
+          "Retries, Events, Deploys",
+          "Reads, Edits, Deletes"
+        ],
+        "correctIndex": 1,
+        "explanation": "Request rate, error rate, and latency (duration)."
+      },
+      {
+        "id": "ob-q3",
+        "question": "Distributed tracing helps you…",
+        "options": [
+          "Only style CSS",
+          "Follow a request across microservices",
+          "Replace unit tests",
+          "Compile faster"
+        ],
+        "correctIndex": 1,
+        "explanation": "Spans + trace IDs show where time is spent and where failures occur."
+      },
+      {
+        "id": "ob-q4",
+        "question": "An SLO is…",
+        "options": [
+          "A marketing slogan",
+          "A target reliability level for a user-facing promise",
+          "A Kubernetes object only",
+          "A SQL index type"
+        ],
+        "correctIndex": 1,
+        "explanation": "Service Level Objective (e.g. 99.9% availability) drives alerts and error budgets."
+      },
+      {
+        "id": "ob-q5",
+        "question": "Alert on symptoms (user pain) rather than…",
+        "options": [
+          "Every CPU blip with no user impact",
+          "Error rate and latency SLOs",
+          "Saturation that predicts pain",
+          "Synthetic checks"
+        ],
+        "correctIndex": 0,
+        "explanation": "Noisy low-level alerts cause pager fatigue; alert on SLO burn."
+      }
+    ],
+    "problems": [
+      {
+        "id": "ob-p1",
+        "title": "Dashboard Essentials",
+        "difficulty": "easy",
+        "prompt": "List 6 panels you’d put on a service overview dashboard.",
+        "hints": [
+          "RED + deps"
+        ],
+        "solution": "RPS, p50/p95/p99 latency, error %, saturation (CPU/mem/pool), dependency latency/errors, recent deploy markers.",
+        "points": 10
+      },
+      {
+        "id": "ob-p2",
+        "title": "Trace a Slow Request",
+        "difficulty": "medium",
+        "prompt": "p99 is 2s. How do you use traces to find the culprit?",
+        "hints": [
+          "Critical path",
+          "DB spans"
+        ],
+        "solution": "Sample slow traces; inspect critical path spans; look for N+1, lock waits, remote timeouts; confirm with DB EXPLAIN and pool metrics; fix and verify p99.",
+        "points": 20
+      }
+    ]
+  },
+  {
+    "id": "ai-engineering",
+    "slug": "ai-engineering",
+    "order": 14,
+    "emoji": "🤖",
+    "title": "AI Engineering",
+    "cat": "ai",
+    "tag": "RAG, vectors, agents — the 2026 interview add-on",
+    "sections": [
+      {
+        "h": "What Changed in 2026 Interviews",
+        "b": "Classic designs (URL shortener, feed, chat, rate limiter) still appear in roughly half of senior rounds.\n\nWhat is newly mainstream:\n• RAG-backed assistants over private docs\n• Vector search at scale\n• LLM inference APIs (streaming, batching, caching)\n• Long-running agent infrastructure (tools, sandbox, checkpoints)\n\nYou still use queues, caches, sharding, and load balancers — plus embedders, vector stores, LLM gateways, and eval harnesses."
+      },
+      {
+        "h": "RAG Building Blocks",
+        "b": "Ingest: load docs → clean → chunk (size/overlap matter) → embed → upsert to vector DB.\nRetrieve: embed query → ANN search top-k → optional rerank → build grounded prompt.\nGenerate: LLM answers with citations; refuse when retrieval is weak.\nOperate: freshness (re-index), evaluation (groundedness, relevance), cost/latency budgets, PII redaction.\n\nChunking mistakes cause most “dumb chatbot” failures. Bad chunks → bad retrieval → confident nonsense."
+      },
+      {
+        "h": "LLM Systems Concerns",
+        "b": "Latency: TTFT (time to first token) vs total time; stream tokens to users.\nCost: tokens in/out; cache repeated prompts; route easy queries to smaller models.\nReliability: timeouts, retries with idempotency, provider fallbacks, circuit breakers.\nSafety: prompt injection defenses, tool allow-lists, output filtering.\nQuality: offline eval sets + online feedback; never ship without measurement."
+      },
+      {
+        "h": "Agents (Carefully)",
+        "b": "Agents plan → call tools → observe → repeat. Production needs:\n• Sandboxed tool execution (no raw prod credentials)\n• Persistent memory / checkpoints for long runs\n• Human-in-the-loop for irreversible actions\n• Trace every tool call for debugging\n• Hard budgets (time, tokens, dollars)\n\nInterview framing: same distributed-systems fundamentals + explicit failure modes for non-deterministic model behavior."
+      }
+    ],
+    "code": "// Minimal RAG flow (TypeScript-shaped pseudo)\nasync function answer(question: string): Promise<Answer> {\n  const qVec = await embed(question);\n  const hits = await vectorDb.query(qVec, { topK: 8 });\n  const reranked = await reranker.rerank(question, hits).slice(0, 4);\n\n  if (reranked[0]?.score < MIN_SCORE) {\n    return { text: \"I don't have enough grounded context.\", citations: [] };\n  }\n\n  const context = reranked.map(h => `[${h.id}] ${h.text}`).join(\"\\n\");\n  const prompt = `Use only the context. Cite ids.\\n${context}\\nQ: ${question}`;\n\n  const cached = await semanticCache.get(prompt);\n  if (cached) return cached;\n\n  const completion = await llm.chat({ model: \"fast-or-strong\", prompt, maxTokens: 512 });\n  const answer = { text: completion.text, citations: reranked.map(h => h.id) };\n  await semanticCache.set(prompt, answer, { ttlHours: 24 });\n  metrics.tokens.add(completion.usage.total);\n  return answer;\n}",
+    "tips": [
+      "Lead with fundamentals, then add AI components — do not skip capacity estimates.",
+      "Always mention evaluation and cost/latency budgets for LLM features.",
+      "Citations + refusal-when-unsure beat a flashy but ungrounded demo.",
+      "For agents: sandbox + audit trail + spend limits are interview gold."
+    ],
+    "connections": [
+      "System Design (RAG is a distributed system with new components)",
+      "Databases (vector indexes, hybrid search with SQL)",
+      "APIs (streaming responses, rate limits, gateways)",
+      "Observability (token metrics, quality evals, trace tool calls)"
+    ],
+    "relatedSlugs": [
+      "system-design",
+      "caching",
+      "apis"
+    ],
+    "quiz": [
+      {
+        "id": "ai-q1",
+        "question": "RAG stands for…",
+        "options": [
+          "Random Access GPU",
+          "Retrieval-Augmented Generation",
+          "Reactive API Gateway",
+          "Redundant Array of GPUs"
+        ],
+        "correctIndex": 1,
+        "explanation": "Retrieve relevant docs, then generate grounded answers with an LLM."
+      },
+      {
+        "id": "ai-q2",
+        "question": "Vector databases store…",
+        "options": [
+          "Only CSV files",
+          "Embeddings for semantic similarity search",
+          "Passwords in plaintext",
+          "CSS variables"
+        ],
+        "correctIndex": 1,
+        "explanation": "pgvector, Pinecone, etc. enable nearest-neighbor search over embeddings."
+      },
+      {
+        "id": "ai-q3",
+        "question": "In 2026 system design interviews, a newly mainstream topic is…",
+        "options": [
+          "Punch cards",
+          "LLM/RAG and agent infrastructure",
+          "Floppy disk RAID",
+          "Only monoliths"
+        ],
+        "correctIndex": 1,
+        "explanation": "Classic designs remain; AI-era components (RAG, vector search, agents) are now common."
+      },
+      {
+        "id": "ai-q4",
+        "question": "Prompt/response caching helps mainly with…",
+        "options": [
+          "Ignoring safety",
+          "Latency and token cost for repeated queries",
+          "Training foundation models",
+          "Replacing evaluation"
+        ],
+        "correctIndex": 1,
+        "explanation": "Semantic or exact caches cut cost/latency for hot prompts."
+      },
+      {
+        "id": "ai-q5",
+        "question": "Agentic systems need careful design around…",
+        "options": [
+          "Only fonts",
+          "Tool permissions, sandboxing, memory, and long-running state",
+          "Removing all logs",
+          "Single-threaded CSS"
+        ],
+        "correctIndex": 1,
+        "explanation": "Agents that run tools for hours need isolation, checkpoints, and observability."
+      }
+    ],
+    "problems": [
+      {
+        "id": "ai-p1",
+        "title": "RAG Pipeline Outline",
+        "difficulty": "medium",
+        "prompt": "Outline ingest → retrieve → generate for an internal docs chatbot.",
+        "hints": [
+          "Chunking",
+          "Embeddings",
+          "Citations"
+        ],
+        "solution": "Ingest/chunk docs → embed → upsert vectors → query embed → top-k retrieve (+ rerank) → prompt with citations → generate → evaluate groundedness; refresh on doc changes.",
+        "points": 25
+      },
+      {
+        "id": "ai-p2",
+        "title": "Cost & Latency Budgets",
+        "difficulty": "hard",
+        "prompt": "Design controls so an LLM feature stays under $X/day and p95 < 2s. Name 4 techniques.",
+        "hints": [
+          "Cache",
+          "Model routing",
+          "Timeouts"
+        ],
+        "solution": "Semantic cache; smaller/faster model for easy queries; max tokens + timeouts; batch where possible; rate limits; fallbacks when provider degraded; monitor token spend.",
+        "points": 25
+      }
+    ]
+  }
+]

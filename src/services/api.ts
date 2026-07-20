@@ -9,6 +9,11 @@ import type {
   TopicSummary,
 } from '../data/types';
 
+const API_BASE = (
+  import.meta.env.VITE_API_URL ??
+  (import.meta.env.DEV ? '' : 'https://swe-forge-backend.vercel.app')
+).replace(/\/$/, '');
+
 let summaryCache: TopicSummary[] | null = null;
 const topicCache = new Map<string, TopicDetail>();
 const interviewCache = new Map<string, InterviewLevelContent>();
@@ -16,7 +21,7 @@ const deepCache = new Map<string, DeepTrackContent>();
 
 async function apiGet<T>(path: string): Promise<T | null> {
   try {
-    const res = await fetch(path);
+    const res = await fetch(`${API_BASE}${path}`);
     if (!res.ok) return null;
     return (await res.json()) as T;
   } catch {

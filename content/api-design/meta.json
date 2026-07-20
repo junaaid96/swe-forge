@@ -1,0 +1,186 @@
+{
+  "id": "api-design",
+  "slug": "api-design",
+  "title": "API Design",
+  "emoji": "🔌",
+  "order": 12,
+  "tag": "Interfaces",
+  "accent": "#7C3AED",
+  "relatedTopics": [
+    "backend",
+    "system-design",
+    "security"
+  ],
+  "quiz": [
+    {
+      "id": "api-q1",
+      "question": "REST resource URLs should prefer…",
+      "options": [
+        "Verbs: /getOrderItems",
+        "Nouns: /orders/5/items",
+        "RPC only: /doGetItems",
+        "Query strings for all actions"
+      ],
+      "correctIndex": 1,
+      "explanation": "Resources are nouns; HTTP methods express the action."
+    },
+    {
+      "id": "api-q2",
+      "question": "Idempotent HTTP methods include…",
+      "options": [
+        "POST only",
+        "GET, PUT, DELETE",
+        "POST and PATCH only",
+        "CONNECT"
+      ],
+      "correctIndex": 1,
+      "explanation": "Safe/idempotent: GET/HEAD/OPTIONS; idempotent writes: PUT/DELETE. POST is not idempotent."
+    },
+    {
+      "id": "api-q3",
+      "question": "JWT auth typically sends the token in…",
+      "options": [
+        "Server session memory only",
+        "Authorization: Bearer <token> header",
+        "URL path always",
+        "SQL cookies table"
+      ],
+      "correctIndex": 1,
+      "explanation": "Stateless REST: client sends JWT each request; server validates signature/claims."
+    },
+    {
+      "id": "api-q4",
+      "question": "Best status code for successfully creating a resource?",
+      "options": [
+        "200 with no body",
+        "201 Created",
+        "204 No Content always",
+        "302 Found"
+      ],
+      "correctIndex": 1,
+      "explanation": "201 Created (often with Location header) for successful POST create."
+    },
+    {
+      "id": "api-q5",
+      "question": "Pagination on list endpoints exists mainly to…",
+      "options": [
+        "Make URLs prettier",
+        "Bound response size and DB load",
+        "Replace indexes",
+        "Avoid authentication"
+      ],
+      "correctIndex": 1,
+      "explanation": "Never return unbounded lists in production APIs."
+    },
+    {
+      "id": "gg-q1",
+      "question": "GraphQL N+1 is fixed with…",
+      "options": [
+        "Bigger JWT",
+        "DataLoader / batching resolvers",
+        "Removing schemas",
+        "UDP"
+      ],
+      "correctIndex": 1,
+      "explanation": "Batch backend fetches."
+    },
+    {
+      "id": "gg-q2",
+      "question": "gRPC commonly uses…",
+      "options": [
+        "SOAP only",
+        "HTTP/2 + protobuf",
+        "FTP",
+        "CSS"
+      ],
+      "correctIndex": 1,
+      "explanation": "Modern RPC stack."
+    },
+    {
+      "id": "gg-q3",
+      "question": "Best default for public CRUD HTTP API?",
+      "options": [
+        "gRPC-web mandatory",
+        "REST/JSON",
+        "Raw Redis protocol",
+        "GraphQL without limits"
+      ],
+      "correctIndex": 1,
+      "explanation": "Ecosystem and simplicity."
+    },
+    {
+      "id": "gg-q4",
+      "question": "GraphQL caching is harder because…",
+      "options": [
+        "No HTTP",
+        "Queries vary by shape; URL cache keys less natural",
+        "Protobuf forbids caches",
+        "TCP missing"
+      ],
+      "correctIndex": 1,
+      "explanation": "Flexible queries complicate CDN/HTTP caching."
+    },
+    {
+      "id": "gg-q5",
+      "question": "Mixed architecture pattern?",
+      "options": [
+        "REST edge, gRPC interior",
+        "gRPC only in browsers always",
+        "No auth ever",
+        "One giant GraphQL for DBs directly"
+      ],
+      "correctIndex": 0,
+      "explanation": "Common pragmatic split."
+    }
+  ],
+  "problems": [
+    {
+      "id": "api-p1",
+      "title": "Design Order Endpoints",
+      "difficulty": "medium",
+      "prompt": "Sketch REST endpoints for listing a user’s orders (paginated), creating an order, and canceling an order. Include status codes.",
+      "hints": [
+        "Nouns + methods",
+        "201 / 200 / 204 / 404"
+      ],
+      "solution": "GET /users/{id}/orders?page=&size= → 200; POST /orders → 201 + Location; POST /orders/{id}/cancel or PATCH status → 200; missing → 404.",
+      "points": 20
+    },
+    {
+      "id": "api-p2",
+      "title": "Idempotency Key",
+      "difficulty": "hard",
+      "prompt": "How would you make payment creation safe against double-submit from a flaky client?",
+      "hints": [
+        "Idempotency-Key header",
+        "Store request hash → response"
+      ],
+      "solution": "Require Idempotency-Key. Persist key + response. Retries with same key return the original result without charging twice.",
+      "points": 25
+    },
+    {
+      "id": "gg-p1",
+      "title": "Choose API style",
+      "difficulty": "easy",
+      "prompt": "Mobile app needs many screens with different fields from same backend. Options?",
+      "hints": [
+        "GraphQL or BFF"
+      ],
+      "solution": "GraphQL or a BFF that shapes REST DTOs per screen.",
+      "points": 10
+    },
+    {
+      "id": "gg-p2",
+      "title": "Secure GraphQL",
+      "difficulty": "medium",
+      "prompt": "List 3 production controls for a public GraphQL endpoint.",
+      "hints": [
+        "auth",
+        "depth",
+        "cost"
+      ],
+      "solution": "AuthZ per field; max depth/complexity; persisted queries; rate limits; timeout.",
+      "points": 20
+    }
+  ]
+}

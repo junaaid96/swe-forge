@@ -10,15 +10,21 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "start:api": "npm --prefix server run start"
+    "start:api": "npm --prefix server run start",
+    "scaffold:content": "node --import tsx scripts/scaffold-content.ts",
+    "migrate:content": "node --import tsx scripts/migrate-to-content.ts",
+    "finish:expand-deep": "node --import tsx scripts/finish-expand-deep.ts"
   },
   "dependencies": {
     "concurrently": "^9.2.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "gray-matter": "^4.0.3",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "react-router-dom": "^7.18.1"
+    "react-markdown": "^10.1.0",
+    "react-router-dom": "^7.18.1",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

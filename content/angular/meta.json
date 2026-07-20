@@ -1,0 +1,16 @@
+{
+  "id": "angular",
+  "slug": "angular",
+  "title": "Angular",
+  "emoji": "🅰️",
+  "order": 10,
+  "tag": "Framework",
+  "accent": "#DC2626",
+  "relatedTopics": [
+    "frontend",
+    "ui-ux",
+    "testing-quality"
+  ],
+  "quiz": [],
+  "problems": []
+}

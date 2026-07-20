@@ -1,0 +1,16 @@
+{
+  "id": "ui-ux",
+  "slug": "ui-ux",
+  "title": "UI/UX",
+  "emoji": "✨",
+  "order": 16,
+  "tag": "Product UI",
+  "accent": "#BE185D",
+  "relatedTopics": [
+    "frontend",
+    "react",
+    "angular"
+  ],
+  "quiz": [],
+  "problems": []
+}

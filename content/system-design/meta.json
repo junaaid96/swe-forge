@@ -1,0 +1,104 @@
+{
+  "id": "system-design",
+  "slug": "system-design",
+  "title": "System Design",
+  "emoji": "🏛️",
+  "order": 17,
+  "tag": "HLD",
+  "accent": "#9333EA",
+  "relatedTopics": [
+    "backend",
+    "database",
+    "devops-cloud",
+    "api-design"
+  ],
+  "quiz": [
+    {
+      "id": "sd-q1",
+      "question": "Horizontal scaling means…",
+      "options": [
+        "Buying a bigger single machine",
+        "Adding more machines behind a load balancer",
+        "Only adding CPU cores",
+        "Sharding the UI"
+      ],
+      "correctIndex": 1,
+      "explanation": "Scale out with more nodes; prefer stateless services."
+    },
+    {
+      "id": "sd-q2",
+      "question": "Caching is primarily used to…",
+      "options": [
+        "Replace the database forever",
+        "Reduce latency and load for hot reads",
+        "Guarantee strong consistency",
+        "Encrypt traffic"
+      ],
+      "correctIndex": 1,
+      "explanation": "Cache hot data (Redis/CDN) with a clear invalidation strategy."
+    },
+    {
+      "id": "sd-q3",
+      "question": "Message queues help systems by…",
+      "options": [
+        "Making all calls synchronous",
+        "Decoupling producers/consumers and absorbing spikes",
+        "Removing the need for databases",
+        "Replacing load balancers"
+      ],
+      "correctIndex": 1,
+      "explanation": "Async processing for emails, feeds, webhooks, etc."
+    },
+    {
+      "id": "sd-q4",
+      "question": "CAP theorem forces a trade-off between…",
+      "options": [
+        "CPU and memory",
+        "Consistency and Availability during network Partition",
+        "Latency and throughput only",
+        "SQL and NoSQL syntax"
+      ],
+      "correctIndex": 1,
+      "explanation": "During partition, choose CP or AP; you cannot have perfect C+A."
+    },
+    {
+      "id": "sd-q5",
+      "question": "A classic first system-design interview problem is…",
+      "options": [
+        "Design a GPU cluster OS",
+        "URL shortener",
+        "Design TCP",
+        "Write a compiler"
+      ],
+      "correctIndex": 1,
+      "explanation": "URL shortener still appears constantly; then feed, chat, rate limiter, etc."
+    }
+  ],
+  "problems": [
+    {
+      "id": "sd-p1",
+      "title": "URL Shortener Sketch",
+      "difficulty": "medium",
+      "prompt": "Outline components for a URL shortener at 1k RPS write / 10k RPS read. Mention ID generation and storage.",
+      "hints": [
+        "Base62 IDs",
+        "Cache redirects",
+        "SQL/NoSQL for mappings"
+      ],
+      "solution": "API → hash/base62 ID service → KV or DB mapping short→long; Redis cache for hot redirects; CDN optional; analytics via async queue.",
+      "points": 25
+    },
+    {
+      "id": "sd-p2",
+      "title": "Rate Limiter Choice",
+      "difficulty": "medium",
+      "prompt": "Compare token bucket vs fixed window for API rate limiting. When pick which?",
+      "hints": [
+        "Bursts",
+        "Boundary spikes"
+      ],
+      "solution": "Fixed window is simple but allows 2× burst at boundaries. Token bucket allows controlled bursts and smoother refill — preferred for public APIs.",
+      "points": 20
+    }
+  ]
+}

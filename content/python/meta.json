@@ -1,0 +1,17 @@
+{
+  "id": "python",
+  "slug": "python",
+  "title": "Python",
+  "emoji": "🐍",
+  "order": 4,
+  "tag": "Language",
+  "accent": "#2563EB",
+  "relatedTopics": [
+    "django",
+    "backend",
+    "dsa",
+    "cs-fundamentals"
+  ],
+  "quiz": [],
+  "problems": []
+}

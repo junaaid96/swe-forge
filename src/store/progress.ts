@@ -1,12 +1,12 @@
 import { useSyncExternalStore } from 'react';
-import { TOPIC_COMPLETE_BONUS, QUIZ_POINTS_PER_QUESTION } from '../data/categories';
-import type { ProgressState, Topic, TopicProgress } from '../data/types';
-import { getFallbackTopics } from '../services/api';
+import { QUIZ_POINTS_PER_QUESTION, TOPIC_COMPLETE_BONUS } from '../data/types';
+import type { ProgressState, TopicProgress } from '../data/types';
+import { getFallbackTopicSummaries } from '../services/api';
 
-const STORAGE_KEY = 'swe-forge-progress-v1';
+const STORAGE_KEY = 'swe-forge-progress-v2';
 
-function knownTopics(): Topic[] {
-  return getFallbackTopics();
+function knownSlugs(): string[] {
+  return getFallbackTopicSummaries().map((t) => t.slug);
 }
 
 function emptyTopic(): TopicProgress {
@@ -15,12 +15,14 @@ function emptyTopic(): TopicProgress {
     quizBest: 0,
     quizAttempts: 0,
     problemsSolved: [],
+    interviewVisited: [],
+    deepVisited: [],
   };
 }
 
 function defaultState(): ProgressState {
   const topics: Record<string, TopicProgress> = {};
-  for (const t of knownTopics()) topics[t.slug] = emptyTopic();
+  for (const slug of knownSlugs()) topics[slug] = emptyTopic();
   return { topics, totalScore: 0, streak: 0 };
 }
 
@@ -31,10 +33,16 @@ function load(): ProgressState {
     const parsed = JSON.parse(raw) as ProgressState;
     const base = defaultState();
     for (const slug of Object.keys(parsed.topics ?? {})) {
-      base.topics[slug] = { ...emptyTopic(), ...parsed.topics[slug] };
+      base.topics[slug] = {
+        ...emptyTopic(),
+        ...parsed.topics[slug],
+        interviewVisited: parsed.topics[slug]?.interviewVisited ?? [],
+        deepVisited: parsed.topics[slug]?.deepVisited ?? [],
+        problemsSolved: parsed.topics[slug]?.problemsSolved ?? [],
+      };
     }
-    for (const t of knownTopics()) {
-      if (!base.topics[t.slug]) base.topics[t.slug] = emptyTopic();
+    for (const slug of knownSlugs()) {
+      if (!base.topics[slug]) base.topics[slug] = emptyTopic();
     }
     base.totalScore = parsed.totalScore ?? 0;
     base.streak = parsed.streak ?? 0;
@@ -69,13 +77,12 @@ function touchStreak(next: ProgressState) {
 
 function recomputeScore(topics: Record<string, TopicProgress>): number {
   let score = 0;
-  for (const t of knownTopics()) {
-    const p = topics[t.slug] ?? emptyTopic();
+  for (const slug of Object.keys(topics)) {
+    const p = topics[slug] ?? emptyTopic();
     score += p.quizBest;
-    for (const pid of p.problemsSolved) {
-      const problem = t.problems.find((x) => x.id === pid);
-      if (problem) score += problem.points;
-    }
+    score += p.problemsSolved.length * 15;
+    score += (p.interviewVisited?.length ?? 0) * 2;
+    score += (p.deepVisited?.length ?? 0) * 2;
     if (p.completed) score += TOPIC_COMPLETE_BONUS;
   }
   return score;
@@ -90,6 +97,8 @@ function update(mutator: (draft: ProgressState) => void) {
     draft.topics[key] = {
       ...draft.topics[key],
       problemsSolved: [...draft.topics[key].problemsSolved],
+      interviewVisited: [...(draft.topics[key].interviewVisited ?? [])],
+      deepVisited: [...(draft.topics[key].deepVisited ?? [])],
     };
   }
   mutator(draft);
@@ -113,6 +122,24 @@ export const progressStore = {
       d.topics[slug] = { ...t, lastVisited: new Date().toISOString() };
     });
   },
+  markInterviewVisited(slug: string, level: string) {
+    update((d) => {
+      const t = d.topics[slug] ?? emptyTopic();
+      const interviewVisited = t.interviewVisited.includes(level)
+        ? t.interviewVisited
+        : [...t.interviewVisited, level];
+      d.topics[slug] = { ...t, interviewVisited, lastVisited: new Date().toISOString() };
+    });
+  },
+  markDeepVisited(slug: string, track: string) {
+    update((d) => {
+      const t = d.topics[slug] ?? emptyTopic();
+      const deepVisited = t.deepVisited.includes(track)
+        ? t.deepVisited
+        : [...t.deepVisited, track];
+      d.topics[slug] = { ...t, deepVisited, lastVisited: new Date().toISOString() };
+    });
+  },
   markCompleted(slug: string) {
     update((d) => {
       const t = d.topics[slug] ?? emptyTopic();
@@ -130,7 +157,7 @@ export const progressStore = {
         ...t,
         quizBest,
         quizAttempts: t.quizAttempts + 1,
-        completed: t.completed || correctCount === total,
+        completed: t.completed || (total > 0 && correctCount === total),
       };
     });
     return best;
@@ -139,15 +166,9 @@ export const progressStore = {
     update((d) => {
       const t = d.topics[slug] ?? emptyTopic();
       if (t.problemsSolved.includes(problemId)) return;
-      const problemsSolved = [...t.problemsSolved, problemId];
-      const topic = knownTopics().find((x) => x.slug === slug);
-      const allDone = topic
-        ? problemsSolved.length >= topic.problems.length && t.quizBest > 0
-        : false;
       d.topics[slug] = {
         ...t,
-        problemsSolved,
-        completed: t.completed || allDone,
+        problemsSolved: [...t.problemsSolved, problemId],
       };
     });
   },
@@ -166,21 +187,20 @@ export function getTopicProgress(state: ProgressState, slug: string): TopicProgr
 }
 
 export function getCompletionStats(state: ProgressState) {
-  const topics = knownTopics();
-  const total = topics.length;
-  const completed = topics.filter((t) => state.topics[t.slug]?.completed).length;
-  const quizzesTaken = topics.reduce((n, t) => n + (state.topics[t.slug]?.quizAttempts ?? 0), 0);
-  const problemsSolved = topics.reduce(
-    (n, t) => n + (state.topics[t.slug]?.problemsSolved.length ?? 0),
+  const slugs = knownSlugs();
+  const total = slugs.length || Object.keys(state.topics).length;
+  const completed = slugs.filter((slug) => state.topics[slug]?.completed).length;
+  const quizzesTaken = Object.values(state.topics).reduce((n, t) => n + (t.quizAttempts ?? 0), 0);
+  const problemsSolved = Object.values(state.topics).reduce(
+    (n, t) => n + (t.problemsSolved?.length ?? 0),
     0,
   );
-  const totalProblems = topics.reduce((n, t) => n + t.problems.length, 0);
   return {
     total,
     completed,
     quizzesTaken,
     problemsSolved,
-    totalProblems,
+    totalProblems: problemsSolved,
     pct: total ? Math.round((completed / total) * 100) : 0,
   };
 }

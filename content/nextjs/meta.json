@@ -1,0 +1,17 @@
+{
+  "id": "nextjs",
+  "slug": "nextjs",
+  "title": "Next.js",
+  "emoji": "▲",
+  "order": 9,
+  "tag": "Framework",
+  "accent": "#111827",
+  "relatedTopics": [
+    "react",
+    "frontend",
+    "nodejs",
+    "devops-cloud"
+  ],
+  "quiz": [],
+  "problems": []
+}

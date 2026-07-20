@@ -1,0 +1,17 @@
+{
+  "id": "django",
+  "slug": "django",
+  "title": "Django",
+  "emoji": "🎸",
+  "order": 5,
+  "tag": "Framework",
+  "accent": "#0F766E",
+  "relatedTopics": [
+    "python",
+    "backend",
+    "database",
+    "security"
+  ],
+  "quiz": [],
+  "problems": []
+}

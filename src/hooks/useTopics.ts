@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import type { Topic, TopicSummary } from '../data/types';
 import { fetchTopic, fetchTopicSummaries } from '../services/api';
+import type { TopicDetail, TopicSummary } from '../data/types';
 
 export function useTopicSummaries() {
   const [topics, setTopics] = useState<TopicSummary[]>([]);
@@ -8,53 +8,53 @@ export function useTopicSummaries() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let alive = true;
+    let cancelled = false;
     setLoading(true);
     fetchTopicSummaries()
-      .then((data) => {
-        if (!alive) return;
-        setTopics(data);
-        setError(null);
+      .then((list) => {
+        if (!cancelled) {
+          setTopics(list);
+          setError(null);
+        }
       })
-      .catch(() => {
-        if (!alive) return;
-        setError('Could not load topics');
+      .catch((e: unknown) => {
+        if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load topics');
       })
       .finally(() => {
-        if (alive) setLoading(false);
+        if (!cancelled) setLoading(false);
       });
     return () => {
-      alive = false;
+      cancelled = true;
     };
   }, []);
 
   return { topics, loading, error };
 }
 
-export function useTopic(slug: string) {
-  const [topic, setTopic] = useState<Topic | null>(null);
-  const [loading, setLoading] = useState(true);
+export function useTopic(slug: string | undefined) {
+  const [topic, setTopic] = useState<TopicDetail | null>(null);
+  const [loading, setLoading] = useState(Boolean(slug));
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let alive = true;
+    if (!slug) return;
+    let cancelled = false;
     setLoading(true);
-    setTopic(null);
     fetchTopic(slug)
-      .then((data) => {
-        if (!alive) return;
-        setTopic(data);
-        setError(data ? null : 'Topic not found');
+      .then((t) => {
+        if (!cancelled) {
+          setTopic(t);
+          setError(t ? null : 'Topic not found');
+        }
       })
-      .catch(() => {
-        if (!alive) return;
-        setError('Could not load topic');
+      .catch((e: unknown) => {
+        if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load topic');
       })
       .finally(() => {
-        if (alive) setLoading(false);
+        if (!cancelled) setLoading(false);
       });
     return () => {
-      alive = false;
+      cancelled = true;
     };
   }, [slug]);
 

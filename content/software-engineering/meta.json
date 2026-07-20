@@ -1,0 +1,272 @@
+{
+  "id": "software-engineering",
+  "slug": "software-engineering",
+  "title": "Software Engineering",
+  "emoji": "🛠️",
+  "order": 1,
+  "tag": "Best practices hub",
+  "accent": "#0D9488",
+  "relatedTopics": [
+    "low-level-design",
+    "testing-quality",
+    "git-collaboration",
+    "devops-cloud"
+  ],
+  "quiz": [
+    {
+      "id": "pf-q1",
+      "question": "Which SOLID principle says a class should have only one reason to change?",
+      "options": [
+        "Open/Closed",
+        "Single Responsibility",
+        "Liskov Substitution",
+        "Dependency Inversion"
+      ],
+      "correctIndex": 1,
+      "explanation": "SRP: one class = one responsibility / one reason to change."
+    },
+    {
+      "id": "pf-q2",
+      "question": "Prefer composition over inheritance mainly because…",
+      "options": [
+        "Composition is always faster",
+        "Deep inheritance chains become fragile and hard to change",
+        "Inheritance is deprecated in modern languages",
+        "Composition uses less memory"
+      ],
+      "correctIndex": 1,
+      "explanation": "\"Has-a\" relationships stay flexible; deep \"is-a\" hierarchies couple types tightly."
+    },
+    {
+      "id": "pf-q3",
+      "question": "Dependency Inversion means you should…",
+      "options": [
+        "Depend on concrete classes only",
+        "Depend on abstractions (interfaces), not concrete implementations",
+        "Never use interfaces",
+        "Inject dependencies via static fields"
+      ],
+      "correctIndex": 1,
+      "explanation": "DIP: high-level modules depend on abstractions; Spring constructor injection enforces this."
+    },
+    {
+      "id": "pf-q4",
+      "question": "Which pattern lets you swap algorithms at runtime (e.g. payment methods)?",
+      "options": [
+        "Singleton",
+        "Adapter",
+        "Strategy",
+        "Decorator"
+      ],
+      "correctIndex": 2,
+      "explanation": "Strategy encapsulates interchangeable algorithms behind a common interface."
+    },
+    {
+      "id": "pf-q5",
+      "question": "Spring beans are Singleton by default. What risk does that create?",
+      "options": [
+        "They cannot be injected",
+        "Shared mutable request state in fields can cause race bugs",
+        "They are always thread-unsafe for reads",
+        "They cannot implement interfaces"
+      ],
+      "correctIndex": 1,
+      "explanation": "Never store per-request data in singleton service fields."
+    },
+    {
+      "id": "de-q1",
+      "question": "First step when production latency spikes?",
+      "options": [
+        "Rewrite the service immediately",
+        "Gather evidence: metrics, logs, traces, recent deploys",
+        "Restart all pods blindly forever",
+        "Disable monitoring"
+      ],
+      "correctIndex": 1,
+      "explanation": "Observe → hypothesize → experiment. Check dashboards and recent changes first."
+    },
+    {
+      "id": "de-q2",
+      "question": "A stack trace’s most useful frame is usually…",
+      "options": [
+        "The deepest JDK frame only",
+        "The first frame in your application code",
+        "Random middle frames",
+        "The classloader name"
+      ],
+      "correctIndex": 1,
+      "explanation": "Find where your code threw; then walk causes (getCause)."
+    },
+    {
+      "id": "de-q3",
+      "question": "Heisenbugs that disappear under a debugger often involve…",
+      "options": [
+        "Race conditions / timing",
+        "Missing semicolons only",
+        "CSS",
+        "DNS TTLs only"
+      ],
+      "correctIndex": 0,
+      "explanation": "Debugger timing changes concurrency; add logging, stress tests, thread dumps."
+    },
+    {
+      "id": "de-q4",
+      "question": "Binary search debugging means…",
+      "options": [
+        "Only using binary search algorithms",
+        "Narrowing the faulty change/region by halves",
+        "Deleting half the codebase",
+        "Sorting logs alphabetically"
+      ],
+      "correctIndex": 1,
+      "explanation": "git bisect or comment/disable half the suspects until isolated."
+    },
+    {
+      "id": "de-q5",
+      "question": "Correlation IDs help because…",
+      "options": [
+        "They encrypt payloads",
+        "They tie logs across services for one request",
+        "They replace metrics",
+        "They speed SQL"
+      ],
+      "correctIndex": 1,
+      "explanation": "Propagate a request ID through headers and log it everywhere."
+    },
+    {
+      "id": "imm-q1",
+      "question": "Why are immutable objects safer to share across threads?",
+      "options": [
+        "They are always smaller",
+        "State cannot change under another thread",
+        "GC never collects them",
+        "They disable CPUs"
+      ],
+      "correctIndex": 1,
+      "explanation": "No in-place mutation → no races on that object."
+    },
+    {
+      "id": "imm-q2",
+      "question": "List.copyOf in a constructor is used to…",
+      "options": [
+        "Sort the list",
+        "Defensively copy so callers cannot mutate internal state",
+        "Enable Hibernate",
+        "Make JSON smaller"
+      ],
+      "correctIndex": 1,
+      "explanation": "Protect encapsulation of “immutable” collections."
+    },
+    {
+      "id": "imm-q3",
+      "question": "Updating immutable state means…",
+      "options": [
+        "Calling setters carefully",
+        "Creating a new object/version with changes",
+        "Using reflection",
+        "Clearing the cache only"
+      ],
+      "correctIndex": 1,
+      "explanation": "Copy-on-write / withX methods."
+    },
+    {
+      "id": "imm-q4",
+      "question": "A final List field can still be mutated if…",
+      "options": [
+        "It is private",
+        "The list implementation is mutable and exposed/shared",
+        "It is in a record",
+        "It holds Strings"
+      ],
+      "correctIndex": 1,
+      "explanation": "final reference ≠ immutable contents."
+    },
+    {
+      "id": "imm-q5",
+      "question": "Good fit for immutability?",
+      "options": [
+        "Money/value objects and DTOs",
+        "Live socket buffers mid-read only",
+        "Thread-local scratch only",
+        "None"
+      ],
+      "correctIndex": 0,
+      "explanation": "Values and messages are ideal immutable."
+    }
+  ],
+  "problems": [
+    {
+      "id": "pf-p1",
+      "title": "Refactor a God Service",
+      "difficulty": "medium",
+      "prompt": "An OrderService validates orders, writes to JDBC directly, and sends SMTP email. List the SOLID violations and sketch a cleaner design with interfaces.",
+      "hints": [
+        "SRP is violated by mixing validation, persistence, and notification.",
+        "DIP is violated by depending on DriverManager and SmtpClient concretely."
+      ],
+      "solution": "Split into OrderValidator, OrderRepository, NotificationService. OrderService orchestrates via constructor-injected interfaces. Add PaymentStrategy for payment methods (OCP).",
+      "points": 20
+    },
+    {
+      "id": "pf-p2",
+      "title": "Interface vs Abstract Class",
+      "difficulty": "easy",
+      "prompt": "When would you choose an abstract class over an interface for a payment base type? Give one concrete example.",
+      "hints": [
+        "Think shared state vs pure contract.",
+        "Java allows multiple interfaces, single class inheritance."
+      ],
+      "solution": "Use abstract class when you need shared fields + partial default behavior (e.g. BasePayment with amount + logging). Use interface when you only need a contract and multiple inheritance of type (PaymentStrategy).",
+      "points": 10
+    },
+    {
+      "id": "de-p1",
+      "title": "NullPointer Hunt",
+      "difficulty": "easy",
+      "prompt": "NPE at OrderService.java:42 on order.getUser().getEmail(). List three defensive fixes.",
+      "hints": [
+        "Null checks",
+        "Optional",
+        "DB constraints"
+      ],
+      "solution": "Validate/load user before use; use Optional; enforce NOT NULL FK; fail fast with clear domain exception instead of NPE.",
+      "points": 10
+    },
+    {
+      "id": "de-p2",
+      "title": "Intermittent 500s",
+      "difficulty": "hard",
+      "prompt": "API returns 500 ~1% of the time under load. Outline a debugging plan across app + DB + infra.",
+      "hints": [
+        "Metrics first",
+        "Pool exhaustion",
+        "Timeouts"
+      ],
+      "solution": "Check error rate by endpoint, DB pool wait, GC, timeouts. Capture traces for failing requests. Reproduce with load test; inspect connection pool & lock waits; add circuit breakers/timeouts.",
+      "points": 25
+    },
+    {
+      "id": "imm-p1",
+      "title": "Broken immutable User",
+      "difficulty": "easy",
+      "prompt": "class User { final List<String> roles; User(List r){ roles=r; } } Explain the bug and fix.",
+      "hints": [
+        "caller retains reference"
+      ],
+      "solution": "Store List.copyOf(r) or Collections.unmodifiableList(new ArrayList<>(r)).",
+      "points": 10
+    },
+    {
+      "id": "imm-p2",
+      "title": "Atomic snapshot",
+      "difficulty": "medium",
+      "prompt": "Many threads read a Config object while a reloader updates it. How do you avoid locks on read path?",
+      "hints": [
+        "AtomicReference",
+        "immutable Config"
+      ],
+      "solution": "Keep AtomicReference<Config> with immutable Config; readers get(); writer builds new Config and compareAndSet.",
+      "points": 20
+    }
+  ]
+}

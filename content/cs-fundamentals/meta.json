@@ -1,0 +1,273 @@
+{
+  "id": "cs-fundamentals",
+  "slug": "cs-fundamentals",
+  "title": "CS Fundamentals",
+  "emoji": "🧮",
+  "order": 13,
+  "tag": "Foundations",
+  "accent": "#4F46E5",
+  "relatedTopics": [
+    "dsa",
+    "backend",
+    "security",
+    "java",
+    "python",
+    "nodejs"
+  ],
+  "quiz": [
+    {
+      "id": "conc-q1",
+      "question": "What makes check-then-act unsafe without sync?",
+      "options": [
+        "It is always O(n)",
+        "Two threads can both pass the check and both act",
+        "GC pauses forbid it",
+        "It only fails on virtual threads"
+      ],
+      "correctIndex": 1,
+      "explanation": "Both threads observe the same pre-state and both mutate."
+    },
+    {
+      "id": "conc-q2",
+      "question": "volatile guarantees…",
+      "options": [
+        "Atomic multi-field updates",
+        "Visibility of writes to that field across threads",
+        "No deadlocks",
+        "Faster than AtomicInteger always"
+      ],
+      "correctIndex": 1,
+      "explanation": "Visibility (and ordering for that variable), not compound atomicity."
+    },
+    {
+      "id": "conc-q3",
+      "question": "Best deadlock prevention for two account locks?",
+      "options": [
+        "Random lock order",
+        "Always lock lower accountId first",
+        "Use sleep(1)",
+        "Disable GC"
+      ],
+      "correctIndex": 1,
+      "explanation": "Consistent global lock ordering."
+    },
+    {
+      "id": "conc-q4",
+      "question": "Unbounded thread creation under load typically causes…",
+      "options": [
+        "Perfect scaling",
+        "Memory/CPU collapse and latency spikes",
+        "Automatic backpressure",
+        "Stronger consistency"
+      ],
+      "correctIndex": 1,
+      "explanation": "Pools must be bounded; overload needs rejection/backpressure."
+    },
+    {
+      "id": "conc-q5",
+      "question": "Which structure helps concurrent map updates?",
+      "options": [
+        "HashMap without sync",
+        "ArrayList",
+        "ConcurrentHashMap",
+        "Stack"
+      ],
+      "correctIndex": 1,
+      "explanation": "ConcurrentHashMap is designed for concurrent access."
+    },
+    {
+      "id": "net-q1",
+      "question": "HTTPS is…",
+      "options": [
+        "HTTP + gzip only",
+        "HTTP over TLS",
+        "UDP email",
+        "A Java keyword"
+      ],
+      "correctIndex": 1,
+      "explanation": "TLS-wrapped HTTP."
+    },
+    {
+      "id": "net-q2",
+      "question": "TCP provides…",
+      "options": [
+        "No ordering",
+        "Reliable ordered byte streams",
+        "Only broadcast",
+        "Image compression"
+      ],
+      "correctIndex": 1,
+      "explanation": "Connection-oriented reliability."
+    },
+    {
+      "id": "net-q3",
+      "question": "DNS purpose?",
+      "options": [
+        "Encrypt bodies",
+        "Resolve names to addresses",
+        "Compile Java",
+        "Shard Redis"
+      ],
+      "correctIndex": 1,
+      "explanation": "Name resolution."
+    },
+    {
+      "id": "net-q4",
+      "question": "Safe automatic retries are for…",
+      "options": [
+        "All POSTs always",
+        "Idempotent requests",
+        "Only WebSockets",
+        "DNSSEC"
+      ],
+      "correctIndex": 1,
+      "explanation": "Avoid double side effects."
+    },
+    {
+      "id": "net-q5",
+      "question": "502 from load balancer often means…",
+      "options": [
+        "JWT expired",
+        "Upstream/service unreachable or misbehaving",
+        "CSS missing",
+        "Kafka lag"
+      ],
+      "correctIndex": 1,
+      "explanation": "Gateway cannot get a valid upstream response."
+    },
+    {
+      "id": "os-q1",
+      "question": "Threads in one process share…",
+      "options": [
+        "Nothing",
+        "Address space / heap memory",
+        "Only disk",
+        "DNS cache exclusively"
+      ],
+      "correctIndex": 1,
+      "explanation": "Shared memory → races possible."
+    },
+    {
+      "id": "os-q2",
+      "question": "OOMKilled usually means…",
+      "options": [
+        "JWT bad",
+        "Container exceeded memory limit",
+        "Kafka down",
+        "Bad CSS"
+      ],
+      "correctIndex": 1,
+      "explanation": "cgroup memory limit."
+    },
+    {
+      "id": "os-q3",
+      "question": "Too many open files points to…",
+      "options": [
+        "FD exhaustion / connection leak",
+        "Bad CSS",
+        "Missing index always",
+        "Idempotency"
+      ],
+      "correctIndex": 1,
+      "explanation": "Socket/file descriptor leak or limit too low."
+    },
+    {
+      "id": "os-q4",
+      "question": "Blocked thread is typically…",
+      "options": [
+        "Using 100% CPU",
+        "Waiting on I/O or a lock",
+        "Holding DNS hostage",
+        "Compiling"
+      ],
+      "correctIndex": 1,
+      "explanation": "Not runnable until event arrives."
+    },
+    {
+      "id": "os-q5",
+      "question": "Process isolation means…",
+      "options": [
+        "All apps share heap",
+        "Separate address spaces (generally)",
+        "No need for auth",
+        "UDP only"
+      ],
+      "correctIndex": 1,
+      "explanation": "OS process boundaries."
+    }
+  ],
+  "problems": [
+    {
+      "id": "conc-p1",
+      "title": "Fix the lost update",
+      "difficulty": "medium",
+      "prompt": "A metrics counter uses int++ from many request threads. Explain the bug and give two correct approaches.",
+      "hints": [
+        "Think read-modify-write",
+        "Atomics or LongAdder"
+      ],
+      "solution": "int++ is not atomic. Use AtomicInteger/LongAdder, or confine increments to one thread via a queue.",
+      "points": 20
+    },
+    {
+      "id": "conc-p2",
+      "title": "Design striped locks",
+      "difficulty": "hard",
+      "prompt": "You need mutual exclusion per orderId without one global lock. Sketch an approach.",
+      "hints": [
+        "array of locks",
+        "hash id to stripe"
+      ],
+      "solution": "Lock[] stripes = new Lock[1024]; lock = stripes[orderId.hashCode() & 1023]; lock.lock() around critical section.",
+      "points": 25
+    },
+    {
+      "id": "net-p1",
+      "title": "Timeout design",
+      "difficulty": "medium",
+      "prompt": "Service A calls B. Pick timeout/retry policy.",
+      "hints": [
+        "connect short",
+        "idempotent retry"
+      ],
+      "solution": "Short connect timeout; overall deadline; retry only idempotent GETs/PUTs with jittered backoff.",
+      "points": 20
+    },
+    {
+      "id": "net-p2",
+      "title": "Map the hops",
+      "difficulty": "easy",
+      "prompt": "List hops from mobile app to Spring on K8s behind Cloudflare.",
+      "hints": [
+        "DNS",
+        "CDN",
+        "LB",
+        "pod"
+      ],
+      "solution": "DNS → CDN/edge → LB → ingress → service → pod; TLS may terminate at edge/ingress.",
+      "points": 10
+    },
+    {
+      "id": "os-p1",
+      "title": "Read the symptoms",
+      "difficulty": "medium",
+      "prompt": "p99=2s, CPU=10%, DB pool waits high. What is happening?",
+      "hints": [
+        "blocked on pool"
+      ],
+      "solution": "Threads blocked waiting for DB connections — not CPU bound; fix pool/query/concurrency.",
+      "points": 15
+    },
+    {
+      "id": "os-p2",
+      "title": "Limits",
+      "difficulty": "easy",
+      "prompt": "Why set memory limits on a JVM pod?",
+      "hints": [
+        "OOM isolation"
+      ],
+      "solution": "Contain blast radius; surface leaks via OOMKilled; size heap below limit.",
+      "points": 10
+    }
+  ]
+}

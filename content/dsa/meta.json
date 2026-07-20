@@ -1,0 +1,271 @@
+{
+  "id": "dsa",
+  "slug": "dsa",
+  "title": "DSA",
+  "emoji": "🧩",
+  "order": 14,
+  "tag": "Algorithms",
+  "accent": "#B45309",
+  "relatedTopics": [
+    "cs-fundamentals",
+    "low-level-design",
+    "java",
+    "python"
+  ],
+  "quiz": [
+    {
+      "id": "ds-q1",
+      "question": "Default choice for a general-purpose list in Java?",
+      "options": [
+        "LinkedList",
+        "ArrayList",
+        "Vector",
+        "Stack"
+      ],
+      "correctIndex": 1,
+      "explanation": "ArrayList: O(1) amortized append and O(1) random access. Prefer ArrayDeque for stack/queue."
+    },
+    {
+      "id": "ds-q2",
+      "question": "HashMap average get/put complexity is…",
+      "options": [
+        "O(n)",
+        "O(log n)",
+        "O(1)",
+        "O(n log n)"
+      ],
+      "correctIndex": 2,
+      "explanation": "Average O(1); worst case degrades with collisions (treeified buckets in Java 8+)."
+    },
+    {
+      "id": "ds-q3",
+      "question": "Which structure finds shortest path in an unweighted graph?",
+      "options": [
+        "DFS",
+        "BFS",
+        "Binary search",
+        "Heap sort"
+      ],
+      "correctIndex": 1,
+      "explanation": "BFS explores level-by-level and yields shortest path in unweighted graphs."
+    },
+    {
+      "id": "ds-q4",
+      "question": "Best structure for an LRU cache in Java?",
+      "options": [
+        "TreeMap",
+        "HashSet",
+        "LinkedHashMap (access-order)",
+        "PriorityQueue"
+      ],
+      "correctIndex": 2,
+      "explanation": "LinkedHashMap in access-order mode + removeEldestEntry implements LRU cleanly."
+    },
+    {
+      "id": "ds-q5",
+      "question": "PriorityQueue in Java is by default a…",
+      "options": [
+        "Max-heap",
+        "Min-heap",
+        "Balanced BST",
+        "FIFO queue"
+      ],
+      "correctIndex": 1,
+      "explanation": "Default PriorityQueue is a min-heap; use a custom comparator for max-heap."
+    },
+    {
+      "id": "al-q1",
+      "question": "Binary search requires the input to be…",
+      "options": [
+        "Unique",
+        "Sorted",
+        "A linked list",
+        "A hash table"
+      ],
+      "correctIndex": 1,
+      "explanation": "Binary search halves a sorted search space each step → O(log n)."
+    },
+    {
+      "id": "al-q2",
+      "question": "Two-pointer technique is especially useful for…",
+      "options": [
+        "Sorting linked lists only",
+        "Problems on sorted arrays / strings with left-right scans",
+        "Graph coloring",
+        "Building heaps"
+      ],
+      "correctIndex": 1,
+      "explanation": "Classic for pair sums, palindromes, container-with-most-water, etc."
+    },
+    {
+      "id": "al-q3",
+      "question": "Sliding window typically improves which complexity?",
+      "options": [
+        "O(n²) nested scans → O(n) for contiguous subarray problems",
+        "O(n) → O(1) always",
+        "O(log n) → O(n)",
+        "Space only, never time"
+      ],
+      "correctIndex": 0,
+      "explanation": "Maintain a window and expand/shrink instead of recomputing from scratch."
+    },
+    {
+      "id": "al-q4",
+      "question": "Dijkstra’s algorithm needs which structure for efficiency?",
+      "options": [
+        "Stack",
+        "Queue only",
+        "Priority queue (min-heap)",
+        "Trie"
+      ],
+      "correctIndex": 2,
+      "explanation": "Always expand the currently closest unvisited node via a min-heap."
+    },
+    {
+      "id": "al-q5",
+      "question": "Dynamic programming is best described as…",
+      "options": [
+        "Greedy local choices only",
+        "Overlapping subproblems + optimal substructure with memo/tabulation",
+        "Randomized sampling",
+        "Only recursion without storage"
+      ],
+      "correctIndex": 1,
+      "explanation": "DP stores subproblem answers to avoid exponential recomputation."
+    },
+    {
+      "id": "ps-q1",
+      "question": "Best first step on a vague interview problem?",
+      "options": [
+        "Code immediately",
+        "Clarify inputs, outputs, constraints, examples",
+        "Memorize a random algorithm",
+        "Skip edge cases"
+      ],
+      "correctIndex": 1,
+      "explanation": "Requirements clarity prevents solving the wrong problem."
+    },
+    {
+      "id": "ps-q2",
+      "question": "When stuck, a strong tactic is…",
+      "options": [
+        "Stay silent",
+        "Work a tiny example aloud and state invariants",
+        "Delete the question",
+        "Only optimize Big O first"
+      ],
+      "correctIndex": 1,
+      "explanation": "Communicate thinking; examples reveal patterns."
+    },
+    {
+      "id": "ps-q3",
+      "question": "After a brute-force solution you should…",
+      "options": [
+        "Stop",
+        "Analyze complexity and optimize bottlenecks",
+        "Remove tests",
+        "Hide edge cases"
+      ],
+      "correctIndex": 1,
+      "explanation": "Correct → then efficient. Interviewers value the path."
+    },
+    {
+      "id": "ps-q4",
+      "question": "Rubber-duck debugging is…",
+      "options": [
+        "A database engine",
+        "Explaining the problem out loud to find gaps",
+        "A sorting algorithm",
+        "Only for frontend"
+      ],
+      "correctIndex": 1,
+      "explanation": "Articulating assumptions often reveals the bug."
+    },
+    {
+      "id": "ps-q5",
+      "question": "Trade-off questions test whether you can…",
+      "options": [
+        "Pick randomly",
+        "Name costs/benefits and choose for the context",
+        "Always pick the newest tech",
+        "Avoid decisions"
+      ],
+      "correctIndex": 1,
+      "explanation": "Engineering is trade-offs under constraints (latency, cost, complexity)."
+    }
+  ],
+  "problems": [
+    {
+      "id": "ds-p1",
+      "title": "Choose the Right Structure",
+      "difficulty": "easy",
+      "prompt": "You need Top-K most expensive orders from a stream of millions. Which structure and why?",
+      "hints": [
+        "Think heap of size K.",
+        "Sorting everything is wasteful."
+      ],
+      "solution": "Min-heap (PriorityQueue) of size K: O(n log K). Keep the K largest by evicting the current minimum when a larger value arrives.",
+      "points": 15
+    },
+    {
+      "id": "ds-p2",
+      "title": "HashMap Contract",
+      "difficulty": "medium",
+      "prompt": "You use a custom UserKey as HashMap key but only override equals(). What breaks and how do you fix it?",
+      "hints": [
+        "hashCode/equals contract.",
+        "Equal objects must share hashCode."
+      ],
+      "solution": "Equal keys may land in different buckets → duplicates / failed lookups. Override both hashCode() and equals() consistently.",
+      "points": 15
+    },
+    {
+      "id": "al-p1",
+      "title": "Complexity Callout",
+      "difficulty": "easy",
+      "prompt": "A nested loop over an array of size n does constant work inside. State time and space complexity.",
+      "hints": [
+        "Count iterations.",
+        "Extra arrays?"
+      ],
+      "solution": "Time O(n²), space O(1) if no extra structures proportional to n.",
+      "points": 10
+    },
+    {
+      "id": "al-p2",
+      "title": "Anagram Check Approach",
+      "difficulty": "medium",
+      "prompt": "Describe an O(n) approach to check if two strings are anagrams (same letters).",
+      "hints": [
+        "Counting beats sorting for ASCII/limited alphabet.",
+        "Hash map of frequencies."
+      ],
+      "solution": "Count character frequencies in one string (+1) and the other (−1). All counts zero ⇒ anagram. O(n) time, O(k) space.",
+      "points": 15
+    },
+    {
+      "id": "ps-p1",
+      "title": "Clarify the Prompt",
+      "difficulty": "easy",
+      "prompt": "Interviewer: “Design a feed.” List 8 clarifying questions you ask before drawing boxes.",
+      "hints": [
+        "Scale",
+        "Read vs write",
+        "Fan-out"
+      ],
+      "solution": "DAU? RPS? Media? Ranking? Real-time? Consistency? Personalization? Retention window? Mobile offline? Abuse?",
+      "points": 15
+    },
+    {
+      "id": "ps-p2",
+      "title": "Brute → Better",
+      "difficulty": "medium",
+      "prompt": "Find two numbers in an array that sum to target. Give O(n²) then O(n) approaches.",
+      "hints": [
+        "Hash map of complements"
+      ],
+      "solution": "Brute: nested loops. Better: one pass HashMap value→index; check target−x seen. O(n) time, O(n) space.",
+      "points": 15
+    }
+  ]
+}

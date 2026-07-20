@@ -1,0 +1,102 @@
+{
+  "id": "git-collaboration",
+  "slug": "git-collaboration",
+  "title": "Git & Collaboration",
+  "emoji": "🌿",
+  "order": 20,
+  "tag": "VCS",
+  "accent": "#EA580C",
+  "relatedTopics": [
+    "software-engineering",
+    "devops-cloud",
+    "behavioral"
+  ],
+  "quiz": [
+    {
+      "id": "gi-q1",
+      "question": "git rebase is typically used to…",
+      "options": [
+        "Delete remote history safely always",
+        "Replay commits on top of another base for a linear history",
+        "Create a new remote",
+        "Replace merge conflicts automatically"
+      ],
+      "correctIndex": 1,
+      "explanation": "Rebase rewrites local commit history onto updated main; don’t rebase shared public history casually."
+    },
+    {
+      "id": "gi-q2",
+      "question": "A pull request should primarily…",
+      "options": [
+        "Contain unrelated mega-changes",
+        "Be reviewable: focused diff + clear why",
+        "Skip tests",
+        "Force-push to main directly"
+      ],
+      "correctIndex": 1,
+      "explanation": "Small, intentional PRs review faster and revert cleaner."
+    },
+    {
+      "id": "gi-q3",
+      "question": "git stash is for…",
+      "options": [
+        "Permanently deleting changes",
+        "Temporarily shelving uncommitted work",
+        "Creating tags",
+        "Squashing remotes"
+      ],
+      "correctIndex": 1,
+      "explanation": "Stash WIP, switch branches, then pop/apply later."
+    },
+    {
+      "id": "gi-q4",
+      "question": "Conventional commit style example:",
+      "options": [
+        "fixed stuff",
+        "feat(api): add order cancellation endpoint",
+        "Update",
+        "asdf"
+      ],
+      "correctIndex": 1,
+      "explanation": "type(scope): summary — helps changelog and review."
+    },
+    {
+      "id": "gi-q5",
+      "question": "Force-push to main/master is…",
+      "options": [
+        "Always fine",
+        "Dangerous; avoid unless explicitly coordinated",
+        "Required for every PR",
+        "The same as merge"
+      ],
+      "correctIndex": 1,
+      "explanation": "Rewriting protected branch history breaks collaborators and CI."
+    }
+  ],
+  "problems": [
+    {
+      "id": "gi-p1",
+      "title": "Recover a Bad Commit",
+      "difficulty": "medium",
+      "prompt": "You committed a secret to the last local commit (not pushed). How do you undo safely?",
+      "hints": [
+        "reset / restore",
+        "Don’t push secrets"
+      ],
+      "solution": "Remove secret from file, `git add`, `git commit --amend` (or soft reset + recommit) before push. Rotate the secret anyway.",
+      "points": 15
+    },
+    {
+      "id": "gi-p2",
+      "title": "Branch Strategy",
+      "difficulty": "easy",
+      "prompt": "Describe a simple trunk-based flow for a small team shipping daily.",
+      "hints": [
+        "Short-lived branches",
+        "PR + CI"
+      ],
+      "solution": "Short feature branches from main → PR → CI → squash merge. Prefer feature flags over long-lived branches.",
+      "points": 10
+    }
+  ]
+}

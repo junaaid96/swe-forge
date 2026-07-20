@@ -1,29 +1,28 @@
 import { Link } from 'react-router-dom';
-import { CATEGORIES, QUIZ_POINTS_PER_QUESTION, TOPIC_COMPLETE_BONUS } from '../data/categories';
+import { QUIZ_POINTS_PER_QUESTION, TOPIC_COMPLETE_BONUS } from '../data/types';
 import { useTopicSummaries } from '../hooks/useTopics';
-import { getFallbackTopics } from '../services/api';
 import { getCompletionStats, getTopicProgress, useProgress } from '../store/progress';
 
 export function ScoreboardPage() {
   const progress = useProgress();
   const stats = getCompletionStats(progress);
   const { topics: summaries } = useTopicSummaries();
-  const full = getFallbackTopics();
 
   const rows = summaries
     .map((summary) => {
-      const topic = full.find((t) => t.slug === summary.slug);
       const tp = getTopicProgress(progress, summary.slug);
-      const problemPts = (topic?.problems ?? [])
-        .filter((p) => tp.problemsSolved.includes(p.id))
-        .reduce((n, p) => n + p.points, 0);
+      const interviewPts = (tp.interviewVisited?.length ?? 0) * 2;
+      const deepPts = (tp.deepVisited?.length ?? 0) * 2;
+      const problemPts = (tp.problemsSolved?.length ?? 0) * 15;
       const bonus = tp.completed ? TOPIC_COMPLETE_BONUS : 0;
-      const total = tp.quizBest + problemPts + bonus;
+      const total = tp.quizBest + problemPts + interviewPts + deepPts + bonus;
       const max =
         summary.quizCount * QUIZ_POINTS_PER_QUESTION +
-        (topic?.problems.reduce((n, p) => n + p.points, 0) ?? 0) +
+        summary.problemCount * 15 +
+        summary.interviewLevels.length * 2 +
+        summary.deepTracks.length * 2 +
         TOPIC_COMPLETE_BONUS;
-      return { summary, tp, problemPts, bonus, total, max };
+      return { summary, tp, problemPts, interviewPts, deepPts, bonus, total, max };
     })
     .sort((a, b) => b.total - a.total);
 
@@ -34,8 +33,8 @@ export function ScoreboardPage() {
           <div>
             <h2>Scoreboard</h2>
             <p>
-              Quiz: {QUIZ_POINTS_PER_QUESTION} pts/question · Problems: variable · Topic complete
-              bonus: {TOPIC_COMPLETE_BONUS}
+              Quiz: {QUIZ_POINTS_PER_QUESTION} pts/Q · Problems: 15 pts · Interview/Deep visit: 2 pts
+              · Complete bonus: {TOPIC_COMPLETE_BONUS}
             </p>
           </div>
         </div>
@@ -51,9 +50,7 @@ export function ScoreboardPage() {
           </div>
           <div className="panel stat-card">
             <small>Problems solved</small>
-            <strong>
-              {stats.problemsSolved}/{stats.totalProblems}
-            </strong>
+            <strong>{stats.problemsSolved}</strong>
           </div>
           <div className="panel stat-card">
             <small>Completion</small>
@@ -62,58 +59,31 @@ export function ScoreboardPage() {
         </div>
 
         <div className="leader-list">
-          {rows.map(({ summary, tp, problemPts, bonus, total, max }, i) => {
-            const cat = CATEGORIES[summary.cat];
-            return (
-              <Link key={summary.slug} to={`/learn/${summary.slug}`} className="leader-row">
-                <strong style={{ width: '1.5rem' }}>{i + 1}</strong>
-                <div>
-                  <strong>
-                    {summary.emoji} {summary.title}
-                  </strong>
-                  <div className="muted" style={{ fontSize: '0.82rem', marginTop: 2 }}>
-                    Quiz best {tp.quizBest} · Problems {problemPts}
-                    {bonus ? ` · Bonus ${bonus}` : ''}
-                    {tp.completed ? ' · Done' : ''}
-                  </div>
-                  <div className="progress-bar" style={{ marginTop: 8 }}>
-                    <span
-                      style={{
-                        width: `${max ? Math.min(100, Math.round((total / max) * 100)) : 0}%`,
-                        background: `linear-gradient(90deg, ${cat.accent}, ${cat.text})`,
-                      }}
-                    />
-                  </div>
+          {rows.map(({ summary, tp, problemPts, interviewPts, deepPts, bonus, total, max }, i) => (
+            <Link key={summary.slug} to={`/topics/${summary.slug}`} className="leader-row">
+              <strong style={{ width: '1.5rem' }}>{i + 1}</strong>
+              <div>
+                <strong>
+                  {summary.emoji} {summary.title}
+                </strong>
+                <div className="muted" style={{ fontSize: '0.82rem', marginTop: 2 }}>
+                  Quiz {tp.quizBest} · Problems {problemPts} · Interview {interviewPts} · Deep{' '}
+                  {deepPts}
+                  {bonus ? ` · Bonus ${bonus}` : ''}
+                  {tp.completed ? ' · Done' : ''}
                 </div>
-                <strong style={{ color: cat.text }}>{total}</strong>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="panel content-panel">
-        <h2 style={{ fontFamily: 'var(--display)', marginTop: 0 }}>How scoring works</h2>
-        <div className="tip-list">
-          <div className="tip">
-            <span>✓</span>
-            <span>
-              Learn deeply first, then take the <strong>Quiz</strong>. Best attempt per topic counts.
-            </span>
-          </div>
-          <div className="tip">
-            <span>✓</span>
-            <span>
-              <strong>Practice</strong> problems add points once when marked solved.
-            </span>
-          </div>
-          <div className="tip">
-            <span>✓</span>
-            <span>
-              Perfect a quiz (or finish problems with a quiz score) for a {TOPIC_COMPLETE_BONUS}-point
-              completion bonus.
-            </span>
-          </div>
+                <div className="progress-bar" style={{ marginTop: 8 }}>
+                  <span
+                    style={{
+                      width: `${max ? Math.min(100, Math.round((total / max) * 100)) : 0}%`,
+                      background: summary.accent,
+                    }}
+                  />
+                </div>
+              </div>
+              <strong>{total}</strong>
+            </Link>
+          ))}
         </div>
       </section>
     </div>

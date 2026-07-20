@@ -1,0 +1,103 @@
+{
+  "id": "database",
+  "slug": "database",
+  "title": "Database",
+  "emoji": "🗄️",
+  "order": 18,
+  "tag": "Data",
+  "accent": "#0369A1",
+  "relatedTopics": [
+    "backend",
+    "system-design",
+    "django",
+    "spring-boot"
+  ],
+  "quiz": [
+    {
+      "id": "db-q1",
+      "question": "SQL logical execution order starts with…",
+      "options": [
+        "SELECT",
+        "WHERE",
+        "FROM / JOIN",
+        "ORDER BY"
+      ],
+      "correctIndex": 2,
+      "explanation": "FROM/JOIN → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT."
+    },
+    {
+      "id": "db-q2",
+      "question": "The N+1 problem means…",
+      "options": [
+        "One query returns N+1 rows",
+        "1 query for parents + N queries for children/associations",
+        "N indexes on 1 table",
+        "N transactions in 1 request"
+      ],
+      "correctIndex": 1,
+      "explanation": "Classic ORM pitfall; fix with JOIN FETCH, EntityGraph, or DTO projections."
+    },
+    {
+      "id": "db-q3",
+      "question": "Composite index (user_id, status) helps queries that filter on…",
+      "options": [
+        "status alone only",
+        "user_id alone, or user_id + status (leftmost prefix)",
+        "any column in the table",
+        "created_at only"
+      ],
+      "correctIndex": 1,
+      "explanation": "B-tree composite indexes follow the leftmost-prefix rule."
+    },
+    {
+      "id": "db-q4",
+      "question": "@Transactional on a private method in Spring…",
+      "options": [
+        "Always works",
+        "Is a silent no-op (AOP proxies public methods)",
+        "Rolls back checked exceptions by default",
+        "Forces REQUIRES_NEW"
+      ],
+      "correctIndex": 1,
+      "explanation": "Spring AOP only intercepts calls through the proxy on public methods."
+    },
+    {
+      "id": "db-q5",
+      "question": "ACID Atomicity in a bank transfer means…",
+      "options": [
+        "Debit can succeed without credit",
+        "Both debit and credit commit, or neither does",
+        "Reads always see latest writes globally",
+        "Data is encrypted at rest"
+      ],
+      "correctIndex": 1,
+      "explanation": "All-or-nothing: failure rolls back the whole transaction."
+    }
+  ],
+  "problems": [
+    {
+      "id": "db-p1",
+      "title": "Fix N+1 in JPA",
+      "difficulty": "medium",
+      "prompt": "findAll() users then calling user.getOrders() causes 1001 queries. Write the JPQL approach to fix it.",
+      "hints": [
+        "JOIN FETCH",
+        "DISTINCT for collections"
+      ],
+      "solution": "@Query(\"SELECT DISTINCT u FROM User u JOIN FETCH u.orders\") — loads users + orders in one SQL round trip.",
+      "points": 20
+    },
+    {
+      "id": "db-p2",
+      "title": "Index Decision",
+      "difficulty": "easy",
+      "prompt": "EXPLAIN shows Seq Scan on a 500k-row orders table filtered by user_id and status. What index do you add?",
+      "hints": [
+        "Composite for both filters.",
+        "Order columns by selectivity / query pattern."
+      ],
+      "solution": "CREATE INDEX idx_orders_user_status ON orders(user_id, status);",
+      "points": 10
+    }
+  ]
+}

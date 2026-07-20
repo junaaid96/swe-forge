@@ -1,24 +1,41 @@
 import { Router } from 'express';
-import { getInterviewSection, INTERVIEW_SECTIONS } from '../catalog.ts';
+import { TOPIC_SUMMARIES } from '../catalog.ts';
 
+/**
+ * Legacy compatibility: list topics as former "interview sections".
+ * Prefer /api/topics/:slug/interview/:level.
+ */
 export const interviewRouter = Router();
 
 interviewRouter.get('/', (_req, res) => {
   res.json({
-    sections: INTERVIEW_SECTIONS.map((s) => ({
-      id: s.id,
-      title: s.title,
-      description: s.description,
-      itemCount: s.items.length,
+    sections: TOPIC_SUMMARIES.map((t) => ({
+      id: t.slug,
+      title: t.title,
+      description: t.tag,
+      itemCount: t.interviewLevels.length,
     })),
   });
 });
 
 interviewRouter.get('/:sectionId', (req, res) => {
-  const section = getInterviewSection(req.params.sectionId);
-  if (!section) {
-    res.status(404).json({ error: 'Interview section not found' });
+  const topic = TOPIC_SUMMARIES.find((t) => t.slug === req.params.sectionId);
+  if (!topic) {
+    res.status(404).json({ error: 'Section not found' });
     return;
   }
-  res.json({ section });
+  res.json({
+    section: {
+      id: topic.slug,
+      title: topic.title,
+      description: topic.tag,
+      items: topic.interviewLevels.map((level) => ({
+        id: level,
+        title: level,
+        body: `Open /topics/${topic.slug}/interview/${level}`,
+        learnSlug: topic.slug,
+        tags: ['interview', level],
+      })),
+    },
+  });
 });

@@ -1,0 +1,16 @@
+{
+  "id": "react",
+  "slug": "react",
+  "title": "React",
+  "emoji": "⚛️",
+  "order": 8,
+  "tag": "Library",
+  "accent": "#0891B2",
+  "relatedTopics": [
+    "frontend",
+    "nextjs",
+    "testing-quality"
+  ],
+  "quiz": [],
+  "problems": []
+}

@@ -1,0 +1,17 @@
+{
+  "id": "java",
+  "slug": "java",
+  "title": "Java",
+  "emoji": "☕",
+  "order": 2,
+  "tag": "Language",
+  "accent": "#EA580C",
+  "relatedTopics": [
+    "spring-boot",
+    "backend",
+    "cs-fundamentals",
+    "dsa"
+  ],
+  "quiz": [],
+  "problems": []
+}

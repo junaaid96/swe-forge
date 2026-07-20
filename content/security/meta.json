@@ -1,0 +1,190 @@
+{
+  "id": "security",
+  "slug": "security",
+  "title": "Security",
+  "emoji": "🔒",
+  "order": 22,
+  "tag": "AppSec",
+  "accent": "#BE123C",
+  "relatedTopics": [
+    "backend",
+    "frontend",
+    "devops-cloud",
+    "api-design"
+  ],
+  "quiz": [
+    {
+      "id": "se-q1",
+      "question": "SQL injection is best prevented by…",
+      "options": [
+        "String concatenation of user input",
+        "Parameterized queries / prepared statements",
+        "Disabling HTTPS",
+        "Base64 encoding only"
+      ],
+      "correctIndex": 1,
+      "explanation": "Never concatenate untrusted input into SQL."
+    },
+    {
+      "id": "se-q2",
+      "question": "XSS attacks inject…",
+      "options": [
+        "SQL into databases only",
+        "Malicious scripts into pages viewed by others",
+        "Only binary firmware",
+        "BGP routes"
+      ],
+      "correctIndex": 1,
+      "explanation": "Escape/encode output; use CSP; sanitize HTML carefully."
+    },
+    {
+      "id": "se-q3",
+      "question": "CSRF protection for cookie sessions often uses…",
+      "options": [
+        "No tokens",
+        "Anti-CSRF tokens or SameSite cookies",
+        "Disabling CORS forever",
+        "MD5 passwords"
+      ],
+      "correctIndex": 1,
+      "explanation": "Browser sends cookies automatically; CSRF tokens / SameSite mitigate."
+    },
+    {
+      "id": "se-q4",
+      "question": "Principle of least privilege means…",
+      "options": [
+        "Everyone is admin",
+        "Grant only the minimum permissions needed",
+        "Share one DB user for all apps",
+        "Disable auth in staging copies of prod data"
+      ],
+      "correctIndex": 1,
+      "explanation": "Limit blast radius of compromised credentials."
+    },
+    {
+      "id": "se-q5",
+      "question": "Store passwords using…",
+      "options": [
+        "Plain text",
+        "Reversible encryption only",
+        "Strong salted hashing (bcrypt/argon2)",
+        "SHA1 without salt"
+      ],
+      "correctIndex": 2,
+      "explanation": "One-way slow hashes with unique salts; never reversible “encryption” for passwords."
+    },
+    {
+      "id": "auth-q1",
+      "question": "OAuth2/JWT without HTTPS is…",
+      "options": [
+        "Fine on localhost prod",
+        "Unsafe — tokens can be intercepted",
+        "Required by JWT spec to skip TLS",
+        "Only a CORS issue"
+      ],
+      "correctIndex": 1,
+      "explanation": "TLS protects the channel."
+    },
+    {
+      "id": "auth-q2",
+      "question": "Prefer RS256/JWKS over HS256 in microservices because…",
+      "options": [
+        "It is shorter",
+        "Public verify keys can be shared; private signing key stays in the issuer",
+        "HS256 is illegal",
+        "JWTs cannot use HS256"
+      ],
+      "correctIndex": 1,
+      "explanation": "Avoid distributing a symmetric secret everywhere."
+    },
+    {
+      "id": "auth-q3",
+      "question": "Authorization Code + PKCE is for…",
+      "options": [
+        "Batch ETL",
+        "User login for public clients (SPA/mobile)",
+        "Disk encryption",
+        "SQL indexing"
+      ],
+      "correctIndex": 1,
+      "explanation": "Delegated user auth."
+    },
+    {
+      "id": "auth-q4",
+      "question": "Client Credentials grant is for…",
+      "options": [
+        "End-user browser login",
+        "Machine-to-machine / service auth",
+        "CSS themes",
+        "DNSSEC"
+      ],
+      "correctIndex": 1,
+      "explanation": "No user interaction."
+    },
+    {
+      "id": "auth-q5",
+      "question": "mTLS proves…",
+      "options": [
+        "User email always",
+        "Service identity via certificates on both sides",
+        "Password strength",
+        "Kafka lag"
+      ],
+      "correctIndex": 1,
+      "explanation": "Mutual certificate auth."
+    }
+  ],
+  "problems": [
+    {
+      "id": "se-p1",
+      "title": "Secure an Endpoint",
+      "difficulty": "medium",
+      "prompt": "POST /transfer moves money. List security controls you require before production.",
+      "hints": [
+        "Authn/z",
+        "Idempotency",
+        "Validation",
+        "Audit"
+      ],
+      "solution": "AuthN (JWT/session), AuthZ (own accounts only), input validation, HTTPS, rate limit, idempotency key, audit log, fraud checks, CSRF if cookie-based.",
+      "points": 20
+    },
+    {
+      "id": "se-p2",
+      "title": "Secret Leak Response",
+      "difficulty": "easy",
+      "prompt": "An AWS key was committed to GitHub. Immediate steps?",
+      "hints": [
+        "Rotate first",
+        "Purge history"
+      ],
+      "solution": "Revoke/rotate key immediately; check CloudTrail for abuse; remove from git history; add secret scanning; educate the team.",
+      "points": 15
+    },
+    {
+      "id": "auth-p1",
+      "title": "Token design",
+      "difficulty": "medium",
+      "prompt": "List 5 validations your API must perform on an access JWT.",
+      "hints": [
+        "sig",
+        "exp",
+        "iss",
+        "aud"
+      ],
+      "solution": "Verify signature with JWKS; check exp; iss; aud; required scopes/roles for the route.",
+      "points": 20
+    },
+    {
+      "id": "auth-p2",
+      "title": "Flow choice",
+      "difficulty": "easy",
+      "prompt": "Internal cron calls billing API with no user. Which OAuth flow?",
+      "hints": [
+        "client credentials"
+      ],
+      "solution": "Client Credentials grant (or mTLS + workload identity).",
+      "points": 10
+    }
+  ]
+}

@@ -1,15 +1,14 @@
 import { Link } from 'react-router-dom';
-import { CATEGORIES } from '../data/categories';
 import { useTopicSummaries } from '../hooks/useTopics';
 import { getCompletionStats, getTopicProgress, useProgress } from '../store/progress';
 
 const ROADMAP = [
-  { label: 'Foundation', cat: 'core' as const, hint: 'SOLID, concurrency, OS' },
-  { label: 'Backend depth', cat: 'data' as const, hint: 'Cache, idempotency, APIs' },
-  { label: 'Architecture', cat: 'arch' as const, hint: 'Messaging, networking, design' },
-  { label: 'Ops & security', cat: 'ops' as const, hint: 'Auth, cloud, observability' },
-  { label: 'AI era', cat: 'ai' as const, hint: 'RAG & agents' },
-  { label: 'Quality', cat: 'practice' as const, hint: 'TDD, testing, Git' },
+  { label: 'Engineering craft', hint: 'SWE · LLD · Testing · Git', slugs: ['software-engineering', 'low-level-design', 'testing-quality', 'git-collaboration'] },
+  { label: 'Languages & frameworks', hint: 'Java · Spring · Python · Django · Node', slugs: ['java', 'spring-boot', 'python', 'django', 'nodejs'] },
+  { label: 'Frontend', hint: 'Web · React · Next · Angular · UI/UX', slugs: ['frontend', 'react', 'nextjs', 'angular', 'ui-ux'] },
+  { label: 'Backend & data', hint: 'API · Backend · Database · Security', slugs: ['backend', 'api-design', 'database', 'security'] },
+  { label: 'Systems', hint: 'CS · DSA · System Design · DevOps · AI', slugs: ['cs-fundamentals', 'dsa', 'system-design', 'devops-cloud', 'ai-ml'] },
+  { label: 'Interview soft skills', hint: 'Behavioral STAR', slugs: ['behavioral'] },
 ];
 
 export function HomePage() {
@@ -23,21 +22,20 @@ export function HomePage() {
     <>
       <section className="panel hero">
         <div className="hero-inner">
-          <div className="hero-kicker">Depth-first software engineering</div>
+          <div className="hero-kicker">Topic-wise Interview · Deep</div>
           <h1>SWE Forge</h1>
           <p>
-            Learn backend fundamentals in depth — concurrency, caching, messaging, idempotency,
-            auth — with practical examples. Then prove it with quizzes, problems, and an interview
-            guide that links back to the lessons.
+            Every subject has two paths: <strong>Interview</strong> (Basics → Company-specific) and{' '}
+            <strong>Deep</strong> (Theory → Pitfalls). Learn in depth, then practice for the loop.
           </p>
           <div className="hero-actions">
             {next ? (
-              <Link className="primary-btn" to={`/learn/${next.slug}`}>
-                Continue learning: {next.title}
+              <Link className="primary-btn" to={`/topics/${next.slug}`}>
+                Continue: {next.title}
               </Link>
             ) : null}
-            <Link className="secondary-btn" to="/interview">
-              Interview guide
+            <Link className="secondary-btn" to="/scoreboard">
+              Scoreboard
             </Link>
           </div>
         </div>
@@ -67,20 +65,19 @@ export function HomePage() {
       <div className="section-head">
         <div>
           <h2>Learning roadmap</h2>
-          <p>Foundation → backend depth → architecture → ops → interview practice</p>
+          <p>Craft → stack → frontend → backend → systems → behavioral</p>
         </div>
       </div>
       <div className="roadmap-strip">
         {ROADMAP.map((step, i) => {
-          const meta = CATEGORIES[step.cat];
-          const count = topics.filter((t) => t.cat === step.cat).length;
+          const count = topics.filter((t) => step.slugs.includes(t.slug)).length;
           return (
             <div key={step.label} className="panel roadmap-step" style={{ animationDelay: `${i * 0.05}s` }}>
               <span className="roadmap-index">{i + 1}</span>
-              <strong style={{ color: meta.text }}>{step.label}</strong>
+              <strong>{step.label}</strong>
               <small className="muted">
                 {step.hint}
-                {count ? ` · ${count} topics` : ''}
+                {count ? ` · ${count}` : ''}
               </small>
             </div>
           );
@@ -95,53 +92,32 @@ export function HomePage() {
               ? 'Loading curriculum…'
               : error
                 ? error
-                : `${topics.length} deep lessons with quizzes & practice`}
+                : `${topics.length} topics · Interview + Deep each`}
           </p>
         </div>
       </div>
 
       <div className="topic-grid">
-        {topics.map((topic, i) => {
-          const cat = CATEGORIES[topic.cat];
+        {topics.map((topic) => {
           const tp = getTopicProgress(progress, topic.slug);
-          const quizMax = topic.quizCount * 10;
-          const pct = quizMax
-            ? Math.min(100, Math.round((tp.quizBest / quizMax) * 100))
-            : tp.completed
-              ? 100
-              : 0;
-
           return (
             <Link
               key={topic.slug}
-              to={`/learn/${topic.slug}`}
+              to={`/topics/${topic.slug}`}
               className="panel topic-card"
-              style={{ animationDelay: `${0.03 * i}s` }}
+              style={{ ['--cat' as string]: topic.accent }}
             >
               <div className="topic-card-top">
-                <span className="topic-emoji">{topic.emoji}</span>
-                <span
-                  className="cat-badge"
-                  style={{
-                    ['--cat-bg' as string]: cat.bg,
-                    ['--cat-text' as string]: cat.text,
-                    ['--cat-border' as string]: cat.border,
-                  }}
-                >
-                  {cat.label}
-                </span>
+                <span className="emoji lg">{topic.emoji}</span>
+                {tp.completed ? <span className="pill done-pill">Done</span> : null}
               </div>
-              <h3>
-                {topic.order}. {topic.title}
-              </h3>
-              <p>{topic.tag}</p>
-              <div className="progress-bar" aria-label={`${pct}% quiz best`}>
-                <span style={{ width: `${pct}%` }} />
+              <h3>{topic.title}</h3>
+              <p className="muted">{topic.tag}</p>
+              <div className="topic-card-meta">
+                <span>{topic.interviewLevels.length} interview levels</span>
+                <span>{topic.deepTracks.length} deep tracks</span>
+                {topic.quizCount ? <span>{topic.quizCount}Q</span> : null}
               </div>
-              <small className="muted">
-                {tp.completed ? 'Completed' : `${topic.sectionCount} sections`} · {topic.quizCount}Q ·{' '}
-                {topic.problemCount} problems
-              </small>
             </Link>
           );
         })}

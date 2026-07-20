@@ -32,16 +32,12 @@ export function AppLayout() {
               Home
             </NavLink>
             <NavLink
-              to="/learn/concurrency"
-              className={({ isActive }) => `pill-link ${isActive ? 'active' : ''}`}
+              to="/topics/software-engineering"
+              className={({ isActive }) =>
+                `pill-link ${isActive || location.pathname.startsWith('/topics') ? 'active' : ''}`
+              }
             >
-              Learn
-            </NavLink>
-            <NavLink
-              to="/interview"
-              className={({ isActive }) => `pill-link ${isActive ? 'active' : ''}`}
-            >
-              Interview
+              Topics
             </NavLink>
             <NavLink
               to="/scoreboard"

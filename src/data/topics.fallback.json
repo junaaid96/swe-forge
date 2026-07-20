@@ -1,0 +1,740 @@
+[
+  {
+    "id": "software-engineering",
+    "slug": "software-engineering",
+    "title": "Software Engineering",
+    "emoji": "🛠️",
+    "order": 1,
+    "tag": "Best practices hub",
+    "accent": "#0D9488",
+    "relatedTopics": [
+      "low-level-design",
+      "testing-quality",
+      "git-collaboration",
+      "devops-cloud"
+    ],
+    "quizCount": 15,
+    "problemCount": 6,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "java",
+    "slug": "java",
+    "title": "Java",
+    "emoji": "☕",
+    "order": 2,
+    "tag": "Language",
+    "accent": "#EA580C",
+    "relatedTopics": [
+      "spring-boot",
+      "backend",
+      "cs-fundamentals",
+      "dsa"
+    ],
+    "quizCount": 0,
+    "problemCount": 0,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "spring-boot",
+    "slug": "spring-boot",
+    "title": "Spring Boot",
+    "emoji": "🌱",
+    "order": 3,
+    "tag": "Framework",
+    "accent": "#16A34A",
+    "relatedTopics": [
+      "java",
+      "backend",
+      "database",
+      "security"
+    ],
+    "quizCount": 0,
+    "problemCount": 0,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "python",
+    "slug": "python",
+    "title": "Python",
+    "emoji": "🐍",
+    "order": 4,
+    "tag": "Language",
+    "accent": "#2563EB",
+    "relatedTopics": [
+      "django",
+      "backend",
+      "dsa",
+      "cs-fundamentals"
+    ],
+    "quizCount": 0,
+    "problemCount": 0,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "django",
+    "slug": "django",
+    "title": "Django",
+    "emoji": "🎸",
+    "order": 5,
+    "tag": "Framework",
+    "accent": "#0F766E",
+    "relatedTopics": [
+      "python",
+      "backend",
+      "database",
+      "security"
+    ],
+    "quizCount": 0,
+    "problemCount": 0,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "nodejs",
+    "slug": "nodejs",
+    "title": "Node.js",
+    "emoji": "🟢",
+    "order": 6,
+    "tag": "Runtime",
+    "accent": "#15803D",
+    "relatedTopics": [
+      "backend",
+      "nextjs",
+      "frontend",
+      "api-design"
+    ],
+    "quizCount": 0,
+    "problemCount": 0,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "frontend",
+    "slug": "frontend",
+    "title": "Frontend",
+    "emoji": "🎨",
+    "order": 7,
+    "tag": "Web UI",
+    "accent": "#DB2777",
+    "relatedTopics": [
+      "react",
+      "nextjs",
+      "angular",
+      "ui-ux"
+    ],
+    "quizCount": 0,
+    "problemCount": 0,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "react",
+    "slug": "react",
+    "title": "React",
+    "emoji": "⚛️",
+    "order": 8,
+    "tag": "Library",
+    "accent": "#0891B2",
+    "relatedTopics": [
+      "frontend",
+      "nextjs",
+      "testing-quality"
+    ],
+    "quizCount": 0,
+    "problemCount": 0,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "nextjs",
+    "slug": "nextjs",
+    "title": "Next.js",
+    "emoji": "▲",
+    "order": 9,
+    "tag": "Framework",
+    "accent": "#111827",
+    "relatedTopics": [
+      "react",
+      "frontend",
+      "nodejs",
+      "devops-cloud"
+    ],
+    "quizCount": 0,
+    "problemCount": 0,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "angular",
+    "slug": "angular",
+    "title": "Angular",
+    "emoji": "🅰️",
+    "order": 10,
+    "tag": "Framework",
+    "accent": "#DC2626",
+    "relatedTopics": [
+      "frontend",
+      "ui-ux",
+      "testing-quality"
+    ],
+    "quizCount": 0,
+    "problemCount": 0,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "backend",
+    "slug": "backend",
+    "title": "Backend",
+    "emoji": "🖥️",
+    "order": 11,
+    "tag": "Server",
+    "accent": "#0284C7",
+    "relatedTopics": [
+      "api-design",
+      "database",
+      "security",
+      "system-design",
+      "nodejs"
+    ],
+    "quizCount": 15,
+    "problemCount": 6,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "api-design",
+    "slug": "api-design",
+    "title": "API Design",
+    "emoji": "🔌",
+    "order": 12,
+    "tag": "Interfaces",
+    "accent": "#7C3AED",
+    "relatedTopics": [
+      "backend",
+      "system-design",
+      "security"
+    ],
+    "quizCount": 10,
+    "problemCount": 4,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "cs-fundamentals",
+    "slug": "cs-fundamentals",
+    "title": "CS Fundamentals",
+    "emoji": "🧮",
+    "order": 13,
+    "tag": "Foundations",
+    "accent": "#4F46E5",
+    "relatedTopics": [
+      "dsa",
+      "backend",
+      "security",
+      "java",
+      "python",
+      "nodejs"
+    ],
+    "quizCount": 15,
+    "problemCount": 6,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "dsa",
+    "slug": "dsa",
+    "title": "DSA",
+    "emoji": "🧩",
+    "order": 14,
+    "tag": "Algorithms",
+    "accent": "#B45309",
+    "relatedTopics": [
+      "cs-fundamentals",
+      "low-level-design",
+      "java",
+      "python"
+    ],
+    "quizCount": 15,
+    "problemCount": 6,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "low-level-design",
+    "slug": "low-level-design",
+    "title": "Low-Level Design",
+    "emoji": "🧱",
+    "order": 15,
+    "tag": "OOP design",
+    "accent": "#C2410C",
+    "relatedTopics": [
+      "software-engineering",
+      "system-design",
+      "java"
+    ],
+    "quizCount": 5,
+    "problemCount": 2,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "ui-ux",
+    "slug": "ui-ux",
+    "title": "UI/UX",
+    "emoji": "✨",
+    "order": 16,
+    "tag": "Product UI",
+    "accent": "#BE185D",
+    "relatedTopics": [
+      "frontend",
+      "react",
+      "angular"
+    ],
+    "quizCount": 0,
+    "problemCount": 0,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "system-design",
+    "slug": "system-design",
+    "title": "System Design",
+    "emoji": "🏛️",
+    "order": 17,
+    "tag": "HLD",
+    "accent": "#9333EA",
+    "relatedTopics": [
+      "backend",
+      "database",
+      "devops-cloud",
+      "api-design"
+    ],
+    "quizCount": 5,
+    "problemCount": 2,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "database",
+    "slug": "database",
+    "title": "Database",
+    "emoji": "🗄️",
+    "order": 18,
+    "tag": "Data",
+    "accent": "#0369A1",
+    "relatedTopics": [
+      "backend",
+      "system-design",
+      "django",
+      "spring-boot"
+    ],
+    "quizCount": 5,
+    "problemCount": 2,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "devops-cloud",
+    "slug": "devops-cloud",
+    "title": "DevOps & Cloud",
+    "emoji": "☁️",
+    "order": 19,
+    "tag": "Ops",
+    "accent": "#4F46E5",
+    "relatedTopics": [
+      "git-collaboration",
+      "security",
+      "system-design",
+      "backend"
+    ],
+    "quizCount": 10,
+    "problemCount": 4,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "git-collaboration",
+    "slug": "git-collaboration",
+    "title": "Git & Collaboration",
+    "emoji": "🌿",
+    "order": 20,
+    "tag": "VCS",
+    "accent": "#EA580C",
+    "relatedTopics": [
+      "software-engineering",
+      "devops-cloud",
+      "behavioral"
+    ],
+    "quizCount": 5,
+    "problemCount": 2,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "testing-quality",
+    "slug": "testing-quality",
+    "title": "Testing & Quality",
+    "emoji": "🧪",
+    "order": 21,
+    "tag": "QA",
+    "accent": "#059669",
+    "relatedTopics": [
+      "software-engineering",
+      "devops-cloud",
+      "backend",
+      "frontend"
+    ],
+    "quizCount": 10,
+    "problemCount": 4,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "security",
+    "slug": "security",
+    "title": "Security",
+    "emoji": "🔒",
+    "order": 22,
+    "tag": "AppSec",
+    "accent": "#BE123C",
+    "relatedTopics": [
+      "backend",
+      "frontend",
+      "devops-cloud",
+      "api-design"
+    ],
+    "quizCount": 10,
+    "problemCount": 4,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "ai-ml",
+    "slug": "ai-ml",
+    "title": "AI / ML Engineering",
+    "emoji": "🤖",
+    "order": 23,
+    "tag": "AI era",
+    "accent": "#A21CAF",
+    "relatedTopics": [
+      "system-design",
+      "backend",
+      "database"
+    ],
+    "quizCount": 5,
+    "problemCount": 2,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  },
+  {
+    "id": "behavioral",
+    "slug": "behavioral",
+    "title": "Behavioral",
+    "emoji": "💬",
+    "order": 24,
+    "tag": "STAR",
+    "accent": "#CA8A04",
+    "relatedTopics": [
+      "software-engineering",
+      "git-collaboration"
+    ],
+    "quizCount": 0,
+    "problemCount": 0,
+    "interviewLevels": [
+      "basics",
+      "medium",
+      "advanced",
+      "company-specific"
+    ],
+    "deepTracks": [
+      "theory",
+      "internals",
+      "best-practices",
+      "real-world-projects",
+      "performance",
+      "pitfalls"
+    ]
+  }
+]

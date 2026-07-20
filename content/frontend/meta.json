@@ -1,0 +1,17 @@
+{
+  "id": "frontend",
+  "slug": "frontend",
+  "title": "Frontend",
+  "emoji": "🎨",
+  "order": 7,
+  "tag": "Web UI",
+  "accent": "#DB2777",
+  "relatedTopics": [
+    "react",
+    "nextjs",
+    "angular",
+    "ui-ux"
+  ],
+  "quiz": [],
+  "problems": []
+}

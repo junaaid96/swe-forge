@@ -1,0 +1,101 @@
+{
+  "id": "low-level-design",
+  "slug": "low-level-design",
+  "title": "Low-Level Design",
+  "emoji": "🧱",
+  "order": 15,
+  "tag": "OOP design",
+  "accent": "#C2410C",
+  "relatedTopics": [
+    "software-engineering",
+    "system-design",
+    "java"
+  ],
+  "quiz": [
+    {
+      "id": "dp-q1",
+      "question": "Decorator primarily supports which SOLID principle?",
+      "options": [
+        "ISP",
+        "OCP Open/Closed",
+        "LSP only",
+        "DIP only"
+      ],
+      "correctIndex": 1,
+      "explanation": "Extend behavior without modifying the original class."
+    },
+    {
+      "id": "dp-q2",
+      "question": "Spring @Service default scope is…",
+      "options": [
+        "Prototype",
+        "Request",
+        "Singleton",
+        "Session"
+      ],
+      "correctIndex": 2,
+      "explanation": "One shared bean instance per container."
+    },
+    {
+      "id": "dp-q3",
+      "question": "Factory is best when…",
+      "options": [
+        "You need SQL",
+        "Creation logic/variants should be decoupled from callers",
+        "You want mutable globals",
+        "Logging only"
+      ],
+      "correctIndex": 1,
+      "explanation": "Callers depend on abstractions, not concretes."
+    },
+    {
+      "id": "dp-q4",
+      "question": "Observer across microservices is usually…",
+      "options": [
+        "static fields",
+        "message topics/queues",
+        "synchronized methods",
+        "finalizers"
+      ],
+      "correctIndex": 1,
+      "explanation": "Brokers realize distributed pub/sub."
+    },
+    {
+      "id": "dp-q5",
+      "question": "Danger of mutable singleton service fields?",
+      "options": [
+        "Slower GC",
+        "Cross-request races / data leaks",
+        "Cannot inject",
+        "No interfaces"
+      ],
+      "correctIndex": 1,
+      "explanation": "Shared mutable state under concurrency."
+    }
+  ],
+  "problems": [
+    {
+      "id": "dp-p1",
+      "title": "Pick a pattern",
+      "difficulty": "easy",
+      "prompt": "You need to add metrics timing around an existing UserRepository without editing its source. Which pattern?",
+      "hints": [
+        "same interface wrap"
+      ],
+      "solution": "Decorator: Caching/MetricsUserRepository implements UserRepository and delegates.",
+      "points": "10"
+    },
+    {
+      "id": "dp-p2",
+      "title": "Observer pitfall",
+      "difficulty": "medium",
+      "prompt": "An @EventListener sends email synchronously inside the request thread. What goes wrong and how do you fix?",
+      "hints": [
+        "latency",
+        "@Async or queue"
+      ],
+      "solution": "Email outages/latency block checkout. Publish event and process async (@Async or message queue) with retries/idempotency.",
+      "points": "20"
+    }
+  ]
+}

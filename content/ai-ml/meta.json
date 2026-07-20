@@ -1,0 +1,104 @@
+{
+  "id": "ai-ml",
+  "slug": "ai-ml",
+  "title": "AI / ML Engineering",
+  "emoji": "🤖",
+  "order": 23,
+  "tag": "AI era",
+  "accent": "#A21CAF",
+  "relatedTopics": [
+    "system-design",
+    "backend",
+    "database"
+  ],
+  "quiz": [
+    {
+      "id": "ai-q1",
+      "question": "RAG stands for…",
+      "options": [
+        "Random Access GPU",
+        "Retrieval-Augmented Generation",
+        "Reactive API Gateway",
+        "Redundant Array of GPUs"
+      ],
+      "correctIndex": 1,
+      "explanation": "Retrieve relevant docs, then generate grounded answers with an LLM."
+    },
+    {
+      "id": "ai-q2",
+      "question": "Vector databases store…",
+      "options": [
+        "Only CSV files",
+        "Embeddings for semantic similarity search",
+        "Passwords in plaintext",
+        "CSS variables"
+      ],
+      "correctIndex": 1,
+      "explanation": "pgvector, Pinecone, etc. enable nearest-neighbor search over embeddings."
+    },
+    {
+      "id": "ai-q3",
+      "question": "In 2026 system design interviews, a newly mainstream topic is…",
+      "options": [
+        "Punch cards",
+        "LLM/RAG and agent infrastructure",
+        "Floppy disk RAID",
+        "Only monoliths"
+      ],
+      "correctIndex": 1,
+      "explanation": "Classic designs remain; AI-era components (RAG, vector search, agents) are now common."
+    },
+    {
+      "id": "ai-q4",
+      "question": "Prompt/response caching helps mainly with…",
+      "options": [
+        "Ignoring safety",
+        "Latency and token cost for repeated queries",
+        "Training foundation models",
+        "Replacing evaluation"
+      ],
+      "correctIndex": 1,
+      "explanation": "Semantic or exact caches cut cost/latency for hot prompts."
+    },
+    {
+      "id": "ai-q5",
+      "question": "Agentic systems need careful design around…",
+      "options": [
+        "Only fonts",
+        "Tool permissions, sandboxing, memory, and long-running state",
+        "Removing all logs",
+        "Single-threaded CSS"
+      ],
+      "correctIndex": 1,
+      "explanation": "Agents that run tools for hours need isolation, checkpoints, and observability."
+    }
+  ],
+  "problems": [
+    {
+      "id": "ai-p1",
+      "title": "RAG Pipeline Outline",
+      "difficulty": "medium",
+      "prompt": "Outline ingest → retrieve → generate for an internal docs chatbot.",
+      "hints": [
+        "Chunking",
+        "Embeddings",
+        "Citations"
+      ],
+      "solution": "Ingest/chunk docs → embed → upsert vectors → query embed → top-k retrieve (+ rerank) → prompt with citations → generate → evaluate groundedness; refresh on doc changes.",
+      "points": 25
+    },
+    {
+      "id": "ai-p2",
+      "title": "Cost & Latency Budgets",
+      "difficulty": "hard",
+      "prompt": "Design controls so an LLM feature stays under $X/day and p95 < 2s. Name 4 techniques.",
+      "hints": [
+        "Cache",
+        "Model routing",
+        "Timeouts"
+      ],
+      "solution": "Semantic cache; smaller/faster model for easy queries; max tokens + timeouts; batch where possible; rate limits; fallbacks when provider degraded; monitor token spend.",
+      "points": 25
+    }
+  ]
+}

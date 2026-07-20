@@ -1,0 +1,15 @@
+{
+  "id": "behavioral",
+  "slug": "behavioral",
+  "title": "Behavioral",
+  "emoji": "💬",
+  "order": 24,
+  "tag": "STAR",
+  "accent": "#CA8A04",
+  "relatedTopics": [
+    "software-engineering",
+    "git-collaboration"
+  ],
+  "quiz": [],
+  "problems": []
+}

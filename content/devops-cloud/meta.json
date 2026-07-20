@@ -1,0 +1,185 @@
+{
+  "id": "devops-cloud",
+  "slug": "devops-cloud",
+  "title": "DevOps & Cloud",
+  "emoji": "☁️",
+  "order": 19,
+  "tag": "Ops",
+  "accent": "#4F46E5",
+  "relatedTopics": [
+    "git-collaboration",
+    "security",
+    "system-design",
+    "backend"
+  ],
+  "quiz": [
+    {
+      "id": "cd-q1",
+      "question": "Containers (Docker) primarily solve…",
+      "options": [
+        "Business requirements gathering",
+        "Packaging app + deps for consistent runtimes",
+        "Replacing all databases",
+        "DNS only"
+      ],
+      "correctIndex": 1,
+      "explanation": "Image = reproducible environment from laptop to prod."
+    },
+    {
+      "id": "cd-q2",
+      "question": "Kubernetes is mainly for…",
+      "options": [
+        "Writing CSS",
+        "Orchestrating containers (schedule, scale, heal)",
+        "Replacing Git",
+        "Compiling Java"
+      ],
+      "correctIndex": 1,
+      "explanation": "K8s schedules pods, restarts failures, scales replicas, exposes services."
+    },
+    {
+      "id": "cd-q3",
+      "question": "CI/CD pipelines should…",
+      "options": [
+        "Deploy untested main on Fridays only",
+        "Build, test, and safely deliver changes continuously",
+        "Skip linting",
+        "Store secrets in the repo"
+      ],
+      "correctIndex": 1,
+      "explanation": "Automate quality gates then deploy (GitHub Actions, GitLab CI, etc.)."
+    },
+    {
+      "id": "cd-q4",
+      "question": "Infrastructure as Code (Terraform) helps by…",
+      "options": [
+        "Clicking cloud consoles faster",
+        "Versioning and reviewing infra changes like code",
+        "Removing the need for IAM",
+        "Encrypting only local disks"
+      ],
+      "correctIndex": 1,
+      "explanation": "Declarative, reviewable, repeatable environments."
+    },
+    {
+      "id": "cd-q5",
+      "question": "A readiness probe failing means…",
+      "options": [
+        "The node is deleted forever",
+        "Traffic should not be sent until the app is ready",
+        "CI is broken",
+        "DNS is poisoned"
+      ],
+      "correctIndex": 1,
+      "explanation": "Readiness ≠ liveness; ready gates service membership."
+    },
+    {
+      "id": "ob-q1",
+      "question": "The three pillars of observability are…",
+      "options": [
+        "CPU, RAM, Disk",
+        "Logs, metrics, traces",
+        "Git, CI, CD",
+        "SQL, NoSQL, Cache"
+      ],
+      "correctIndex": 1,
+      "explanation": "Together they explain system behavior in production."
+    },
+    {
+      "id": "ob-q2",
+      "question": "RED metrics for services stand for…",
+      "options": [
+        "RAM, Errors, Disk",
+        "Rate, Errors, Duration",
+        "Retries, Events, Deploys",
+        "Reads, Edits, Deletes"
+      ],
+      "correctIndex": 1,
+      "explanation": "Request rate, error rate, and latency (duration)."
+    },
+    {
+      "id": "ob-q3",
+      "question": "Distributed tracing helps you…",
+      "options": [
+        "Only style CSS",
+        "Follow a request across microservices",
+        "Replace unit tests",
+        "Compile faster"
+      ],
+      "correctIndex": 1,
+      "explanation": "Spans + trace IDs show where time is spent and where failures occur."
+    },
+    {
+      "id": "ob-q4",
+      "question": "An SLO is…",
+      "options": [
+        "A marketing slogan",
+        "A target reliability level for a user-facing promise",
+        "A Kubernetes object only",
+        "A SQL index type"
+      ],
+      "correctIndex": 1,
+      "explanation": "Service Level Objective (e.g. 99.9% availability) drives alerts and error budgets."
+    },
+    {
+      "id": "ob-q5",
+      "question": "Alert on symptoms (user pain) rather than…",
+      "options": [
+        "Every CPU blip with no user impact",
+        "Error rate and latency SLOs",
+        "Saturation that predicts pain",
+        "Synthetic checks"
+      ],
+      "correctIndex": 0,
+      "explanation": "Noisy low-level alerts cause pager fatigue; alert on SLO burn."
+    }
+  ],
+  "problems": [
+    {
+      "id": "cd-p1",
+      "title": "Pipeline Sketch",
+      "difficulty": "medium",
+      "prompt": "List stages for a Spring Boot service CI/CD to Kubernetes.",
+      "hints": [
+        "Test → image → scan → deploy"
+      ],
+      "solution": "lint/test → build JAR → Docker image → vulnerability scan → push registry → deploy via Helm/manifests → smoke test → rollback on failure.",
+      "points": 20
+    },
+    {
+      "id": "cd-p2",
+      "title": "12-Factor Config",
+      "difficulty": "easy",
+      "prompt": "Where should DB URLs and API keys live in a cloud-native app?",
+      "hints": [
+        "Env vars / secret store",
+        "Not in git"
+      ],
+      "solution": "Environment variables or secret managers (AWS SM, Vault). Never commit secrets; inject at runtime.",
+      "points": 10
+    },
+    {
+      "id": "ob-p1",
+      "title": "Dashboard Essentials",
+      "difficulty": "easy",
+      "prompt": "List 6 panels you’d put on a service overview dashboard.",
+      "hints": [
+        "RED + deps"
+      ],
+      "solution": "RPS, p50/p95/p99 latency, error %, saturation (CPU/mem/pool), dependency latency/errors, recent deploy markers.",
+      "points": 10
+    },
+    {
+      "id": "ob-p2",
+      "title": "Trace a Slow Request",
+      "difficulty": "medium",
+      "prompt": "p99 is 2s. How do you use traces to find the culprit?",
+      "hints": [
+        "Critical path",
+        "DB spans"
+      ],
+      "solution": "Sample slow traces; inspect critical path spans; look for N+1, lock waits, remote timeouts; confirm with DB EXPLAIN and pool metrics; fix and verify p99.",
+      "points": 20
+    }
+  ]
+}

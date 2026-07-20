@@ -1,0 +1,269 @@
+{
+  "id": "backend",
+  "slug": "backend",
+  "title": "Backend",
+  "emoji": "🖥️",
+  "order": 11,
+  "tag": "Server",
+  "accent": "#0284C7",
+  "relatedTopics": [
+    "api-design",
+    "database",
+    "security",
+    "system-design",
+    "nodejs"
+  ],
+  "quiz": [
+    {
+      "id": "cache-q1",
+      "question": "Cache-aside miss path should…",
+      "options": [
+        "Only read Redis",
+        "Load DB then populate cache",
+        "Delete the database",
+        "Disable TTL"
+      ],
+      "correctIndex": 1,
+      "explanation": "Lazy populate from source of truth."
+    },
+    {
+      "id": "cache-q2",
+      "question": "Thundering herd happens when…",
+      "options": [
+        "TTL is infinite",
+        "Many clients miss the same expired hot key together",
+        "You use HTTPS",
+        "Redis is empty forever"
+      ],
+      "correctIndex": 1,
+      "explanation": "Synchronized expiry storms the DB."
+    },
+    {
+      "id": "cache-q3",
+      "question": "Safest default after a write?",
+      "options": [
+        "Hope TTL expires",
+        "Invalidate/update the cache key",
+        "Flush entire Redis always",
+        "Double TTL"
+      ],
+      "correctIndex": 1,
+      "explanation": "Delete or version the key."
+    },
+    {
+      "id": "cache-q4",
+      "question": "Redis as sole store for bank balances?",
+      "options": [
+        "Yes always",
+        "No — not durable source of truth for critical records",
+        "Only on Fridays",
+        "If TTL is 1s"
+      ],
+      "correctIndex": 1,
+      "explanation": "Use a real database for durable money state."
+    },
+    {
+      "id": "cache-q5",
+      "question": "Singleflight/coalescing helps by…",
+      "options": [
+        "Encrypting keys",
+        "Allowing only one loader for a miss; others wait",
+        "Removing indexes",
+        "Skipping auth"
+      ],
+      "correctIndex": 1,
+      "explanation": "Collapse duplicate loads."
+    },
+    {
+      "id": "msg-q1",
+      "question": "At-least-once delivery implies…",
+      "options": [
+        "No duplicates ever",
+        "Consumers must tolerate duplicates",
+        "Exactly-once DB writes automatic",
+        "No need for IDs"
+      ],
+      "correctIndex": 1,
+      "explanation": "Retries create duplicates."
+    },
+    {
+      "id": "msg-q2",
+      "question": "Transactional Outbox solves…",
+      "options": [
+        "DNS",
+        "Dual-write loss between DB and broker",
+        "CSS",
+        "GC pauses only"
+      ],
+      "correctIndex": 1,
+      "explanation": "Atomic business + event record in DB."
+    },
+    {
+      "id": "msg-q3",
+      "question": "Kafka ordering is guaranteed…",
+      "options": [
+        "Globally always",
+        "Per partition",
+        "Never",
+        "Only with Rabbit"
+      ],
+      "correctIndex": 1,
+      "explanation": "Order within a partition."
+    },
+    {
+      "id": "msg-q4",
+      "question": "DLQ is for…",
+      "options": [
+        "Faster happy path",
+        "Poison/failing messages after retries",
+        "Storing passwords",
+        "Replacing Redis"
+      ],
+      "correctIndex": 1,
+      "explanation": "Isolate bad messages."
+    },
+    {
+      "id": "msg-q5",
+      "question": "enable.idempotence=true mainly prevents…",
+      "options": [
+        "All business double charges",
+        "Duplicate records inside Kafka from producer retries",
+        "Network partitions",
+        "Schema evolution"
+      ],
+      "correctIndex": 1,
+      "explanation": "Producer-level Kafka duplicates, not app side effects."
+    },
+    {
+      "id": "idem-q1",
+      "question": "POST is made idempotent in practice with…",
+      "options": [
+        "Always using GET",
+        "Idempotency-Key + server-side dedupe store",
+        "Turning off HTTPS",
+        "Longer timeouts only"
+      ],
+      "correctIndex": 1,
+      "explanation": "Client key + persisted result."
+    },
+    {
+      "id": "idem-q2",
+      "question": "At-least-once delivery requires consumers to…",
+      "options": [
+        "Ignore keys",
+        "Tolerate duplicates via idempotent handling",
+        "Disable retries",
+        "Use only UDP"
+      ],
+      "correctIndex": 1,
+      "explanation": "Duplicates are normal."
+    },
+    {
+      "id": "idem-q3",
+      "question": "Same Idempotency-Key, different body should…",
+      "options": [
+        "Silently run both",
+        "Return conflict / reject",
+        "Delete the key",
+        "Charge twice"
+      ],
+      "correctIndex": 1,
+      "explanation": "409 or equivalent."
+    },
+    {
+      "id": "idem-q4",
+      "question": "Best place for durable dedupe of payments?",
+      "options": [
+        "Only browser localStorage",
+        "Database unique constraint / table",
+        "CSS cookie",
+        "CDN only"
+      ],
+      "correctIndex": 1,
+      "explanation": "Durable shared store."
+    },
+    {
+      "id": "idem-q5",
+      "question": "Timeout then retry without idempotency risks…",
+      "options": [
+        "Faster UX always",
+        "Double side effects",
+        "Smaller logs",
+        "Stronger TLS"
+      ],
+      "correctIndex": 1,
+      "explanation": "Ambiguous success + second execution."
+    }
+  ],
+  "problems": [
+    {
+      "id": "cache-p1",
+      "title": "Choose TTL",
+      "difficulty": "easy",
+      "prompt": "Product catalog changes rarely; prices change often. How do you cache?",
+      "hints": [
+        "separate keys"
+      ],
+      "solution": "Split keys: catalog:product:id long TTL; price:product:id short TTL or invalidate on price write.",
+      "points": "10"
+    },
+    {
+      "id": "cache-p2",
+      "title": "Stampede design",
+      "difficulty": "medium",
+      "prompt": "Hot key leaderboard expires every 60s and DB spikes. Propose two mitigations.",
+      "hints": [
+        "lock",
+        "stale-while-revalidate"
+      ],
+      "solution": "Use SETNX singleflight populate; or serve stale for 10s while refreshing; jitter TTLs.",
+      "points": "20"
+    },
+    {
+      "id": "msg-p1",
+      "title": "Dual-write failure",
+      "difficulty": "medium",
+      "prompt": "Service saves Payment then publish PaymentCompleted; crash between. What is lost and how do you fix?",
+      "hints": [
+        "outbox"
+      ],
+      "solution": "Event never published → downstream never runs. Write outbox in same DB tx; relay publishes.",
+      "points": "20"
+    },
+    {
+      "id": "msg-p2",
+      "title": "Idempotent consumer",
+      "difficulty": "medium",
+      "prompt": "Sketch DB-backed dedupe for event handlers.",
+      "hints": [
+        "unique event id"
+      ],
+      "solution": "processed_events(event_id PK); insert first; on conflict skip; else apply effects in same transaction when possible.",
+      "points": "20"
+    },
+    {
+      "id": "idem-p1",
+      "title": "Payment API",
+      "difficulty": "medium",
+      "prompt": "Design headers/tables for idempotent POST /charges.",
+      "hints": [
+        "key",
+        "hash",
+        "response store"
+      ],
+      "solution": "Idempotency-Key header; table(key PK, body_hash, status_code, response_json, created_at); first writer executes charge.",
+      "points": 20
+    },
+    {
+      "id": "idem-p2",
+      "title": "Webhook replay",
+      "difficulty": "easy",
+      "prompt": "Provider retries webhooks. How do you avoid double fulfillment?",
+      "hints": [
+        "event id"
+      ],
+      "solution": "Store provider event_id uniquely; process only on first insert.",
+      "points": 15
+    }
+  ]
+}

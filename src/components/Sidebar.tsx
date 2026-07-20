@@ -1,5 +1,4 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { CATEGORIES } from '../data/categories';
 import { useTopicSummaries } from '../hooks/useTopics';
 import { getCompletionStats, getTopicProgress, progressStore, useProgress } from '../store/progress';
 
@@ -14,21 +13,13 @@ export function Sidebar({ open, onClose }: SidebarProps) {
   const location = useLocation();
   const { topics, loading } = useTopicSummaries();
 
-  const grouped = (Object.keys(CATEGORIES) as Array<keyof typeof CATEGORIES>)
-    .map((cat) => ({
-      cat,
-      meta: CATEGORIES[cat],
-      topics: topics.filter((t) => t.cat === cat),
-    }))
-    .filter((g) => g.topics.length > 0);
-
   return (
     <aside className={`sidebar ${open ? 'open' : ''}`}>
       <NavLink to="/" className="brand" onClick={onClose}>
         <div className="brand-mark">SF</div>
         <div className="brand-text">
           <strong>SWE Forge</strong>
-          <span>Learn deeply · then practice</span>
+          <span>Interview · Deep</span>
         </div>
       </NavLink>
 
@@ -63,18 +54,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           <span className="emoji">🏠</span>
           <span className="meta">
             <strong>Home</strong>
-            <small>Depth-first path</small>
-          </span>
-        </NavLink>
-        <NavLink
-          to="/interview"
-          className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-          onClick={onClose}
-        >
-          <span className="emoji">🎯</span>
-          <span className="meta">
-            <strong>Interview Guide</strong>
-            <small>Practice after learning</small>
+            <small>All topics</small>
           </span>
         </NavLink>
         <NavLink
@@ -85,42 +65,39 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           <span className="emoji">🏆</span>
           <span className="meta">
             <strong>Scoreboard</strong>
-            <small>Quiz & problem points</small>
+            <small>Quiz & progress</small>
           </span>
         </NavLink>
 
         {loading ? <div className="nav-section">Loading topics…</div> : null}
 
-        {grouped.map((group) => (
-          <div key={group.cat}>
-            <div className="nav-section">{group.meta.label}</div>
-            {group.topics.map((topic) => {
-              const tp = getTopicProgress(progress, topic.slug);
-              const active = location.pathname.includes(`/learn/${topic.slug}`);
-              return (
-                <NavLink
-                  key={topic.slug}
-                  to={`/learn/${topic.slug}`}
-                  className={`nav-link ${active ? 'active' : ''}`}
-                  style={{ ['--cat' as string]: group.meta.accent }}
-                  onClick={onClose}
-                >
-                  <span className="emoji">{topic.emoji}</span>
-                  <span className="meta">
-                    <strong>{topic.title}</strong>
-                    <small>
-                      {topic.sectionCount} sections · {topic.quizCount}Q
-                    </small>
-                  </span>
-                  <span
-                    className={`dot ${tp.completed ? 'done' : ''}`}
-                    title={tp.completed ? 'Completed' : 'In progress'}
-                  />
-                </NavLink>
-              );
-            })}
-          </div>
-        ))}
+        <div className="nav-section">Topics</div>
+        {topics.map((topic) => {
+          const tp = getTopicProgress(progress, topic.slug);
+          const active = location.pathname.includes(`/topics/${topic.slug}`);
+          return (
+            <NavLink
+              key={topic.slug}
+              to={`/topics/${topic.slug}`}
+              className={`nav-link ${active ? 'active' : ''}`}
+              style={{ ['--cat' as string]: topic.accent }}
+              onClick={onClose}
+            >
+              <span className="emoji">{topic.emoji}</span>
+              <span className="meta">
+                <strong>{topic.title}</strong>
+                <small>
+                  {topic.interviewLevels.length}I · {topic.deepTracks.length}D
+                  {topic.quizCount ? ` · ${topic.quizCount}Q` : ''}
+                </small>
+              </span>
+              <span
+                className={`dot ${tp.completed ? 'done' : ''}`}
+                title={tp.completed ? 'Completed' : 'In progress'}
+              />
+            </NavLink>
+          );
+        })}
       </nav>
 
       <div className="sidebar-foot">

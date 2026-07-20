@@ -1,15 +1,31 @@
 # SWE Forge
 
-Depth-first software engineering learning platform — React frontend + Node/Express content API.
+Topic-wise software engineering learning platform — **Interview** + **Deep** per subject. React frontend + Node/Express content API.
 
-## Features
+## Content model
 
-- **25 topics** with detailed lessons, practical code, quizzes, and practice problems
-- Backend depth track: concurrency, immutability, design patterns, caching, messaging, idempotency, auth/TLS, TDD
-- Foundations: networking, OS, GraphQL/gRPC, plus original core curriculum
-- **Interview Guide** (secondary): roadmap, DSA patterns, system design prompts, STAR behavioral, CS MCQ
-- Scoreboard + local progress
-- Search across lessons and interview content
+Authoring lives under [`content/`](content/):
+
+```
+content/
+├── manifest.json
+└── <topic>/
+    ├── meta.json          # quiz, problems, relatedTopics
+    ├── interview/
+    │   ├── basics.md
+    │   ├── medium.md
+    │   ├── advanced.md
+    │   └── company-specific.md
+    └── deep/
+        ├── theory.md
+        ├── internals.md
+        ├── best-practices.md
+        ├── real-world-projects.md
+        ├── performance.md
+        └── pitfalls.md
+```
+
+Interview MD uses Q&A blocks (`**Answer:**` / `**Example:**` / `**Key takeaway:**`). Deep MD uses `##` sections.
 
 ## Run locally
 
@@ -22,20 +38,37 @@ npm run dev
 - Web: http://localhost:5173  
 - API: http://localhost:3001/api/health  
 
-`npm run dev` starts API + Vite together (Vite proxies `/api` → `:3001`).
-
 ## Scripts
 
 | Script | Purpose |
 |--------|---------|
 | `npm run dev` | API + web |
-| `npm run dev:web` | Vite only (uses fallback JSON if API down) |
-| `npm run dev:api` | Express API only |
+| `npm run scaffold:content` | Create topic folders + placeholders |
+| `npm run migrate:content` | Migrate Java/Spring MD + old JSON catalog into `content/` |
 | `npm run build` | Production client build |
 
-## Architecture
+## API
 
-- `server/data/topics/catalog.json` — curriculum source of truth
-- `server/data/interview/guide.json` — interview banks
-- `src/data/*.fallback.json` — offline fallback copies
-- Progress stored in browser `localStorage`
+| Endpoint | Description |
+|----------|-------------|
+| `GET /api/topics` | Topic summaries |
+| `GET /api/topics/:slug` | Topic detail + quiz/problems |
+| `GET /api/topics/:slug/interview/:level` | Interview Q&A |
+| `GET /api/topics/:slug/deep/:track` | Deep lesson |
+| `GET /api/search?q=` | Search topics, interview, deep |
+
+## Routes
+
+- `/` — topic grid
+- `/topics/:slug` — hub (Interview / Deep / Quiz / Practice)
+- `/topics/:slug/interview/:level`
+- `/topics/:slug/deep/:track`
+- `/scoreboard`
+
+Legacy `/learn/:slug` and `/interview/:id` redirect into the new routes.
+
+## Notes
+
+- Progress is stored in `localStorage` (`swe-forge-progress-v2`)
+- Restart the API after editing Markdown under `content/`
+- Offline fallback: [`src/data/topics.fallback.json`](src/data/topics.fallback.json)

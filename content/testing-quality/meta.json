@@ -1,0 +1,185 @@
+{
+  "id": "testing-quality",
+  "slug": "testing-quality",
+  "title": "Testing & Quality",
+  "emoji": "🧪",
+  "order": 21,
+  "tag": "QA",
+  "accent": "#059669",
+  "relatedTopics": [
+    "software-engineering",
+    "devops-cloud",
+    "backend",
+    "frontend"
+  ],
+  "quiz": [
+    {
+      "id": "te-q1",
+      "question": "The test pyramid puts most tests at…",
+      "options": [
+        "E2E UI",
+        "Unit tests",
+        "Manual QA only",
+        "Production canaries only"
+      ],
+      "correctIndex": 1,
+      "explanation": "Many fast unit tests, fewer integration, fewest E2E."
+    },
+    {
+      "id": "te-q2",
+      "question": "Mocks are useful when…",
+      "options": [
+        "You want to hit the real payment gateway every time",
+        "Isolating a unit from slow/external dependencies",
+        "Replacing assertions",
+        "Avoiding writing tests"
+      ],
+      "correctIndex": 1,
+      "explanation": "Mockito stubs collaborators so you test one unit’s behavior."
+    },
+    {
+      "id": "te-q3",
+      "question": "@WebMvcTest focuses on…",
+      "options": [
+        "Full application context + DB",
+        "Controller layer (MVC slice)",
+        "Only repositories",
+        "Only Kafka listeners"
+      ],
+      "correctIndex": 1,
+      "explanation": "Slice test for controllers; mock services underneath."
+    },
+    {
+      "id": "te-q4",
+      "question": "Flaky tests usually hurt teams because…",
+      "options": [
+        "They make CI green always",
+        "They erode trust in the suite and slow delivery",
+        "They improve coverage metrics",
+        "They replace code review"
+      ],
+      "correctIndex": 1,
+      "explanation": "Fix or quarantine flakes; never ignore red CI."
+    },
+    {
+      "id": "te-q5",
+      "question": "AAA in tests stands for…",
+      "options": [
+        "Arrange, Act, Assert",
+        "Always Add Annotations",
+        "Async, Await, Assert",
+        "API, Auth, Audit"
+      ],
+      "correctIndex": 0,
+      "explanation": "Structure every test: set up, exercise, verify."
+    },
+    {
+      "id": "tdd-q1",
+      "question": "Correct TDD order?",
+      "options": [
+        "Green → red → deploy",
+        "Red → green → refactor",
+        "Refactor → delete tests",
+        "Only write tests in prod"
+      ],
+      "correctIndex": 1,
+      "explanation": "Classic cycle."
+    },
+    {
+      "id": "tdd-q2",
+      "question": "A fake repository is useful because…",
+      "options": [
+        "It hits production DB",
+        "It gives fast deterministic storage for unit/domain tests",
+        "It skips asserts",
+        "It replaces CI"
+      ],
+      "correctIndex": 1,
+      "explanation": "In-memory seam."
+    },
+    {
+      "id": "tdd-q3",
+      "question": "Over-mocking often causes…",
+      "options": [
+        "Faster domain design",
+        "Brittle tests coupled to internals",
+        "Automatic SRP",
+        "No need for fakes"
+      ],
+      "correctIndex": 1,
+      "explanation": "Tests break on harmless refactors."
+    },
+    {
+      "id": "tdd-q4",
+      "question": "Characterization tests…",
+      "options": [
+        "Delete legacy code",
+        "Document/lock current behavior before refactor",
+        "Replace product owners",
+        "Only test UI pixels"
+      ],
+      "correctIndex": 1,
+      "explanation": "Safety net on existing behavior."
+    },
+    {
+      "id": "tdd-q5",
+      "question": "AAA means…",
+      "options": [
+        "Always Add Annotations",
+        "Arrange Act Assert",
+        "Async Await Atomic",
+        "None"
+      ],
+      "correctIndex": 1,
+      "explanation": "Structure every test."
+    }
+  ],
+  "problems": [
+    {
+      "id": "te-p1",
+      "title": "Unit Test Outline",
+      "difficulty": "easy",
+      "prompt": "Write AAA steps for testing OrderService.placeOrder when amount is negative (should throw).",
+      "hints": [
+        "Mock repo/notifier",
+        "Assert exception + no save"
+      ],
+      "solution": "Arrange: mock deps, order with amount < 0. Act: call placeOrder. Assert: throws IllegalArgumentException; verify repo.save never called.",
+      "points": 10
+    },
+    {
+      "id": "te-p2",
+      "title": "What to Mock",
+      "difficulty": "medium",
+      "prompt": "In a service test, should you mock the database or use @DataJpaTest? Explain trade-offs.",
+      "hints": [
+        "Speed vs realism",
+        "Layer under test"
+      ],
+      "solution": "Pure unit: mock repository (fast, isolated). Repository correctness: @DataJpaTest with real SQL dialect/H2. Don’t mix concerns in one test.",
+      "points": 15
+    },
+    {
+      "id": "tdd-p1",
+      "title": "Write the red test",
+      "difficulty": "easy",
+      "prompt": "For discount: orders >= 100 get 10% off. Write a test name + assert sketch before implementation.",
+      "hints": [
+        "behavior name"
+      ],
+      "solution": "@Test void appliesTenPercentWhenTotalAtLeast100() { assertEquals(90, pricing.total(cartWith(100))); }",
+      "points": 10
+    },
+    {
+      "id": "tdd-p2",
+      "title": "Choose double",
+      "difficulty": "medium",
+      "prompt": "PaymentService talks to Stripe HTTP. What do you use in unit TDD and why?",
+      "hints": [
+        "mock/fake gateway"
+      ],
+      "solution": "Mock/fake PaymentGateway interface — do not call Stripe in unit tests; keep an integration test separate.",
+      "points": 15
+    }
+  ]
+}

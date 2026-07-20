@@ -1,0 +1,17 @@
+{
+  "id": "spring-boot",
+  "slug": "spring-boot",
+  "title": "Spring Boot",
+  "emoji": "🌱",
+  "order": 3,
+  "tag": "Framework",
+  "accent": "#16A34A",
+  "relatedTopics": [
+    "java",
+    "backend",
+    "database",
+    "security"
+  ],
+  "quiz": [],
+  "problems": []
+}

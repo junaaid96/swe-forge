@@ -1,8 +1,8 @@
 import cors from 'cors';
 import express from 'express';
-import { interviewRouter } from './routes/interview.ts';
-import { searchRouter } from './routes/search.ts';
-import { topicsRouter } from './routes/topics.ts';
+import { interviewRouter } from './routes/interview.js';
+import { searchRouter } from './routes/search.js';
+import { topicsRouter } from './routes/topics.js';
 
 const app = express();
 const port = Number(process.env.PORT) || 3001;

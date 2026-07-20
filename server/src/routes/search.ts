@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { searchAll } from '../catalog.ts';
+import { searchAll } from '../catalog.js';
 
 export const searchRouter = Router();
 

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { TOPIC_SUMMARIES } from '../catalog.ts';
+import { TOPIC_SUMMARIES } from '../catalog.js';
 
 /**
  * Legacy compatibility: list topics as former "interview sections".

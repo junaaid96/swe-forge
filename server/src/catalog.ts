@@ -12,7 +12,7 @@ import type {
   TopicDetail,
   TopicMeta,
   TopicSummary,
-} from './types.ts';
+} from './types.js';
 import {
   DEEP_TRACKS,
   INTERVIEW_LEVELS,
@@ -20,7 +20,7 @@ import {
   interviewLevelLabel,
   isDeepTrack,
   isInterviewLevel,
-} from './types.ts';
+} from './types.js';
 
 const serverRoot = join(dirname(fileURLToPath(import.meta.url)), '..');
 const repoRoot = join(serverRoot, '..');

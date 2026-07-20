@@ -4,7 +4,7 @@ import {
   getInterviewLevel,
   getTopicDetail,
   TOPIC_SUMMARIES,
-} from '../catalog.ts';
+} from '../catalog.js';
 
 export const topicsRouter = Router();
 

@@ -36,7 +36,7 @@ export function TopicHubPage() {
       </nav>
 
       <section className="panel content-panel hero-topic" style={{ borderColor: topic.accent }}>
-        <div className="hero-kicker" style={{ color: topic.accent }}>
+        <div className="accent-kicker" style={{ ['--cat' as string]: topic.accent }}>
           {topic.tag}
         </div>
         <h1>

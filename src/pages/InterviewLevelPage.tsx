@@ -74,7 +74,7 @@ export function InterviewLevelPage() {
       </nav>
 
       <section className="panel content-panel">
-        <div className="hero-kicker" style={{ color: accent }}>
+        <div className="accent-kicker" style={{ ['--cat' as string]: accent }}>
           Interview · {interviewLevelLabel(content.level)}
         </div>
         <h1>{content.title}</h1>

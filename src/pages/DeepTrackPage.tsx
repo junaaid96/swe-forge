@@ -75,7 +75,7 @@ export function DeepTrackPage() {
       </nav>
 
       <section className="panel content-panel">
-        <div className="hero-kicker" style={{ color: accent }}>
+        <div className="accent-kicker" style={{ ['--cat' as string]: accent }}>
           Deep · {deepTrackLabel(content.track)}
         </div>
         <h1>{content.title}</h1>

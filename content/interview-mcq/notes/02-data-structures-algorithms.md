@@ -1,10 +1,10 @@
 # 📗 Data Structures & Algorithms — MCQ Test Preparation Guide
-### *(Guide 2 of 4 — based on your "MCQ Test Preparation Guideline" image: DSA card)*
+### *(Guide 2 of 4 in the MCQ test-prep series: DSA)*
 
 **Covers:** Data Structures · Algorithms · Complexity Analysis · Recursion
 
-> Companion files: `01-Programming.md` · `03-CS-Fundamentals.md` · `04-Logical-Reasoning.md`
-> You already have 80+ Codeforces problems solved — this guide is structured to fill MCQ-style conceptual gaps (definitions, complexity, "which pattern fits") rather than re-teach you competitive programming from scratch.
+> Companion guides: [Programming](./01-programming.md) · [CS Fundamentals](./03-cs-fundamentals.md) · [Logical Reasoning](./04-logical-reasoning.md)
+> This guide assumes you've solved some competitive-programming problems already; it fills MCQ-style conceptual gaps (definitions, complexity, "which pattern fits") rather than re-teaching competitive programming from scratch.
 
 ---
 
@@ -297,7 +297,7 @@ boolean isValidParens(String s) {
 
 ### 5.2 Queue — FIFO (First In, First Out)
 Operations: `enqueue`, `dequeue` — O(1) with a proper implementation (e.g., `ArrayDeque` or a linked list, **not** `ArrayList.remove(0)` which is O(n)).
-Use cases: task scheduling, BFS, print queues, message queues (Kafka/RabbitMQ-style systems — directly relevant to your Event-Driven architecture study).
+Use cases: task scheduling, BFS, print queues, message queues (Kafka/RabbitMQ-style systems — the backbone of event-driven architectures).
 
 **Variants:**
 - **Circular Queue:** fixed-size buffer that wraps around — used in producer-consumer buffering.
@@ -400,7 +400,7 @@ void levelOrder(TreeNode root) {
 ### 7.4 Balanced Trees
 - **AVL Tree:** self-balancing BST, height difference between subtrees ≤ 1, rebalances via rotations on every insert/delete.
 - **Red-Black Tree:** self-balancing BST with a coloring scheme; used internally by Java's `TreeMap`/`TreeSet` and C++'s `std::map`.
-- **B-Trees / B+ Trees:** balanced multi-way trees — **the actual structure used inside most database indexes** (directly relevant to your indexing/DBMS study — see `03-CS-Fundamentals.md`).
+- **B-Trees / B+ Trees:** balanced multi-way trees — **the actual structure used inside most database indexes** (see [CS Fundamentals](./03-cs-fundamentals.md) for indexing and DBMS theory).
 
 ### 7.5 Heaps as trees — see Section 8.
 
@@ -711,7 +711,7 @@ While LeetCode-style DSA questions are mostly interview-specific, the *underlyin
 
 - **Hash maps** — caching, deduplication, grouping/counting — used in nearly every service you write.
 - **Big O thinking** — choosing `ArrayList` vs `LinkedList` vs `HashMap`, avoiding N+1 queries (a database-flavored O(n) problem), avoiding nested loops over large datasets.
-- **Queues** — literally the data structure behind message brokers (Kafka, RabbitMQ) that power your Event-Driven/Saga architecture study.
+- **Queues** — literally the data structure behind message brokers (Kafka, RabbitMQ) that power event-driven and Saga architectures.
 - **Trees** — B+ Trees power database indexes; JSON/XML parsing produces tree structures; org charts, category hierarchies.
 - **Graphs** — service dependency graphs, social networks, recommendation systems, `git` commit history (a DAG).
 - **Sorting/searching** — built-in library sorts are used constantly; understanding stability matters when sorting by multiple keys.
@@ -725,4 +725,4 @@ While LeetCode-style DSA questions are mostly interview-specific, the *underlyin
 
 ---
 
-**Next:** `03-CS-Fundamentals.md` →
+**Next:** [CS Fundamentals](./03-cs-fundamentals.md) →

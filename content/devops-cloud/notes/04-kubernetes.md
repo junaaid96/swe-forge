@@ -1,4 +1,4 @@
-# 05 · Kubernetes
+# Kubernetes
 
 > The JD says "exposure to Kubernetes" for associate level. In practice you'll be asked to **read manifests, deploy, and debug**. Architecture questions show depth, but debugging skill gets you hired.
 
@@ -127,9 +127,9 @@ data:
   LOG_LEVEL: "INFO"
 ```
 
-⚠️ **Gotcha — Secrets are base64, NOT encrypted:** anyone who can `get secrets` in the namespace can read them. Protect them with RBAC, encryption at rest for etcd (AKS encrypts etcd; KMS integration adds your own key), and ideally keep the source of truth in **Key Vault** via the CSI driver (see [11-security](../devops-cloud/10-security.md)).
+⚠️ **Gotcha — Secrets are base64, NOT encrypted:** anyone who can `get secrets` in the namespace can read them. Protect them with RBAC, encryption at rest for etcd (AKS encrypts etcd; KMS integration adds your own key), and ideally keep the source of truth in **Key Vault** via the CSI driver (see [Security](./10-security.md)).
 
-⚠️ **Gotcha — env vars don't hot-reload:** changing a ConfigMap does **not** restart pods using `envFrom`. Roll them (`kubectl rollout restart deploy/medilab-api`) or use the Helm checksum-annotation trick ([06-helm](../devops-cloud/05-helm.md)). Mounted-as-file ConfigMaps *do* update eventually, but your app must re-read them.
+⚠️ **Gotcha — env vars don't hot-reload:** changing a ConfigMap does **not** restart pods using `envFrom`. Roll them (`kubectl rollout restart deploy/medilab-api`) or use the Helm checksum-annotation trick ([Helm](./05-helm.md)). Mounted-as-file ConfigMaps *do* update eventually, but your app must re-read them.
 
 ---
 
@@ -371,7 +371,7 @@ Memory aid: **affinity attracts, taints repel.**
 
 ---
 
-## 13. Security objects (details in [11-security](../devops-cloud/10-security.md))
+## 13. Security objects (details in [Security](./10-security.md))
 
 **RBAC:** `Role` (namespaced) / `ClusterRole` (cluster-wide) define verbs on resources. `RoleBinding` / `ClusterRoleBinding` grant them to users, groups, or **ServiceAccounts**.
 
@@ -489,7 +489,8 @@ kubectl port-forward svc/medilab-api 8080:80 -n medilab
 ## 16. 2026 version notes (v1.37, released 26 Aug 2026)
 
 - 67 enhancements: 16 stable, 23 beta, 27 alpha, 1 deprecation/removal
-- Release coverage highlights: HPA scale-to-zero **beta**, Workload/PodGroup (gang scheduling) APIs to **beta**, kube-proxy **IPVS mode removed**, **kube-dns dropped** in favour of CoreDNS → read the official changelog for the exact scope before you quote details
+- Highlights: HPA scale-to-zero **beta and on by default** (for object/external metrics, `minReplicas: 0`), gang scheduling via the Workload/PodGroup APIs to **beta**, KYAML and the `metrics.k8s.io` API to **stable**
+- Deprecations: kube-proxy **IPVS mode is deprecated** (expected off by default in v1.40, removed in v1.43; move to `nftables`), and **kube-dns is deprecated** in favour of CoreDNS (no new kube-dns packages expected after v1.40)
 - **AKS versions lag upstream**, so check `az aks get-versions --location southeastasia -o table`
 
 ---

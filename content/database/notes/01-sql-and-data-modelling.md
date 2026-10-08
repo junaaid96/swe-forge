@@ -1,6 +1,6 @@
 # 1. SQL & Data Modelling
 
-**Current state (Sept 2026):** PostgreSQL **18** (18.6) is the newest major — async I/O, skip-scan for B-tree indexes, `uuidv7()`, virtual generated columns, OAuth auth. PostgreSQL remains the default choice for new systems; MySQL 8.4 LTS holds a large installed base. Examples here are PostgreSQL unless noted.
+**Current state (Sept 2026):** PostgreSQL **18** (18.6) is the newest released major (PostgreSQL 19 is in release candidates, with GA scheduled for late October 2026) — async I/O, skip-scan for B-tree indexes, `uuidv7()`, virtual generated columns, OAuth auth. PostgreSQL remains the default choice for new systems; MySQL 8.4 LTS holds a large installed base. Examples here are PostgreSQL unless noted.
 
 ---
 

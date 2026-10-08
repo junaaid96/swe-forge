@@ -122,7 +122,7 @@ public class CheckoutService {
 
 ### Tips
 
-- Explain SOLID with concrete code from your eGeneration work — showing a class that violates SRP and how you split it is very powerful in interviews
+- Explain SOLID with concrete code from your own work — showing a class that violates SRP and how you split it is very powerful in interviews
 - Abstract class vs interface: abstract class has state + partial implementation; interface is a pure contract. Java allows multiple interfaces.
 - Design pattern questions: always explain the INTENT (why it solves the problem), not just the structure (what it looks like)
 - Spring beans are Singleton by default — be aware of shared mutable state bugs in singleton services (never store request data in fields)

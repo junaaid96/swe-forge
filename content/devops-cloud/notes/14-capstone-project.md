@@ -1,4 +1,4 @@
-# 15 · Capstone: `medilab-platform`
+# Capstone: `medilab-platform`
 
 > One public repo that proves every line of the JD. It's worth more than any certificate at associate level, and it gives you real stories for every interview question. Build it in milestones; each one is independently demo-able.
 
@@ -22,7 +22,7 @@ medilab-platform/
 ├── scripts/                    # wait-healthy.sh, cleanup-logs.sh, untagged.sh, pg-backup.sh
 ├── docs/
 │   ├── architecture.md         # diagram + decisions
-│   ├── runbooks/               # 2–3 runbooks from 13-troubleshooting
+│   ├── runbooks/               # 2–3 runbooks from the troubleshooting runbooks
 │   └── incidents/              # simulated incidents + mini postmortems
 ├── .github/workflows/
 │   ├── app-ci-cd.yml
@@ -38,14 +38,14 @@ medilab-platform/
 
 | # | Milestone | Done when… | Notes |
 |---|---|---|---|
-| M1 | **Containerize** | `docker compose up` runs api + worker + postgres + redis; the image is non-root, multi-stage, < ~250 MB; `/healthz` and `/readyz` exist | [04-docker](../devops-cloud/03-docker.md) |
-| M2 | **CI** | Every PR runs lint + tests (Postgres service container) + a Trivy scan (pinned); main pushes `:<sha>` to ACR via **OIDC** (no secrets) | [07-cicd](../devops-cloud/06-cicd.md) |
-| M3 | **Kubernetes locally** | kind cluster runs the Deployment/Service/Job/HPA/PDB; all 8 break-it drills fixed and written up | [05-kubernetes](../devops-cloud/04-kubernetes.md), [13](../devops-cloud/12-troubleshooting-runbooks.md) |
-| M4 | **Helm** | `helm upgrade --install` with dev/prod values; migrations as a pre-upgrade hook; a checksum rollout on config change; a rollback demonstrated | [06-helm](../devops-cloud/05-helm.md) |
-| M5 | **Terraform on Azure** | Remote state with locking; network module; ACR + AKS + Log Analytics + AcrPull; `plan` posted on PRs; `destroy` works cleanly | [08-terraform](../devops-cloud/07-terraform.md) |
-| M6 | **CD to AKS** | Merge to main → deploys to dev automatically → smoke test; prod behind environment approval, promoting the **same tag** | [07-cicd](../devops-cloud/06-cicd.md) |
-| M7 | **Secrets and hardening** | Key Vault + Workload Identity + CSI; namespace `restricted` Pod Security; default-deny NetworkPolicies with DNS allowed | [11-security](../devops-cloud/10-security.md) |
-| M8 | **Observability** | kube-prometheus-stack (or Azure Managed Prometheus/Grafana); one dashboard (RED); 2 alert rules with runbook links | [10-observability](../devops-cloud/09-observability.md) |
+| M1 | **Containerize** | `docker compose up` runs api + worker + postgres + redis; the image is non-root, multi-stage, < ~250 MB; `/healthz` and `/readyz` exist | [Docker](./03-docker.md) |
+| M2 | **CI** | Every PR runs lint + tests (Postgres service container) + a Trivy scan (pinned); main pushes `:<sha>` to ACR via **OIDC** (no secrets) | [CI/CD](./06-cicd.md) |
+| M3 | **Kubernetes locally** | kind cluster runs the Deployment/Service/Job/HPA/PDB; all 8 break-it drills fixed and written up | [Kubernetes](./04-kubernetes.md), [Troubleshooting runbooks](./12-troubleshooting-runbooks.md) |
+| M4 | **Helm** | `helm upgrade --install` with dev/prod values; migrations as a pre-upgrade hook; a checksum rollout on config change; a rollback demonstrated | [Helm](./05-helm.md) |
+| M5 | **Terraform on Azure** | Remote state with locking; network module; ACR + AKS + Log Analytics + AcrPull; `plan` posted on PRs; `destroy` works cleanly | [Terraform](./07-terraform.md) |
+| M6 | **CD to AKS** | Merge to main → deploys to dev automatically → smoke test; prod behind environment approval, promoting the **same tag** | [CI/CD](./06-cicd.md) |
+| M7 | **Secrets and hardening** | Key Vault + Workload Identity + CSI; namespace `restricted` Pod Security; default-deny NetworkPolicies with DNS allowed | [Security](./10-security.md) |
+| M8 | **Observability** | kube-prometheus-stack (or Azure Managed Prometheus/Grafana); one dashboard (RED); 2 alert rules with runbook links | [Observability](./09-observability.md) |
 | M9 | **Docs** | README with an architecture diagram, a decisions log, 3 runbooks, 2 simulated-incident postmortems | This is what interviewers actually read |
 
 Minimum for the application deadline: **M1 + M2 + M3 + a solid README.** Keep adding milestones before the interview.

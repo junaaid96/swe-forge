@@ -1,4 +1,4 @@
-# 09 · Azure for DevOps
+# Azure for DevOps
 
 > "Work with Azure cloud services, virtual networks, compute, storage, and related platform services." You know cloud concepts from your AWS-focused prep. This note maps them to Azure vocabulary and covers the Azure-specific ideas interviewers probe: **identity, RBAC, and networking**.
 
@@ -37,7 +37,7 @@ Microsoft Entra ID tenant   (identity boundary — users, groups, apps)
 | Shared across resources | ❌ | ✅ |
 | Use for | Simple one-resource cases | AKS Workload Identity, CI identities, shared access patterns |
 
-🎯 **Interview:** *"How should an app on AKS read a Key Vault secret?"* → **Workload Identity**: a user-assigned managed identity + a federated credential trusting the AKS OIDC issuer for a specific Kubernetes ServiceAccount, plus the **Key Vault Secrets User** role on the vault. No secrets stored anywhere. Details in [11-security](../devops-cloud/10-security.md).
+🎯 **Interview:** *"How should an app on AKS read a Key Vault secret?"* → **Workload Identity**: a user-assigned managed identity + a federated credential trusting the AKS OIDC issuer for a specific Kubernetes ServiceAccount, plus the **Key Vault Secrets User** role on the vault. No secrets stored anywhere. Details in [Security](./10-security.md).
 
 ---
 
@@ -159,7 +159,7 @@ Microsoft Entra ID tenant   (identity boundary — users, groups, apps)
 | Service | Use |
 |---|---|
 | **Azure Database for PostgreSQL – Flexible Server** | Managed Postgres (HA with zone redundancy, backups, PITR). The medilab DB |
-| **Azure SQL Database** | Managed SQL Server (common in .NET shops like SELISE) |
+| **Azure SQL Database** | Managed SQL Server (common in .NET shops) |
 | **Cosmos DB** | Globally distributed NoSQL, multiple APIs |
 | **Azure Cache for Redis** / Azure Managed Redis | Managed Redis |
 | **Service Bus** | Enterprise messaging (queues/topics) |
@@ -174,7 +174,7 @@ Microsoft Entra ID tenant   (identity boundary — users, groups, apps)
 
 ---
 
-## 9. Monitoring (details in [10-observability](../devops-cloud/09-observability.md))
+## 9. Monitoring (details in [Observability](./09-observability.md))
 
 | Service | Holds |
 |---|---|

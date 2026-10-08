@@ -1,6 +1,6 @@
-# 11 · Security: Access, Secrets, Hardening, Supply Chain
+# Security: Access, Secrets, Hardening, Supply Chain
 
-> "Apply basic cloud security, access control, secrets management, and infrastructure hardening practices." SELISE's own DevOps talk put cloud security next to automation and scalability. Show a **principled** approach, not a list of tools.
+> "Apply basic cloud security, access control, secrets management, and infrastructure hardening practices." Employers routinely list cloud security next to automation and scalability. Show a **principled** approach, not a list of tools.
 
 ---
 
@@ -137,7 +137,7 @@ spec:
 - **NSGs** on subnets. Only the edge (App Gateway/Front Door with **WAF**) is public
 - **No public IPs on VMs.** Use **Azure Bastion** or just-in-time access
 - **Egress control:** route outbound traffic through Azure Firewall/NAT with an allow-list (limits exfiltration and C2)
-- **In the cluster:** `default-deny` NetworkPolicies + explicit allows ([05-kubernetes](../devops-cloud/04-kubernetes.md) §13), and optionally mTLS with a service mesh
+- **In the cluster:** `default-deny` NetworkPolicies + explicit allows ([Kubernetes](./04-kubernetes.md) §13), and optionally mTLS with a service mesh
 - **Private AKS cluster** (the API server has no public endpoint) or authorized IP ranges on the API server
 
 ---
@@ -162,7 +162,7 @@ metadata:
     pod-security.kubernetes.io/warn: restricted
 ```
 
-The Deployment in [05-kubernetes](../devops-cloud/04-kubernetes.md) §6 already passes `restricted`: `runAsNonRoot`, `allowPrivilegeEscalation: false`, `capabilities.drop: [ALL]`, `seccompProfile: RuntimeDefault`, plus a `readOnlyRootFilesystem`.
+The Deployment in [Kubernetes](./04-kubernetes.md) §6 already passes `restricted`: `runAsNonRoot`, `allowPrivilegeEscalation: false`, `capabilities.drop: [ALL]`, `seccompProfile: RuntimeDefault`, plus a `readOnlyRootFilesystem`.
 
 Also: resource limits (a noisy or compromised pod can't starve the node), no `hostPath` mounts, and `automountServiceAccountToken: false` for pods that don't call the Kubernetes API.
 
@@ -177,7 +177,7 @@ Also: resource limits (a noisy or compromised pod can't starve the node), no `ho
 | IaC | Misconfiguration scanning before apply | Checkov, tfsec/Trivy config, tflint |
 | Images | CVE scanning, minimal base images, regular rebuilds | Trivy, Grype, Docker Scout, **Defender for Containers** |
 | Provenance | Sign images; verify signatures at admission; SBOMs | cosign/Sigstore, **Notation** (Notary Project, integrates with ACR), Ratify |
-| Pipeline | Pin actions to SHAs, least-privilege tokens, OIDC | See [07-cicd](../devops-cloud/06-cicd.md) §6 |
+| Pipeline | Pin actions to SHAs, least-privilege tokens, OIDC | See [CI/CD](./06-cicd.md) §6 |
 
 ### 🧨 Case study to quote: the Trivy compromise (March 2026)
 

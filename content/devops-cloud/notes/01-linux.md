@@ -1,4 +1,4 @@
-# 01 · Linux for DevOps
+# Linux for DevOps
 
 > Almost every container, Kubernetes node, and Azure VM you touch runs Linux. Troubleshooting skill is mostly Linux skill.
 
@@ -173,7 +173,7 @@ dmesg -T | grep -i -E "oom|killed process"   # OOM killer evidence
 
 ---
 
-## 7. Networking commands (see [02-networking](../devops-cloud/02-networking.md) for the theory)
+## 7. Networking commands (see [Networking](./02-networking.md) for the theory)
 
 ```bash
 ip a                        # interfaces and IPs

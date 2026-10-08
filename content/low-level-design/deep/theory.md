@@ -21,7 +21,7 @@ Focus patterns for backends (GFG shortlist + daily Spring usage):
 • Decorator — add behavior without rewriting the core
 • Observer — react to events
 
-Also know Strategy (swap algorithms) — you already use it for payments.
+Also know Strategy (swap algorithms at runtime) — the classic example is choosing a payment method.
 
 ### Singleton — when and when not
 

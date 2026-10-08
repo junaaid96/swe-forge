@@ -1,4 +1,4 @@
-# 12 · Scripting for DevOps — Bash & Python
+# Scripting for DevOps — Bash & Python
 
 > "Scripting knowledge in Bash, Python, or a similar language." Your Python is already strong. The gap is usually **defensive Bash**: scripts that fail loudly and safely instead of silently doing damage.
 

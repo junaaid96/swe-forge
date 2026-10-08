@@ -1,6 +1,6 @@
 # Python — Deep Dive & Interview Reference (2026)
 
-**Current state (Sept 2026):** Python **3.14** is the newest stable line (3.14.7), released Oct 2025. It is the first release where the **free-threaded build (`python3.14t`, no GIL)** is officially supported rather than experimental, and it ships an experimental **JIT**. Python 3.13 is in security-only maintenance from Oct 2026. Target 3.12+ for new work; 3.14 if you want free-threading or the new interpreter improvements.
+**Current state (Sept 2026):** Python **3.14** is the newest stable line (3.14.8 as of 30 Sept 2026; 3.14.0 shipped in Oct 2025). It is the first release where the **free-threaded build (`python3.14t`, no GIL)** is officially supported rather than experimental, and it ships an experimental **JIT**. Python 3.13 is in security-only maintenance from Oct 2026. Target 3.12+ for new work; 3.14 if you want free-threading or the new interpreter improvements.
 
 ---
 

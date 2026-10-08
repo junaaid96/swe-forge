@@ -1,6 +1,6 @@
 # TypeScript — Deep Dive & Interview Reference (2026)
 
-**Current state (Sept 2026):** **TypeScript 7.0** shipped in July 2026 — the compiler was rewritten natively in Go (`tsgo`), giving roughly **10× faster type-checking and project loads**. The language semantics are unchanged; what changed is speed, and that some deep API consumers (custom transformers, ts-patch-style plugins) need migration. TS 5.9 remains the JS-based fallback for those. Type-stripping in Node 22+/24 means you can often run `.ts` directly without a build step for scripts.
+**Current state (Sept 2026):** **TypeScript 7.0** shipped on 8 July 2026 — a native port of the compiler to Go, typically **8–12× faster** on full builds. The language semantics are unchanged (it checks and emits the same as 6.0), but options deprecated in 6.0 are now hard errors, `strict` is on by default, and 7.0 has no stable programmatic API yet (expected in 7.1). Tools that use the compiler API, such as typescript-eslint, keep running on TypeScript 6 via the `@typescript/typescript6` package (`tsc6`). Type-stripping in Node 22+/24 means you can often run `.ts` directly without a build step for scripts.
 
 ---
 

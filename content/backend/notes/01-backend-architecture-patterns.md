@@ -1,6 +1,6 @@
 # 7 Backend Architecture Patterns — Deep Dive Guide
 
-Every real production system (Amazon, Uber, your eG-Health microservices stack) is a *combination* of these patterns — never just one. This guide explains each in depth: how it works, when to use it, trade-offs, and how to actually implement it in Java/Spring Boot.
+Every real production system (Amazon, Uber, a hospital's microservices platform) is a *combination* of these patterns — never just one. This guide explains each in depth: how it works, when to use it, trade-offs, and how to actually implement it in Java/Spring Boot.
 
 ---
 
@@ -69,7 +69,7 @@ Order Service --publish--> Event Broker (Kafka/RabbitMQ)
 - Producer: `KafkaTemplate.send(topic, event)`. Consumer: `@KafkaListener(topics = "order-events")`.
 - Critical production concern: **the dual-write problem** — if you write to your DB and then publish an event in two separate steps, a crash between them causes data loss or inconsistency. Fix this with the **Transactional Outbox Pattern**: write the event to an "outbox" table in the *same DB transaction* as your business data, then have a separate process (or **Debezium** via Change Data Capture) publish it to Kafka reliably.
 
-**Related topics to study:** Kafka vs RabbitMQ (you've already studied this), transactional outbox pattern, Debezium/CDC, at-least-once vs exactly-once delivery, consumer idempotency.
+**Related topics to study:** Kafka vs RabbitMQ, transactional outbox pattern, Debezium/CDC, at-least-once vs exactly-once delivery, consumer idempotency.
 
 ---
 
@@ -102,7 +102,7 @@ Order Service --publish--> Event Broker (Kafka/RabbitMQ)
 - Adds an extra moving part (Redis) to operate and monitor
 
 **Spring Boot notes**
-- Since this ties directly into your current caching study: Spring's `@Cacheable`, `@CachePut`, `@CacheEvict` annotations (via `spring-boot-starter-cache` + a Redis backend like `spring-boot-starter-data-redis`) implement Cache-Aside almost automatically.
+- Spring's `@Cacheable`, `@CachePut`, `@CacheEvict` annotations (via `spring-boot-starter-cache` + a Redis backend like `spring-boot-starter-data-redis`) implement Cache-Aside almost automatically.
 - `@Cacheable("products")` on a `getProduct(id)` method = steps 2–6 handled for you.
 - Always set a **TTL (time-to-live)** on cache entries so stale data self-heals even if you miss an explicit eviction.
 - For the "thundering herd" problem, consider request coalescing or a short jittered TTL so not everything expires at once.
@@ -183,7 +183,7 @@ Stage 3 (Final):     Client → API Gateway/Routing Layer
 
 **Spring Boot notes**
 - **Spring Cloud Gateway** is the natural fit for the routing layer — route by path (`/api/orders/**` → new Order microservice, everything else → monolith).
-- This is exactly the kind of work your eG-Health microservices product likely involves — extracting a bounded module (e.g., a specific clinical workflow) out of a larger platform.
+- Typical use: extracting one bounded module (e.g., a specific clinical or billing workflow) out of a larger platform, one route at a time.
 - Watch for **shared database coupling**: if the monolith and the new microservice both hit the same tables during transition, you haven't really decoupled yet. Plan the data split (see Pattern #7) as part of each extraction.
 
 **Related topics to study:** API Gateway pattern, bounded contexts (DDD), anti-corruption layer, database decomposition strategies, feature flags for gradual rollout.
@@ -232,8 +232,8 @@ Cancel Notification ← Cancel Shipment ← Refund Payment ← Release Stock ←
 **Spring Boot notes**
 - **Choreography:** each service publishes/listens to Kafka events (`OrderCreated`, `StockReserved`, `PaymentProcessed`...). Simple to start with, gets messy past ~4-5 services.
 - **Orchestration:** either build a lightweight orchestrator service that calls each participant (REST or Kafka commands) and tracks saga state in its own table, or use a workflow engine like **Camunda** for complex conditional logic.
-- **Critical practices** confirmed by current best practice: design every service to be **idempotent** (safe to retry — check for existing records before acting again), publish events via the **transactional outbox** (same as Pattern #2) so a DB commit and event publish never diverge, and use **correlation IDs** across all services so you can trace one saga's full journey through logs (pair with Zipkin/Jaeger for distributed tracing).
-- Replace REST-based orchestration with Kafka for production — REST-to-REST orchestration adds latency and tighter coupling than an event-based approach.
+- **Critical practices:** design every service to be **idempotent** (safe to retry — check for existing records before acting again), publish events via the **transactional outbox** (same as Pattern #2) so a DB commit and event publish never diverge, and use **correlation IDs** across all services so you can trace one saga's full journey through logs (pair with Zipkin/Jaeger for distributed tracing).
+- Prefer asynchronous commands/events (Kafka or another broker) between the orchestrator and participants in production: synchronous REST-to-REST orchestration adds latency and couples every step's availability to the orchestrator's.
 
 **Related topics to study:** Two-Phase Commit (2PC) and why it's avoided at scale, idempotency, compensating transactions, distributed tracing (Zipkin/Jaeger/OpenTelemetry), correlation IDs, Camunda/workflow engines.
 
@@ -266,7 +266,7 @@ Client → API Gateway → User Service    ↔ User Service Database
 - No cross-service foreign keys or joins — referential integrity across services must be handled at the application level
 
 **Spring Boot notes**
-- This is foundational to how your eG-Health microservices product should be structured — each Spring Boot service gets its own PostgreSQL schema/instance (or logically isolated schema at minimum), never a shared `DataSource` across services.
+- This is foundational to how a microservices product should be structured — each Spring Boot service gets its own PostgreSQL schema/instance (or logically isolated schema at minimum), never a shared `DataSource` across services.
 - When one service needs data another service owns, the two real options are: (1) a synchronous API call (Pattern #1, simple but adds coupling/latency), or (2) subscribe to that service's events and keep a local denormalized copy (Pattern #2 + #4 combined — more resilient, more complex).
 - This is also *why* the Saga Pattern exists: once you commit to Database Per Service, you've explicitly given up cross-service ACID transactions, and Saga is how you get consistency back.
 
@@ -296,17 +296,14 @@ Client → API Gateway (Strangler Fig routing)
 
 ## Suggested Learning Path (Connected Topics)
 
-Given where you are in your backend engineering study, here's how this connects and what to study next:
+How this connects and what to study next:
 
-1. **You already have:** SOLID, caching fundamentals, multithreading/Virtual Threads, security/OAuth 2.1, TDD — these are the foundation every pattern above depends on.
+1. **Foundations first:** SOLID, caching fundamentals, multithreading/Virtual Threads, security/OAuth 2.1 and TDD are the foundation every pattern above depends on.
 2. **Next natural additions:**
-   - **Idempotency** — required for Saga, Event-Driven, and retries in Request/Response. Study this next; it's the single most load-bearing concept across all seven patterns.
+   - **Idempotency** — required for Saga, Event-Driven, and retries in Request/Response. It's the single most load-bearing concept across all seven patterns.
    - **Distributed tracing** (Zipkin, Jaeger, or OpenTelemetry) — you can't debug Event-Driven, Saga, or CQRS systems without it.
    - **Transactional Outbox Pattern + Debezium (CDC)** — the production-grade fix for the dual-write problem in Pattern #2 and #6.
    - **CAP theorem & eventual consistency** — the theoretical backbone explaining *why* patterns #2, #4, #6, #7 all trade immediate consistency for availability/scalability.
    - **API Gateway pattern** (Spring Cloud Gateway) — ties directly into Strangler Fig and Database Per Service.
 3. **Framework to explore hands-on:** **Axon Framework** — it implements CQRS, Event Sourcing, and Saga together in Spring Boot, so building one small project with it will cement patterns #2, #4, and #6 simultaneously.
 
----
-
-*Compiled from a 9-slide architecture pattern breakdown, expanded with current (2026) Spring Boot implementation practices — Transactional Outbox, Axon Framework, Virtual Threads, and Saga idempotency guidance cross-checked against recent implementation guides.*

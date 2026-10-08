@@ -1,4 +1,4 @@
-# 08 · Terraform (on Azure)
+# Terraform (on Azure)
 
 > "Assist with Infrastructure as Code using Terraform" and an "automation-first and infrastructure-as-code mindset." Expect conceptual questions (state!) and possibly writing or fixing a small `.tf` file.
 

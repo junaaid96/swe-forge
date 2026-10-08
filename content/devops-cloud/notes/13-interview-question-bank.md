@@ -1,4 +1,4 @@
-# 14 · Interview Question Bank — Associate DevOps (SELISE)
+# Interview Question Bank — Associate DevOps
 
 > Answer format that works: **definition in one line → why it matters → a concrete example (medilab or your real work) → a trade-off or gotcha.** Aim for 60–90 seconds per answer. Practise out loud.
 
@@ -14,7 +14,7 @@ Difficulty markers: 🟢 almost certain · 🟡 likely · 🔴 stretch (shows de
 4. 🟡 **Disk is 100% but you can't find big files.** → Deleted-but-open files: `lsof +L1`, restart or truncate. Or inode exhaustion: `df -i`.
 5. 🟡 **SIGTERM vs SIGKILL, and why it matters for deployments.** → TERM is catchable, so the app can drain gracefully. KILL is immediate. Kubernetes sends TERM, waits for the grace period, then KILLs. Apps must handle TERM or deploys drop requests.
 6. 🟢 **Connection refused vs connection timed out?** → Refused: the host is reachable but nothing is listening. Timeout: packets are dropped (firewall/NSG/routing/host down).
-7. 🟢 **What happens when you type a URL?** → DNS → TCP → TLS → edge/WAF → gateway → Service → pod → DB, and back. (See [02-networking](../devops-cloud/02-networking.md) §7.)
+7. 🟢 **What happens when you type a URL?** → DNS → TCP → TLS → edge/WAF → gateway → Service → pod → DB, and back. (See [Networking](./02-networking.md) §7.)
 8. 🟢 **How many usable IPs in a /24 in Azure?** → 256 − 5 reserved = 251.
 9. 🟡 **L4 vs L7 load balancing?** → IP/port vs HTTP-aware (host/path, TLS termination, WAF). Azure Load Balancer vs Application Gateway / Front Door.
 10. 🔴 **Why must VNet CIDRs not overlap?** → Peering and VPN need unique routing. Overlaps block connectivity, and fixing them means re-IPing.
@@ -44,7 +44,7 @@ Difficulty markers: 🟢 almost certain · 🟡 likely · 🔴 stretch (shows de
 ## D. Kubernetes
 
 27. 🟢 **Explain Kubernetes architecture.** → The control plane (API server, etcd, scheduler, controller-manager) + nodes (kubelet, kube-proxy, runtime). Desired state + reconciliation loops.
-28. 🟢 **What happens when you `kubectl apply` a Deployment?** → The 7-step flow in [05-kubernetes](../devops-cloud/04-kubernetes.md) §1.
+28. 🟢 **What happens when you `kubectl apply` a Deployment?** → The 7-step flow in [Kubernetes](./04-kubernetes.md) §1.
 29. 🟢 **Deployment vs StatefulSet vs DaemonSet?** → Stateless replicas / stable identity + storage / one per node.
 30. 🟢 **Service types?** → ClusterIP / NodePort / LoadBalancer / headless / ExternalName.
 31. 🟢 **Liveness vs readiness vs startup probes?** → Restart / traffic gate / slow-boot guard. Never check the DB in liveness.
@@ -58,7 +58,7 @@ Difficulty markers: 🟢 almost certain · 🟡 likely · 🔴 stretch (shows de
 39. 🟡 **What is a PodDisruptionBudget?** → The minimum available pods during voluntary disruptions (node drains/upgrades).
 40. 🔴 **Taints/tolerations vs node affinity?** → Nodes repel pods vs pods are attracted to nodes. Often used together for dedicated pools.
 41. 🔴 **How do NetworkPolicies work, and what's the classic mistake?** → Label-based allow rules enforced by the CNI. Default-deny egress without allowing DNS breaks everything.
-42. 🔴 **What's new in recent Kubernetes?** → v1.37 (Aug 2026): HPA scale-to-zero beta, gang scheduling/Workload APIs to beta, kube-proxy IPVS removal. Check AKS version availability.
+42. 🔴 **What's new in recent Kubernetes?** → v1.37 (Aug 2026): HPA scale-to-zero beta (on by default), gang scheduling/Workload APIs to beta, kube-proxy IPVS mode and kube-dns deprecated. Check AKS version availability.
 
 ## E. Helm
 
@@ -98,7 +98,7 @@ Difficulty markers: 🟢 almost certain · 🟡 likely · 🔴 stretch (shows de
 
 68. 🟢 **What do you monitor for a web API?** → The golden signals / RED: error ratio, p95 latency, traffic, saturation. Plus cert expiry and disk prediction.
 69. 🟢 **An alert fires at 2 a.m. Walk me through it.** → Acknowledge → impact → recent changes → runbook → mitigate (rollback) → escalate early → communicate → postmortem.
-70. 🟡 **metrics-server vs Prometheus vs kube-state-metrics vs node-exporter?** → See [10-observability](../devops-cloud/09-observability.md) §3.
+70. 🟡 **metrics-server vs Prometheus vs kube-state-metrics vs node-exporter?** → See [Observability](./09-observability.md) §3.
 71. 🟡 **SLI/SLO/SLA/error budget?** → Measurement / internal target / contract / allowed unreliability that governs release pace.
 72. 🟡 **What is a blameless postmortem?** → Focus on systems, not people; timeline, root cause, contributing factors, owned actions.
 73. 🔴 **Why alert on symptoms rather than causes?** → Users feel symptoms. Cause-based alerts (CPU 80%) are noisy and often not actionable.
@@ -115,19 +115,19 @@ Difficulty markers: 🟢 almost certain · 🟡 likely · 🔴 stretch (shows de
 
 ## J. Behavioural questions (STAR: Situation, Task, Action, Result)
 
-Prepare **real** stories from your work at eGeneration and CodeJBorg. Fill in the templates. Don't invent details.
+Prepare **real** stories from your own jobs and projects. Fill in the templates. Don't invent details.
 
 | Question | Story to prepare | Hook to DevOps |
 |---|---|---|
 | **Why DevOps, when you're a software engineer?** | You've owned deployment for your own services and client projects | "I found reliability is decided between `git push` and prod. I want to own that path, and my dev background lets me help developers directly" |
 | **Will you go back to development?** | Hybrid is your strength | "I see this as platform engineering: I'll keep writing code, but for automation, pipelines, and tools that make every developer faster" |
 | **Tell me about a production issue you handled** | A real outage or bug in a healthcare service | Structure it: detection → impact → mitigation → root cause → prevention |
-| **A time you automated something manual** | A deploy script, a setup repo (your OpenCode/ArkCLI setup repo counts as an automation mindset) | Time saved, errors avoided |
+| **A time you automated something manual** | A deploy script, a dev-environment setup repo, a CLI tool: anything that shows an automation mindset | Time saved, errors avoided |
 | **A disagreement with a teammate** | A technical disagreement you resolved with data | Collaboration with dev/security teams is in the JD |
 | **Something you learned quickly** | Picking up Spring Boot/Django deeply; this DevOps prep | Show the method: plan → build → break → fix |
 | **A mistake you made** | Honest, small, what you changed afterwards | Blameless mindset |
 
-**The 30-second intro:** name → current role (junior SE, healthcare microservices) → the DevOps-relevant things you already do (Docker, deploying client projects, CI) → what you built for this application (the capstone repo) → why SELISE (a platform company, Blocks, Azure-centric, international teams).
+**The 30-second intro:** name → current role (e.g., software engineer on microservices) → the DevOps-relevant things you already do (Docker, deploying client projects, CI) → what you built to prepare (e.g., the capstone repo) → why this company (its platform, cloud stack and teams, researched beforehand).
 
 ---
 
@@ -136,7 +136,7 @@ Prepare **real** stories from your work at eGeneration and CodeJBorg. Fill in th
 1. "What does the delivery path look like today — GitHub Actions or Azure DevOps, Helm or GitOps with Argo/Flux?"
 2. "How is on-call structured for associates? Is there shadowing before joining the rotation?"
 3. "What's the biggest reliability or platform problem the team is tackling this year?"
-4. "How do DevOps engineers work with the SELISE Blocks product teams day to day?"
+4. "How do DevOps engineers work with the product teams day to day?"
 5. "What would a successful first 90 days look like for this role?"
 6. "How does the path from Associate to Mid-level work? What ownership marks the step?"
 
@@ -144,7 +144,7 @@ Prepare **real** stories from your work at eGeneration and CodeJBorg. Fill in th
 
 ## L. Practical-test tactics
 
-- **Read the whole task first.** List the requirements and tick them off (a SELISE candidate reported that grading focused on requirements they'd overlooked).
+- **Read the whole task first.** List the requirements and tick them off (candidates often report that grading focused on requirements they'd overlooked).
 - **Commit early and often, with clear messages.** Graders read history.
 - **README first:** what you built, how to run it, what you'd do with more time. Assumptions written down.
 - **Get it working end-to-end simply, then improve.** A working pipeline with one stage beats half of a perfect one.

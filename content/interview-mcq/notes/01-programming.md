@@ -1,9 +1,9 @@
 # 📘 Programming — MCQ Test Preparation Guide
-### *(Guide 1 of 4 — based on your "MCQ Test Preparation Guideline" image: Programming card)*
+### *(Guide 1 of 4 in the MCQ test-prep series: Programming)*
 
 **Covers:** OOP · Design Patterns · API · Database · Networking · HTML/CSS · Programming Fundamentals
 
-> Companion files: `02-Data-Structures-Algorithms.md` · `03-CS-Fundamentals.md` · `04-Logical-Reasoning.md`
+> Companion guides: [Data Structures & Algorithms](./02-data-structures-algorithms.md) · [CS Fundamentals](./03-cs-fundamentals.md) · [Logical Reasoning](./04-logical-reasoning.md)
 > Examples use **Java** (your primary stack) with notes on Python/JS/C++ differences where they commonly appear in MCQs.
 
 ---
@@ -321,7 +321,7 @@ class EventBus {
 - **MVC (Model-View-Controller):** Separates data (Model), UI (View), and control logic (Controller) — the classic Spring MVC / Angular structure.
 - **MVP / MVVM:** Variants of MVC used in Android/desktop and modern frontend frameworks (MVVM = Angular's two-way data binding model).
 - **Layered (N-tier) Architecture:** Presentation → Business → Data Access layers — the shape of most Spring Boot apps.
-- **Microservices vs Monolith:** Independently deployable services vs one deployable unit (you already work extensively with microservices at eGeneration).
+- **Microservices vs Monolith:** Independently deployable services vs one deployable unit.
 - **Repository Pattern:** Abstracts data access logic — Spring Data JPA's `JpaRepository` is a direct implementation of this.
 
 ### 3.5 When NOT to use patterns (common "gotcha" MCQ)
@@ -361,7 +361,7 @@ REST (**RE**presentational **S**tate **T**ransfer) is an architectural style (no
 | HEAD | Like GET but headers only | ✅ | ✅ | No |
 | OPTIONS | Discover allowed methods | ✅ | ✅ | No |
 
-> **"Safe"** = does not change server state. **"Idempotent"** = calling it N times has the same effect as calling it once (crucial for retry-safety over unreliable networks — this directly connects to the **idempotency** concept you flagged as your top study priority for Saga/Event-Driven patterns).
+> **"Safe"** = does not change server state. **"Idempotent"** = calling it N times has the same effect as calling it once (crucial for retry-safety over unreliable networks — the same **idempotency** concept that makes Saga and event-driven retries safe).
 
 **HTTP Status Codes (memorize by category first digit):**
 
@@ -395,10 +395,10 @@ REST (**RE**presentational **S**tate **T**ransfer) is an architectural style (no
 ### 4.5 Authentication & Authorization for APIs
 - **API Keys:** Simple, static secret sent per request — weak, no expiry by default.
 - **Basic Auth:** Base64-encoded username:password in header — not encrypted, must be used over HTTPS.
-- **OAuth 2.0 / 2.1:** Delegated authorization — client gets an access token without handling user credentials directly. Grant types: Authorization Code (with PKCE — required in OAuth 2.1), Client Credentials, Refresh Token. *(You've already studied this for your security roadmap.)*
+- **OAuth 2.0 / 2.1:** Delegated authorization — client gets an access token without handling user credentials directly. Grant types: Authorization Code (with PKCE — required in OAuth 2.1), Client Credentials, Refresh Token.
 - **JWT (JSON Web Token):** Self-contained token (Header.Payload.Signature) — server verifies signature without a DB lookup, enabling stateless auth. Watch for: token expiry, secure storage (avoid `localStorage` for sensitive apps — prefer `httpOnly` cookies), signature algorithm confusion attacks (`alg: none`).
 
-### 4.6 Idempotency in API Design (critical — connects directly to your backend-architecture study)
+### 4.6 Idempotency in API Design (critical for backend architecture)
 An idempotent API guarantees that repeating the same request (e.g., due to a client retry after a timeout) doesn't cause duplicate side effects.
 
 **How it's implemented in practice:**
@@ -421,7 +421,7 @@ The server stores the key with the result; if the same key arrives again, it ret
 
 ## 5. Database (Applied/Programming View)
 
-> Deep DBMS theory (normalization, ACID internals, indexing internals, CAP theorem) is covered in **`03-CS-Fundamentals.md`**. This section covers what you'll actually *write code against* — highly likely on programming-track MCQs.
+> Deep DBMS theory (normalization, ACID internals, indexing internals, CAP theorem) is covered in **[CS Fundamentals](./03-cs-fundamentals.md)**. This section covers what you'll actually *write code against* — highly likely on programming-track MCQs.
 
 ### 5.1 SQL Basics
 ```sql
@@ -493,7 +493,7 @@ public void transferMoney(Long fromId, Long toId, double amount) {
 
 ## 6. Networking (Applied/Programming View)
 
-> Deep networking theory (OSI/TCP-IP layers, subnetting, routing protocols) is covered in **`03-CS-Fundamentals.md`**. This section is what shows up in "programming" MCQs.
+> Deep networking theory (OSI/TCP-IP layers, subnetting, routing protocols) is covered in **[CS Fundamentals](./03-cs-fundamentals.md)**. This section is what shows up in "programming" MCQs.
 
 ### 6.1 Client-Server Communication in Code
 ```java
@@ -628,7 +628,7 @@ switch (2) {
 
 ### 8.4 Functions/Methods
 - **Parameter passing, return types, overloading** (see OOP section 1.2).
-- **Recursion basics** are covered in `02-Data-Structures-Algorithms.md` — heavily tested together with functions.
+- **Recursion basics** are covered in [Data Structures & Algorithms](./02-data-structures-algorithms.md) — heavily tested together with functions.
 - **Pure functions:** No side effects, same input → same output always (functional programming concept, increasingly tested given trends toward functional-style Java streams).
 
 ### 8.5 Java Streams & Functional-Style Code (increasingly common in modern MCQs)
@@ -717,7 +717,7 @@ System.out.println(a.equals(c));     // true — same content
 
 ## 10. Most Used Topics in Real Software Engineering
 
-Based on what actually shows up in day-to-day backend/full-stack work (and matches your own architecture-pattern study):
+Based on what actually shows up in day-to-day backend/full-stack work :
 
 - **OOP + SOLID** — foundational to every class you write; code review feedback is often SOLID-violation feedback in disguise.
 - **Dependency Injection** — the backbone of Spring Boot; almost every class you write depends on it.
@@ -748,4 +748,4 @@ git stash                # temporarily shelve uncommitted changes
 
 ---
 
-**Next:** `02-Data-Structures-Algorithms.md` →
+**Next:** [Data Structures & Algorithms](./02-data-structures-algorithms.md) →

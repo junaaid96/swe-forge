@@ -1,6 +1,6 @@
-# 07 · CI/CD — GitHub Actions & Azure Pipelines
+# CI/CD — GitHub Actions & Azure Pipelines
 
-> "Assist in maintaining CI/CD pipelines and automated deployment workflows." You'll likely be asked to **read or fix a pipeline YAML live**. Know both GitHub Actions and Azure DevOps Pipelines. A Microsoft-centric shop like SELISE may well use Azure DevOps.
+> "Assist in maintaining CI/CD pipelines and automated deployment workflows." You'll likely be asked to **read or fix a pipeline YAML live**. Know both GitHub Actions and Azure DevOps Pipelines. Microsoft-centric shops often use Azure DevOps.
 
 ---
 
@@ -131,7 +131,7 @@ jobs:
             -t "$IMAGE:${{ steps.meta.outputs.tag }}" --load .
       - name: Scan image (fail on fixable HIGH/CRITICAL)
         run: |
-          # Install a PINNED, verified Trivy version — see 11-security for the March 2026 incident
+          # Install a PINNED, verified Trivy version — see the Security guide for the March 2026 incident
           trivy image --exit-code 1 --ignore-unfixed --severity HIGH,CRITICAL \
             "$IMAGE:${{ steps.meta.outputs.tag }}"
       - run: docker push "$IMAGE:${{ steps.meta.outputs.tag }}"
@@ -281,7 +281,7 @@ stages:
 | **Canary** | Send a small % of traffic (e.g., 10%) to the new version, watch metrics, increase gradually | Shift the weight back to 0 | Low–medium | Needs good metrics; can be automated (Argo Rollouts / Flagger) |
 | **Feature flags** | Deploy the code dark; enable it per user or % at runtime | Toggle off | Low | Flag debt |
 
-🎯 **Interview:** tie canary to Gateway API `HTTPRoute` weights ([05-kubernetes](../devops-cloud/04-kubernetes.md) §4), and blue-green to your architecture-pattern study.
+🎯 **Interview:** tie canary to Gateway API `HTTPRoute` weights ([Kubernetes](./04-kubernetes.md) §4), and blue-green to the deployment patterns in [Backend optimization patterns](../backend/02-backend-optimization-patterns.md).
 
 🏥 **Healthcare angle:** for report-generation changes, canary + feature flags let you ship to one branch lab first. That limits the blast radius if patient reports render wrongly.
 

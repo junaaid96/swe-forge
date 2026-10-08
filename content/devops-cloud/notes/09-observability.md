@@ -1,4 +1,4 @@
-# 10 · Observability, Alerting & Incident Response
+# Observability, Alerting & Incident Response
 
 > "Monitor applications and infrastructure, investigate alerts, and support incident resolution." At associate level you'll be the first person looking at an alert. You need to know **where the signal comes from, what it means, and what to do next.**
 
@@ -127,7 +127,7 @@ spec:
           labels: { severity: page }
           annotations:
             summary: "medilab-api 5xx ratio above 5% for 10m"
-            runbook_url: "https://prepshelf.local/devops/13-troubleshooting-runbooks"
+            runbook_url: "https://runbooks.example.com/medilab/api-error-rate"
         - alert: MedilabPodCrashLooping
           expr: increase(kube_pod_container_status_restarts_total{namespace="medilab"}[15m]) > 3
           for: 5m

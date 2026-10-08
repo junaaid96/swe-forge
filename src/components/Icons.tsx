@@ -20,3 +20,5 @@ export const IconArrowLeft = (p: P) => (<svg {...base} {...p}><path d="M19 12H5M
 export const IconArrowRight = (p: P) => (<svg {...base} {...p}><path d="M5 12h14M13 6l6 6-6 6" /></svg>);
 export const IconKeyboard = (p: P) => (<svg {...base} {...p}><rect x="2" y="6" width="20" height="12" rx="2" /><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M7 14h10" /></svg>);
 export const IconFlame = (p: P) => (<svg {...base} {...p}><path d="M12 22c4 0 7-2.7 7-7 0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-3 3-5 5.5-5 8 0 4.3 3 7 7 7z" /></svg>);
+export const IconCode = (p: P) => (<svg {...base} {...p}><path d="m18 16 4-4-4-4" /><path d="m6 8-4 4 4 4" /><path d="m14.5 4-5 16" /></svg>);
+export const IconArrowUpRight = (p: P) => (<svg {...base} {...p}><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>);

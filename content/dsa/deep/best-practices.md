@@ -243,11 +243,11 @@ public int[] twoSum(int[] nums, int target) {
 // i=0: complement=7, seen={}, put {2→0}
 // i=1: complement=2, seen has 2 at index 0 → return [0,1] ✓
 
-// ── STAR method — real story from eGeneration ─────────────
+// ── STAR method — example answer (illustrative) ──────────
 /*
 Q: "Tell me about a complex technical problem you solved."
 
-S: At eGeneration, our Popular Diagnostic Center patient
+S: At a healthcare company, our diagnostic-lab patient
    report API was responding in 8+ seconds for patients
    with long test histories.
 
@@ -270,5 +270,5 @@ R: Response time dropped from 8.3s to 280ms — a 97%
 
 - A correct O(n²) solution with clear narration beats an incomplete O(n) solution. Correctness + communication comes before optimization.
 - Pattern matching is trainable: after 50+ problems you start recognizing patterns in the first 30 seconds. Deliberate practice is the path.
-- Your 80+ Codeforces problems are a genuine asset — mention it. It shows sustained, structured algorithmic thinking over time.
-- Build real STAR stories from your eGeneration work: the N+1 fix, bKash integration, or eG-Health microservices give you concrete, quantified examples
+- A track record on Codeforces/LeetCode is a genuine asset — mention it. It shows sustained, structured algorithmic thinking over time.
+- Build real STAR stories from your own work: a performance fix, a payment-gateway integration or a service extraction gives you concrete, quantified examples. Never invent numbers.

@@ -12,6 +12,92 @@
     "c-cpp",
     "cs-fundamentals"
   ],
-  "quiz": [],
-  "problems": []
+  "quiz": [
+    {
+      "id": "rs-q1",
+      "question": "What does Rust's borrow checker guarantee at compile time?",
+      "options": [
+        "No panics",
+        "Either one mutable reference or any number of shared references to a value at a time, and no reference outlives its value",
+        "No integer overflow",
+        "No deadlocks"
+      ],
+      "correctIndex": 1,
+      "explanation": "Aliasing XOR mutability plus lifetimes prevent data races, use-after-free and dangling references without a garbage collector. Deadlocks and panics are still possible."
+    },
+    {
+      "id": "rs-q2",
+      "question": "What happens to a String after let b = a; (where a: String)?",
+      "options": [
+        "a and b share the data",
+        "a is moved into b, and using a afterwards is a compile error",
+        "The string is deep-copied",
+        "a becomes empty"
+      ],
+      "correctIndex": 1,
+      "explanation": "String doesn't implement Copy, so assignment moves ownership. Call a.clone() for an explicit copy."
+    },
+    {
+      "id": "rs-q3",
+      "question": "Which type should you use to share read-mostly data across threads?",
+      "options": [
+        "Rc<T>",
+        "Arc<T> (with Mutex/RwLock if it must be mutated)",
+        "Box<T>",
+        "&mut T"
+      ],
+      "correctIndex": 1,
+      "explanation": "Rc isn't Send because its reference count isn't atomic; Arc is the thread-safe version. Interior mutability across threads needs Mutex, RwLock or atomics."
+    },
+    {
+      "id": "rs-q4",
+      "question": "What does the ? operator do on a Result?",
+      "options": [
+        "Ignores the error",
+        "Returns early with the error (converted via From) or unwraps the Ok value",
+        "Panics on error",
+        "Retries the operation"
+      ],
+      "correctIndex": 1,
+      "explanation": "? propagates errors concisely; the function itself must return a compatible Result (or Option for Option values)."
+    },
+    {
+      "id": "rs-q5",
+      "question": "Calling a blocking function like std::thread::sleep inside a Tokio async task…",
+      "options": [
+        "Yields to other tasks automatically",
+        "Blocks the worker thread and stalls other tasks scheduled on it",
+        "Is converted to an async sleep",
+        "Is a compile error"
+      ],
+      "correctIndex": 1,
+      "explanation": "Use tokio::time::sleep for delays and tokio::task::spawn_blocking for blocking or CPU-heavy work."
+    }
+  ],
+  "problems": [
+    {
+      "id": "rs-p1",
+      "title": "Fix the borrow error",
+      "difficulty": "medium",
+      "points": 20,
+      "prompt": "let mut v = vec![1, 2, 3]; let first = &v[0]; v.push(4); println!(\"{first}\"); doesn't compile. Explain and fix.",
+      "hints": [
+        "push may reallocate",
+        "Shorten the borrow"
+      ],
+      "solution": "first is a shared borrow into v's buffer, and push needs a mutable borrow and may reallocate, which would leave first dangling. Fix by copying the value (let first = v[0];) or by finishing with first before pushing."
+    },
+    {
+      "id": "rs-p2",
+      "title": "Error handling design",
+      "difficulty": "easy",
+      "points": 15,
+      "prompt": "A CLI reads a config file and parses it as TOML. Design the error handling.",
+      "hints": [
+        "Result everywhere",
+        "thiserror/anyhow"
+      ],
+      "solution": "Return Result from each function and propagate with ?. In a library, define an error enum with thiserror (Io, Parse variants with #[from]); in the binary, use anyhow::Result with .context(\"reading config\") for readable messages. Avoid unwrap() outside tests."
+    }
+  ]
 }

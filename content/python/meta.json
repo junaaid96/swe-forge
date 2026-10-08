@@ -14,6 +14,92 @@
     "dsa",
     "cs-fundamentals"
   ],
-  "quiz": [],
-  "problems": []
+  "quiz": [
+    {
+      "id": "py-q1",
+      "question": "What's wrong with def add(item, items=[]): items.append(item); return items?",
+      "options": [
+        "Nothing",
+        "The default list is created once and shared across calls",
+        "append is not a list method",
+        "Default arguments are forbidden"
+      ],
+      "correctIndex": 1,
+      "explanation": "Default values are evaluated once at function definition. Use items=None and create a new list inside the function."
+    },
+    {
+      "id": "py-q2",
+      "question": "Which is true about the GIL in CPython?",
+      "options": [
+        "It makes all Python code thread-safe",
+        "It lets only one thread execute Python bytecode at a time in a standard build; Python 3.14 officially supports a free-threaded build without it",
+        "It was removed in Python 3.0",
+        "It only affects asyncio"
+      ],
+      "correctIndex": 1,
+      "explanation": "The GIL limits CPU-bound threading in standard builds; I/O-bound threads still benefit. PEP 779 made the free-threaded (3.14t) build officially supported in 3.14, though it isn't the default."
+    },
+    {
+      "id": "py-q3",
+      "question": "What does a generator expression like (x * x for x in range(10**9)) do?",
+      "options": [
+        "Builds a list of a billion items immediately",
+        "Produces values lazily, one at a time",
+        "Raises MemoryError",
+        "Runs in parallel"
+      ],
+      "correctIndex": 1,
+      "explanation": "Generators are lazy iterators with constant memory; use them for large or streaming data."
+    },
+    {
+      "id": "py-q4",
+      "question": "In asyncio, calling time.sleep(5) inside a coroutine…",
+      "options": [
+        "Pauses only that coroutine",
+        "Blocks the whole event loop for 5 seconds",
+        "Is converted to asyncio.sleep automatically",
+        "Raises an error"
+      ],
+      "correctIndex": 1,
+      "explanation": "Blocking calls stall every task on the loop. Use await asyncio.sleep(), async libraries, or await asyncio.to_thread(blocking_fn)."
+    },
+    {
+      "id": "py-q5",
+      "question": "Which is the idiomatic way to manage a resource that must be closed?",
+      "options": [
+        "try/except only",
+        "A with statement (context manager)",
+        "Calling del",
+        "Relying on garbage collection"
+      ],
+      "correctIndex": 1,
+      "explanation": "with guarantees __exit__ runs even on exceptions (files, locks, DB connections). contextlib.contextmanager makes custom ones easy."
+    }
+  ],
+  "problems": [
+    {
+      "id": "py-p1",
+      "title": "Count words efficiently",
+      "difficulty": "easy",
+      "points": 10,
+      "prompt": "Return the 3 most common words in a large text file without loading it all into memory.",
+      "hints": [
+        "Iterate lines",
+        "collections.Counter"
+      ],
+      "solution": "Iterate the file line by line, split/normalise words, and update a collections.Counter; then call counter.most_common(3). Memory is proportional to distinct words, not file size."
+    },
+    {
+      "id": "py-p2",
+      "title": "Speed up I/O-bound downloads",
+      "difficulty": "medium",
+      "points": 20,
+      "prompt": "A script downloads 500 URLs sequentially with requests and takes 10 minutes. Make it fast without overloading the server.",
+      "hints": [
+        "Concurrency for I/O",
+        "Limit concurrency"
+      ],
+      "solution": "Use asyncio with an async HTTP client (httpx.AsyncClient or aiohttp) and an asyncio.Semaphore (say 20) around each request, gathering results with asyncio.gather; or use a ThreadPoolExecutor(max_workers=20) with requests. Add timeouts, retries with backoff, and a shared session for connection reuse."
+    }
+  ]
 }

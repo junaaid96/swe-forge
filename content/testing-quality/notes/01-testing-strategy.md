@@ -1,4 +1,4 @@
-# 3. Testing Strategy
+# 1. Testing Strategy
 
 ---
 

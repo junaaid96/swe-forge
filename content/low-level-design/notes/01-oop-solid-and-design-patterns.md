@@ -1,4 +1,4 @@
-# 2. OOP, SOLID & Design Patterns
+# 1. OOP, SOLID & Design Patterns
 
 ---
 

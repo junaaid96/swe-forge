@@ -1,4 +1,4 @@
-# 02 · Networking Fundamentals
+# Networking Fundamentals
 
 > A large share of production incidents come down to DNS, a port, a firewall rule, or TLS. This note gives you the model to debug them layer by layer.
 
@@ -204,5 +204,5 @@ kubectl exec -it deploy/medilab-api -n medilab -- nc -zv <db-host> 5432   # 6. D
 1. How many usable IPs in an Azure /27? → 32 − 5 = **27**
 2. Why can't you put a CNAME at the zone apex? → The apex must hold SOA/NS records, and a CNAME can't coexist with other records. Use ALIAS/flattening, or an Azure DNS alias record.
 3. What is a VNet peering limitation? → It's **non-transitive**: if A↔B and B↔C, A cannot reach C without a hub/NVA/Virtual WAN.
-4. Service endpoint vs private endpoint? → See [09-azure](../devops-cloud/08-azure.md) §4. A private endpoint gives the service a private IP *in your VNet*. A service endpoint keeps the public IP but allows only your subnet.
+4. Service endpoint vs private endpoint? → See [Azure](./08-azure.md) §4. A private endpoint gives the service a private IP *in your VNet*. A service endpoint keeps the public IP but allows only your subnet.
 5. The site works by IP but not by name? → DNS. The site works from one pod but not another? → NetworkPolicy, a node, or CoreDNS.

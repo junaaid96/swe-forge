@@ -1,6 +1,6 @@
 # Rust — Deep Dive & Interview Reference (2026)
 
-**Current state (Sept 2026):** Rust **1.98** is the latest stable (six-week cadence). **Edition 2024** is the default for new crates — `gen` blocks, stricter `unsafe` in `extern`, RPIT lifetime capture changes, and `IntoIterator` for `Box<[T]>`. Async traits (AFIT) are stable, `async fn` in traits works without `#[async_trait]` for most cases, and Rust is now in the Linux kernel, Windows, Android, and AWS/Cloudflare infrastructure. It is the default answer to "we need C++ performance without the memory bugs".
+**Current state (Oct 2026):** Rust **1.99** (1 October 2026) is the latest stable (six-week cadence). **Edition 2024** (stable since Rust 1.85) is the default for new crates — it reserves the `gen` keyword (gen blocks themselves are still unstable), requires `unsafe extern` blocks, changes RPIT lifetime capture rules, and adds `IntoIterator` for `Box<[T]>`. Async traits (AFIT) are stable, `async fn` in traits works without `#[async_trait]` for most cases, and Rust is now in the Linux kernel, Windows, Android, and AWS/Cloudflare infrastructure. It is the default answer to "we need C++ performance without the memory bugs".
 
 ---
 

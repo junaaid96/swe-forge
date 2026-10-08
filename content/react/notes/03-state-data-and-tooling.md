@@ -1,4 +1,4 @@
-# 4. Frontend State, Data Fetching, Tooling & Testing
+# 3. Frontend State, Data Fetching, Tooling & Testing
 
 ---
 

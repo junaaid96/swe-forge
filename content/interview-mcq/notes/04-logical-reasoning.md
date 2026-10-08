@@ -1,9 +1,9 @@
 # 📕 Logical Reasoning — MCQ Test Preparation Guide
-### *(Guide 4 of 4 — based on your "MCQ Test Preparation Guideline" image: Logical Reasoning card)*
+### *(Guide 4 of 4 in the MCQ test-prep series: Logical Reasoning)*
 
 **Covers:** Analytical Challenges · Simple Mathematics
 
-> Companion files: `01-Programming.md` · `02-Data-Structures-Algorithms.md` · `03-CS-Fundamentals.md`
+> Companion guides: [Programming](./01-programming.md) · [Data Structures & Algorithms](./02-data-structures-algorithms.md) · [CS Fundamentals](./03-cs-fundamentals.md)
 > This section of an MCQ test is usually **speed-focused** (aptitude-test style, common at TCS, Infosys, Wipro, Capgemini, and most tech-company screening rounds) — the goal is pattern recognition under a time limit, not deep theory.
 
 ---
@@ -385,10 +385,10 @@ Try these — solutions/approach noted after each (cover the answer and self-tes
 ---
 
 ## 📚 Full Set Recap
-This is guide 4 of 4 for your MCQ Test Preparation:
-1. `01-Programming.md` — OOP, Design Patterns, API, Database, Networking, HTML/CSS, Programming Fundamentals
-2. `02-Data-Structures-Algorithms.md` — Data Structures, Algorithms, Complexity Analysis, Recursion
-3. `03-CS-Fundamentals.md` — Database, Networking, OS, Security, API/HTTP, General Knowledge
-4. `04-Logical-Reasoning.md` — Analytical Challenges, Simple Mathematics
+This is guide 4 of 4 in the MCQ test-prep series:
+1. [Programming](./01-programming.md) — OOP, Design Patterns, API, Database, Networking, HTML/CSS, Programming Fundamentals
+2. [Data Structures & Algorithms](./02-data-structures-algorithms.md) — Data Structures, Algorithms, Complexity Analysis, Recursion
+3. [CS Fundamentals](./03-cs-fundamentals.md) — Database, Networking, OS, Security, API/HTTP, General Knowledge
+4. [Logical Reasoning](./04-logical-reasoning.md) (this guide) — Analytical Challenges, Simple Mathematics
 
 **Suggested prep order given your background:** Since you're already deep into backend architecture (Java/Spring Boot, distributed systems patterns), guides 1 and 3 will feel like reinforcement of what you know — skim for gaps. Guide 2 (DSA) is worth dedicated daily practice given it's the highest-volume interview topic. Guide 4 is the most different from your daily work — a couple of timed practice sets from IndiaBix/Sanfoundry alongside this reference will build the speed you need.

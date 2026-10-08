@@ -48,7 +48,7 @@ Key: 401 = "who are you?" (not authenticated). 403 = "I know you, but no." (not 
 JWT: stateless auth. Structure: header.payload.signature (Base64 + dot-separated).
 Server validates signature cryptographically on EVERY request — no DB lookup needed.
 Access token: short-lived (15min–1hr). Refresh token: long-lived (7–30d), stored in HttpOnly cookie.
-Include in request: Authorization: Bearer <token>
+Include in request: `Authorization: Bearer <token>`
 
 Spring Security JWT flow:
 Request → JwtAuthFilter → extract token → validate signature + expiry → set SecurityContext → controller proceeds.

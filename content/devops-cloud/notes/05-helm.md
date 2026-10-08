@@ -1,4 +1,4 @@
-# 06 · Helm
+# Helm
 
 > The JD lists "maintain … Helm charts" as a direct responsibility. Expect to read a chart, change values per environment, debug a failed upgrade, and roll back.
 
@@ -19,7 +19,7 @@ Raw manifests have three problems: **duplication** across environments, **no ver
 ## 2. 2026 state: Helm 4
 
 - **Helm 4.0 went GA in November 2025.** Highlights: **server-side apply**, a redesigned plugin system (WebAssembly plugins, post-renderers as plugins), kstatus-based waiting, and reproducible chart builds.
-- **Helm 3 timeline:** final (limited) feature release on **9 Sep 2026**, and security fixes end on **10 Feb 2027**.
+- **Helm 3 timeline:** the last Helm 3 minor release, **v3.22.0**, shipped in September 2026 and bug fixes ended with it; security-only patches continue until **10 Feb 2027**, after which Helm 3 gets no releases at all.
 - Existing releases and charts carry over without migration. The breaking changes are mostly **CLI flags**, which silently break CI scripts:
 
 | Helm 3 | Helm 4 |

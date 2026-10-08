@@ -96,7 +96,7 @@ public class OrderEventListener {
 }
 ```
 
-This is directly relevant to your Outbox Pattern work: `@TransactionalEventListener(AFTER_COMMIT)` is the in-process half of the pattern — it's what you'd wire to *write* the outbox row, before Debezium/a poller ships it out as a real message.
+**How this relates to the Outbox Pattern:** the outbox row must be written *inside* the business transaction (directly in the service method, or from a `@TransactionalEventListener(phase = BEFORE_COMMIT)` listener) so that the state change and the event commit or roll back together; Debezium or a poller then ships it out as a real message. `AFTER_COMMIT` listeners are for best-effort side effects: if the process crashes right after the commit, that work is lost, which is exactly the gap the outbox closes.
 
 ## 1.5 Auto-configuration — the "magic"
 
@@ -115,18 +115,18 @@ public class MyDataSourceAutoConfiguration {
 }
 ```
 
-**What's new in Spring Boot 4 (2026):** <cite index="2-1">the autoconfigure JAR was a single giant module scanned on every startup regardless of which pieces you actually used — Spring Boot 4 breaks that monolith into modules</cite>, so your app only loads and evaluates conditions for the autoconfiguration relevant to dependencies actually on your classpath. Net effect: faster startup, especially noticeable on smaller microservices where the old scan was disproportionately expensive.
+**What's new in Spring Boot 4 (2026):** the autoconfigure JAR was a single giant module scanned on every startup regardless of which pieces you actually used — Spring Boot 4 breaks that monolith into modules, so your app only loads and evaluates conditions for the autoconfiguration relevant to dependencies actually on your classpath. Net effect: faster startup, especially noticeable on smaller microservices where the old scan was disproportionately expensive.
 
 ## 1.6 Java baseline: Java 21 vs Java 25 LTS
 
-This affects every service you write, not just Spring. <cite index="16-1">As of 2026 the latest Java versions are Java 25 LTS (released September 2025) and Java 26 (non-LTS, March 2026); most production systems still target Java 21 LTS</cite>. The practical guidance from teams migrating in 2026: <cite index="15-1">sequence it as Java 21 first, then Java 25 per-service once dependencies certify support, rather than jumping straight to 25 everywhere</cite>.
+This affects every service you write, not just Spring. **Java 25** (September 2025) is the current LTS; **Java 27** (September 2026) is the latest six-month feature release, and the next LTS is expected to be Java 29 (September 2027). Most production systems still run Java 21 LTS. The practical migration advice: get every service onto Java 21 first, then move to Java 25 service by service once your dependencies certify support, rather than jumping straight to 25 everywhere.
 
 Why Java 25 is worth planning for specifically:
-- <cite index="10-1">JDK 25 is the first LTS that includes JEP 491's fix for carrier-thread pinning and finalized Scoped Values</cite> — this matters a lot if you use virtual threads (see below), because <cite index="10-1">in JDK 21, a virtual thread that entered a `synchronized` block couldn't unmount from its carrier thread even while blocked on I/O</cite>, silently degrading the concurrency benefit.
-- <cite index="13-1">Generational ZGC delivers sub-10ms pause times</cite> even on large heaps.
-- <cite index="17-1">Compact object headers are now a shipped product feature</cite>, reducing memory footprint per object.
+- JDK 25 is the first LTS that includes JEP 491 (*Synchronize Virtual Threads without Pinning*, delivered in JDK 24) and final Scoped Values (JEP 506). This matters a lot if you use virtual threads (see below): in JDK 21, a virtual thread that blocked inside a `synchronized` block couldn't unmount from its carrier thread, silently degrading the concurrency benefit.
+- ZGC (generational-only since JDK 24) keeps pause times typically under a millisecond, even on very large heaps.
+- Compact object headers (JEP 519) are a product feature in JDK 25, enabled with `-XX:+UseCompactObjectHeaders`; they shrink object headers from 12 to 8 bytes on 64-bit JVMs. JDK 27 turns them on by default.
 
-### Virtual Threads (Project Loom) — directly relevant to your Java/Spring Boot stack
+### Virtual Threads (Project Loom)
 
 ```java
 // application.yml — turn on virtual threads for Tomcat request handling
@@ -138,15 +138,15 @@ spring:
 
 With this one property, every servlet request runs on a virtual thread instead of a pooled platform thread. Blocking JDBC/HTTP calls no longer tie up a scarce OS thread — the JVM parks the virtual thread and frees the carrier thread to do other work. This is the single highest-leverage runtime change you can make to a typical blocking Spring MVC service without rewriting it reactively.
 
-**The catch to actually understand, not just enable:** <cite index="10-1">virtual threads don't eliminate bottlenecks, they relocate them</cite> — auditing `ThreadLocal` usage and explicitly bounding every downstream resource pool (DB connection pool, HTTP client pool) still matters, because you can now generate far more concurrent *requests* than your downstream systems can handle. <cite index="10-1">The remaining production risk is in application code: auditing synchronized/ThreadLocal usage, bounding every downstream resource explicitly, and keeping the JFR pinning event on with alerts</cite>.
+**The catch to actually understand, not just enable:** virtual threads don't eliminate bottlenecks, they relocate them. You can now generate far more concurrent requests than your downstream systems can handle, so explicitly bound every downstream resource (DB connection pool, HTTP client pool, semaphores around slow APIs). The remaining production risk is in application code: audit heavy `ThreadLocal` use (millions of virtual threads means millions of copies), check native/JNI calls that can still pin, and keep the JFR `jdk.VirtualThreadPinned` event on with alerts.
 
-**Structured Concurrency** (finalized as a preview feature) lets you treat a group of related subtasks (e.g., "fetch user profile" + "fetch user permissions" in parallel) as a single unit that fails/cancels together, instead of manually juggling `Future`s:
+**Structured Concurrency** (still a preview API: fifth preview in JDK 25, seventh in JDK 27, so it needs `--enable-preview`) lets you treat a group of related subtasks (e.g., "fetch user profile" + "fetch user permissions" in parallel) as a single unit that fails/cancels together, instead of manually juggling `Future`s:
 
 ```java
 try (var scope = StructuredTaskScope.open()) {
     var userTask = scope.fork(() -> userClient.fetch(userId));
     var permsTask = scope.fork(() -> permissionClient.fetch(userId));
-    scope.join(); // waits for both, propagates first failure, cancels the rest
+    scope.join(); // waits for both; if either fails, cancels the other and throws
     return new UserView(userTask.get(), permsTask.get());
 }
 ```
@@ -154,5 +154,5 @@ try (var scope = StructuredTaskScope.open()) {
 ## Go Deeper
 - Bean scopes edge cases: `@Scope("prototype")` inside a singleton (proxy issues) — search "Spring prototype bean in singleton scoped proxy"
 - `@ConditionalOnClass` vs `@ConditionalOnBean` ordering pitfalls when writing your own starter
-- Virtual threads + `synchronized` pinning: run with `-Djdk.tracePinnedThreads=full` in a staging environment before enabling in production
-- Next file: `02-data-layer.md` — HikariCP pool sizing interacts directly with virtual threads (you'll likely need to *increase* pool size once request threads stop being the bottleneck)
+- Virtual threads + pinning: on JDK 21, run staging with `-Djdk.tracePinnedThreads=full` before enabling in production (the flag was removed in JDK 24; on newer JDKs record the JFR `jdk.VirtualThreadPinned` event instead)
+- Next: [Data layer](./02-data-layer.md) — HikariCP pool sizing interacts directly with virtual threads. Once request threads stop being the bottleneck, connections become the contended resource; size the pool for what the database can handle, not for request concurrency

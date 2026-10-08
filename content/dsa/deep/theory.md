@@ -52,7 +52,7 @@ Heap: complete binary tree in array. Min-heap: parent ≤ children. Java's Prior
 Trie: prefix tree, O(L) operations (L = word length). Autocomplete, IP routing, spell check.
 
 Graphs:
-Adjacency List: Map<Node, List<Node>>. Sparse graphs. O(V+E) space.
+Adjacency List: `Map<Node, List<Node>>`. Sparse graphs. O(V+E) space.
 Adjacency Matrix: boolean[][]. Dense graphs. O(V²) space, O(1) edge lookup.
 BFS: Queue-based, level-by-level, finds shortest path in unweighted graphs.
 DFS: Stack/recursion, finds connected components, detects cycles.

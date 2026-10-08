@@ -1,9 +1,9 @@
 # 📙 CS Fundamentals — MCQ Test Preparation Guide
-### *(Guide 3 of 4 — based on your "MCQ Test Preparation Guideline" image: CS Fundamentals card)*
+### *(Guide 3 of 4 in the MCQ test-prep series: CS Fundamentals)*
 
 **Covers:** Database · Networking · Operating Systems · Security · API/HTTP · General Knowledge
 
-> Companion files: `01-Programming.md` · `02-Data-Structures-Algorithms.md` · `04-Logical-Reasoning.md`
+> Companion guides: [Programming](./01-programming.md) · [Data Structures & Algorithms](./02-data-structures-algorithms.md) · [Logical Reasoning](./04-logical-reasoning.md)
 > This is the **theory-deep** counterpart to the applied Database/Networking sections in Guide 1 — this is where MCQs test definitions, internals, and "why," not code.
 
 ---
@@ -252,7 +252,7 @@ synchronized void withdraw(double amount) {
 }
 ```
 
-> 💡 Directly relevant to your concurrency study: `ReentrantLock`, `ExecutorService`, and **Virtual Threads (Project Loom, Java 21)** are all modern tools for managing exactly these OS-level concurrency primitives at a higher level of abstraction.
+> 💡 In Java terms: `ReentrantLock`, `ExecutorService`, and **Virtual Threads (Project Loom, Java 21)** are all modern tools for managing exactly these OS-level concurrency primitives at a higher level of abstraction.
 
 ### 3.5 Deadlock (must know the 4 Coffman conditions)
 A deadlock occurs when a set of processes are each waiting for a resource held by another, forming a cycle with no progress possible.
@@ -281,7 +281,7 @@ A deadlock occurs when a set of processes are each waiting for a resource held b
 - **Internal fragmentation:** wasted space *within* an allocated block (e.g., a fixed-size page mostly unused).
 - **External fragmentation:** wasted space *between* allocated blocks — free memory exists but isn't contiguous enough to satisfy a request.
 
-### 3.8 Multithreading Models & Modern Java Concurrency (directly tied to your Virtual Threads study)
+### 3.8 Multithreading Models & Modern Java Concurrency
 - **1:1 (Platform threads):** each Java thread maps to one OS thread — the traditional model, expensive to create thousands of.
 - **M:N (Virtual Threads, Java 21/Project Loom):** many lightweight virtual threads are multiplexed onto a small number of OS "carrier" threads — dramatically cheaper, enabling thread-per-request style code at massive scale without the old thread-pool tuning complexity.
 
@@ -344,7 +344,7 @@ stmt.setString(1, userInput);
 - **Hashing (not encryption — one-way):** SHA-256 et al. — used for password storage (always **salted + hashed**, e.g., bcrypt/Argon2, never plain SHA for passwords since those are fast and brute-forceable) and data integrity checks.
 - **HTTPS/TLS handshake (simplified):** client and server use asymmetric crypto to agree on a shared symmetric session key, then switch to fast symmetric encryption for the actual data.
 
-### 4.5 OAuth 2.0 / 2.1 & JWT (you've already studied this — key MCQ points)
+### 4.5 OAuth 2.0 / 2.1 & JWT (key MCQ points)
 - **OAuth is about authorization, not authentication** (OpenID Connect layers authentication on top of OAuth).
 - **OAuth 2.1** consolidates best practices from 2.0: mandates **PKCE** (Proof Key for Code Exchange) even for confidential clients, removes the implicit grant flow (deemed insecure), and removes password grant.
 - **JWT structure:** `Header.Payload.Signature`, Base64Url-encoded, **not encrypted** by default (just signed) — never put secrets in a JWT payload.
@@ -365,7 +365,7 @@ Core principle: **"never trust, always verify"** — no implicit trust based on 
 
 ## 5. API / HTTP Deep Dive
 
-> Applied/code-level API content lives in `01-Programming.md` Section 4. This section covers additional theory frequently tested under "CS Fundamentals."
+> Applied/code-level API content lives in [Programming](./01-programming.md) Section 4. This section covers additional theory frequently tested under "CS Fundamentals."
 
 ### 5.1 Statelessness — Why It Matters
 Because REST servers keep no client session state, **any server instance can handle any request** — this is precisely why REST APIs scale horizontally so easily behind a load balancer, and why session data must instead live in a token (JWT) or shared store (Redis) rather than server memory.
@@ -401,7 +401,7 @@ Requirements → Design → Implementation → Testing → Deployment → Mainte
 - **Ceremonies:** Sprint Planning, Daily Standup, Sprint Review, Retrospective.
 - **Kanban vs Scrum:** Kanban is continuous flow with WIP limits (no fixed sprints); Scrum is time-boxed iterations.
 
-### 6.3 Version Control (see also `01-Programming.md` Section 10 for commands)
+### 6.3 Version Control (see also [Programming](./01-programming.md) Section 10 for commands)
 Distributed (Git) vs Centralized (older SVN) version control — Git gives every developer a full local repo copy, enabling offline work and fast branching.
 
 ### 6.4 CI/CD
@@ -422,7 +422,7 @@ Distributed (Git) vs Centralized (older SVN) version control — Git gives every
 ### 6.7 Compiler vs Interpreter
 - **Compiler:** translates entire source code to machine code *before* execution (C, C++). Errors caught upfront; typically faster runtime.
 - **Interpreter:** executes code line-by-line at runtime (Python, JS — though modern JS engines JIT-compile). Slower but more flexible (dynamic typing, REPL).
-- **Java's hybrid model:** compiles to platform-independent **bytecode** (`.class` files), which the JVM then interprets and **JIT-compiles** hot code paths to native machine code at runtime — the best of both worlds, and something you've already studied at the bytecode/JVM level.
+- **Java's hybrid model:** compiles to platform-independent **bytecode** (`.class` files), which the JVM then interprets and **JIT-compiles** hot code paths to native machine code at runtime — the best of both worlds.
 
 ### 6.8 CPU, GPU, TPU (you've studied this — quick recap)
 - **CPU:** few powerful cores, optimized for sequential/general-purpose tasks and complex branching logic.
@@ -463,11 +463,11 @@ Distributed (Git) vs Centralized (older SVN) version control — Git gives every
 
 ## 8. Most Used in Real Software Engineering
 
-- **Database fundamentals (indexing, normalization, transactions)** — used every time you design a schema or debug a slow query; directly maps to your PostgreSQL work.
+- **Database fundamentals (indexing, normalization, transactions)** — used every time you design a schema or debug a slow query; directly maps to day-to-day PostgreSQL work.
 - **Networking basics (HTTP, DNS, TLS)** — needed for virtually every debugging session involving service-to-service or client-server issues.
-- **OS concurrency concepts** — underpin every multi-threaded Spring Boot service and your Virtual Threads study.
-- **Security fundamentals (OWASP, auth)** — non-negotiable for anything handling healthcare data (Popular Diagnostic Center, eG-Health) or payments (bKash/SSL Wireless).
-- **CAP theorem & distributed systems trade-offs** — directly informs your Saga/Event-Driven/Database-per-Service architecture study.
+- **OS concurrency concepts** — underpin every multi-threaded Spring Boot service and Java's virtual threads.
+- **Security fundamentals (OWASP, auth)** — non-negotiable for anything handling healthcare data or payments (e.g., bKash or SSLCommerz integrations).
+- **CAP theorem & distributed systems trade-offs** — directly informs Saga, event-driven and database-per-service architecture decisions.
 - **Docker/Kubernetes/CI-CD** — the deployment reality of virtually every modern backend team.
 - **Agile/Scrum vocabulary** — needed to function in almost any professional engineering team.
 
@@ -477,4 +477,4 @@ Distributed (Git) vs Centralized (older SVN) version control — Git gives every
 
 ---
 
-**Next:** `04-Logical-Reasoning.md` →
+**Next:** [Logical Reasoning](./04-logical-reasoning.md) →

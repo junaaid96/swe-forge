@@ -1,6 +1,6 @@
-# 2. React Core — Hooks, Rendering, and the 2026 Mental Model
+# 1. React Core — Hooks, Rendering, and the 2026 Mental Model
 
-**Current state (Sept 2026):** **React 19.2.x** is the stable line. React 19 brought the **React Compiler** (auto-memoisation), **Actions** + `useActionState`/`useFormStatus`/`useOptimistic`, `use()`, ref-as-a-prop (no more `forwardRef`), Document Metadata, and stable Server Components. React 18 is security-only. Next.js 16 is the dominant meta-framework; Vite + React Router 7 is the strong SPA alternative.
+**Current state (Oct 2026):** **React 19.3** (9 Sept 2026) is the latest release; it made View Transitions and Fragment Refs stable. React 19 brought the **React Compiler** (auto-memoisation), **Actions** + `useActionState`/`useFormStatus`/`useOptimistic`, `use()`, ref-as-a-prop (no more `forwardRef`), Document Metadata, and stable Server Components. React 18 is security-only. Next.js 16 is the dominant meta-framework; Vite + React Router 7 is the strong SPA alternative.
 
 ---
 

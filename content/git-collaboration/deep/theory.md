@@ -46,7 +46,7 @@ Preferred for modern CI/CD teams.
 GitHub Flow (most common for web apps): main + feature branches + PR → deploy.
 Simple and effective. No separate develop branch.
 
-At eGeneration: likely GitHub Flow or GitFlow with feature branches + PRs into develop/main.
+Most product teams today use GitHub Flow or trunk-based development; GitFlow (with a develop branch) still appears where releases are scheduled rather than continuous.
 
 ### Rebase vs Merge
 
@@ -70,24 +70,31 @@ pick = keep, squash = merge with previous, reword = edit message, drop = delete.
 
 ### Conventional Commits & Recovery
 
-Format: type(scope): description
+Format: `type(scope): description`
 
 Types: feat, fix, docs, style, refactor, test, chore, perf, ci
+
 Examples:
+
+```text
 feat(auth): implement JWT refresh token rotation
 fix(order): prevent duplicate creation on concurrent retry
 refactor(payment): extract bKash gateway into adapter
 chore(deps): upgrade Spring Boot 3.1 → 3.3
+```
 
 Benefits: auto-generate CHANGELOG, enable semantic versioning, clear PR history.
 
 Recovery commands:
+
+```bash
 git stash / git stash pop           # shelve and restore uncommitted changes
 git cherry-pick <sha>               # apply one specific commit to current branch
 git bisect start/bad/good <sha>     # binary search for bug-introducing commit
 git reflog                          # ALL HEAD movements — recover "lost" commits
 git reset --soft HEAD~1             # undo last commit, keep changes staged (safe)
 git revert <sha>                    # new commit that undoes another (safe on shared branches)
+```
 
 ### Practical code
 
@@ -98,7 +105,7 @@ git checkout main && git pull --rebase origin main
 git checkout -b feature/patient-bulk-import
 
 # 2. Atomic, conventional commits
-git add src/main/java/com/egeneration/patient/
+git add src/main/java/com/example/patient/
 git commit -m "feat(patient): add CSV bulk import endpoint"
 
 git add src/test/

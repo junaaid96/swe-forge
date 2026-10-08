@@ -1,6 +1,6 @@
-# 13 · Troubleshooting Runbooks
+# Troubleshooting Runbooks
 
-> SELISE-style interviews include hands-on or scenario tasks. Interviewers judge your **method** more than recall. Practise these out loud with a timer: **5 minutes per scenario.**
+> DevOps interviews often include hands-on or scenario tasks. Interviewers judge your **method** more than recall. Practise these out loud with a timer: **5 minutes per scenario.**
 
 ---
 
@@ -104,7 +104,7 @@ SELECT count(*), state FROM pg_stat_activity GROUP BY state;
 SELECT usename, application_name, count(*) FROM pg_stat_activity GROUP BY 1,2 ORDER BY 3 DESC;
 ```
 
-Private-endpoint variant: `could not translate host name` / timeouts right after enabling a private endpoint → **Private DNS zone** not linked to the VNet (see [02-networking](../devops-cloud/02-networking.md) §3).
+Private-endpoint variant: `could not translate host name` / timeouts right after enabling a private endpoint → **Private DNS zone** not linked to the VNet (see [Networking](./02-networking.md) §3).
 
 ---
 

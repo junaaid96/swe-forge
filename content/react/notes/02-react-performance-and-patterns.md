@@ -1,4 +1,4 @@
-# 3. React Performance & Component Patterns
+# 2. React Performance & Component Patterns
 
 Performance work in React is 90% "stop doing unnecessary work" and 10% clever tricks. This note covers how to find the waste, the patterns that prevent it structurally, and what the React Compiler changes.
 

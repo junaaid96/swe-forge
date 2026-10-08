@@ -13,6 +13,93 @@
     "react",
     "angular"
   ],
-  "quiz": [],
-  "problems": []
+  "quiz": [
+    {
+      "id": "ux-q1",
+      "question": "What is the WCAG 2.2 AA minimum contrast ratio for normal body text?",
+      "options": [
+        "2:1",
+        "3:1",
+        "4.5:1",
+        "7:1"
+      ],
+      "correctIndex": 2,
+      "explanation": "AA requires 4.5:1 for normal text and 3:1 for large text and UI components; AAA raises normal text to 7:1."
+    },
+    {
+      "id": "ux-q2",
+      "question": "Hick's law says that…",
+      "options": [
+        "Users read in an F-pattern",
+        "Decision time grows with the number and complexity of choices",
+        "Bigger targets are slower to hit",
+        "Users remember 7 ± 2 items"
+      ],
+      "correctIndex": 1,
+      "explanation": "More options means slower decisions, so progressive disclosure and sensible defaults help. Fitts's law is about target size and distance."
+    },
+    {
+      "id": "ux-q3",
+      "question": "Which is the best practice for form error messages?",
+      "options": [
+        "Show a generic error at the top only",
+        "Show specific, inline messages next to the field, explaining how to fix it, and keep the user's input",
+        "Clear the form on error",
+        "Use colour alone to signal errors"
+      ],
+      "correctIndex": 1,
+      "explanation": "Specific inline errors (linked with aria-describedby), preserved input, and more than colour alone make forms usable and accessible."
+    },
+    {
+      "id": "ux-q4",
+      "question": "Why should focus outlines not be removed with outline: none?",
+      "options": [
+        "They improve SEO",
+        "Keyboard users rely on a visible focus indicator to know where they are",
+        "They are required for mouse users",
+        "Browsers ignore outline: none"
+      ],
+      "correctIndex": 1,
+      "explanation": "Removing focus styles breaks keyboard navigation (WCAG 2.4.7). Use :focus-visible to style focus for keyboard users without showing it on mouse clicks."
+    },
+    {
+      "id": "ux-q5",
+      "question": "A good minimum touch target size is around…",
+      "options": [
+        "16×16 px",
+        "24×24 CSS px minimum (WCAG 2.2 AA), with 44–48 px recommended",
+        "8×8 px",
+        "There is no guidance"
+      ],
+      "correctIndex": 1,
+      "explanation": "WCAG 2.2 SC 2.5.8 sets a 24×24 CSS px minimum; Apple recommends 44 pt and Material Design 48 dp for comfortable tapping."
+    }
+  ],
+  "problems": [
+    {
+      "id": "ux-p1",
+      "title": "Audit a sign-up form",
+      "difficulty": "medium",
+      "points": 20,
+      "prompt": "List the UX and accessibility issues to check on a sign-up form before launch.",
+      "hints": [
+        "Labels",
+        "Errors",
+        "Keyboard"
+      ],
+      "solution": "Visible <label>s (placeholders aren't labels), correct input types and autocomplete attributes, minimal required fields, inline specific errors announced to screen readers, password rules shown up front with a show-password toggle, logical tab order and visible focus, sufficient contrast, touch targets of at least 24 px, a clear primary action, and no CAPTCHA that blocks assistive tech."
+    },
+    {
+      "id": "ux-p2",
+      "title": "Design empty, loading and error states",
+      "difficulty": "easy",
+      "points": 15,
+      "prompt": "A dashboard table can be empty, loading or fail to load. Describe each state.",
+      "hints": [
+        "Never a blank screen",
+        "Next action"
+      ],
+      "solution": "Loading: a skeleton matching the table layout (avoid layout shift), announced politely to screen readers. Empty: explain why it's empty and offer the next action (\"Create your first project\"). Error: plain-language message, what happened and a retry button, keeping any data already loaded. All three use the same container so the layout stays stable."
+    }
+  ]
 }

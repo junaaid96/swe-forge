@@ -31,7 +31,7 @@ A study guide covering 7 production patterns for high availability, performance,
 
 ### Connected topics to study next
 - **Circuit Breaker Pattern** (Resilience4j `@CircuitBreaker`) — prevents cascading failures by "opening" the circuit after repeated failures instead of retrying forever
-- **Bulkhead Pattern** — isolate resources per service so one failing dependency doesn't exhaust your whole thread pool (ties into your Java 21 Virtual Threads study — bulkheads matter differently with virtual threads since they're cheap)
+- **Bulkhead Pattern** — isolate resources per service so one failing dependency doesn't exhaust your whole thread pool (ties into Java 21 virtual threads — bulkheads matter differently with virtual threads since they're cheap)
 - **CAP Theorem** — failover always forces a tradeoff between consistency and availability during a network partition
 
 ---
@@ -83,10 +83,10 @@ This is a classic system design interview topic — worth actually coding a toy 
   CompletableFuture<List<Order>> orderFuture = CompletableFuture.supplyAsync(() -> orderClient.get(id));
   CompletableFuture.allOf(userFuture, orderFuture).join();
   ```
-- With **Java 21 Virtual Threads**, you can even do this with plain blocking calls per virtual thread instead of reactive code — much simpler to read, similar throughput for I/O-bound aggregation. Worth comparing both approaches since you're already deep in Project Loom.
+- With **Java 21 Virtual Threads**, you can even do this with plain blocking calls per virtual thread instead of reactive code — much simpler to read, similar throughput for I/O-bound aggregation. Worth comparing both approaches.
 
 ### Connected topics
-- **BFF (Backend For Frontend)** — a specialized aggregator per client type (mobile BFF vs web BFF), very relevant if eG-Health ever splits mobile/web frontends
+- **BFF (Backend For Frontend)** — a specialized aggregator per client type (mobile BFF vs web BFF), useful when mobile and web clients need very different payloads
 - **API Gateway pattern** (Spring Cloud Gateway) — often sits in front of the aggregator
 - **Partial failure handling** — what happens if Payment Service times out but the rest succeed? Decide: fail the whole request, or return partial data with a flag?
 
@@ -136,7 +136,7 @@ This is a classic system design interview topic — worth actually coding a toy 
 3. Restore = flip the flag back, clear `deleted_at`
 4. True/permanent deletion (e.g., GDPR "right to be forgotten") = a separate archive-then-hard-delete job later
 
-### In Spring Boot + Hibernate — this is directly usable in your eG-Health / Popular Diagnostic work
+### In Spring Boot + Hibernate
 ```java
 @Entity
 @SQLDelete(sql = "UPDATE patient SET is_deleted = true, deleted_at = now() WHERE id = ?")
@@ -175,7 +175,7 @@ Soft delete conflicts with **GDPR's "right to be forgotten"** — for regulated 
 - **Write-through**: Every write goes to cache AND DB synchronously. Cache always fresh, but writes are slower.
 - **Write-behind (write-back)**: Write to cache immediately, DB update happens asynchronously later. Fast writes, but risk of data loss if the cache dies before flushing.
 
-### Eviction policies (relevant to your caching study)
+### Eviction policies
 - **LRU** (Least Recently Used) — evict the item not accessed in longest time
 - **LFU** (Least Frequently Used) — evict the item accessed least often
 - **TTL** (Time To Live) — auto-expire after a fixed duration, simplest and most common for session data
@@ -210,8 +210,8 @@ Backed by Redis via `spring-boot-starter-data-redis` + `spring-boot-starter-cach
 6. ACL transforms the response back into your domain's clean model
 7. Your app never touches the external system's raw shape directly
 
-### Why it matters for your work specifically
-If Popular Diagnostic Center's platform or eG-Health ever integrates with a legacy hospital system (HL7, old SOAP APIs, a vendor's weird XML format — very common in healthcare), an ACL means your clean Spring Boot domain model doesn't get polluted by that legacy system's quirks. If the vendor changes their API, only the ACL changes — your core business logic is untouched.
+### Why it matters
+If a healthcare platform integrates with a legacy hospital system (HL7, old SOAP APIs, a vendor's weird XML format — very common in healthcare), an ACL means your clean Spring Boot domain model doesn't get polluted by that legacy system's quirks. If the vendor changes their API, only the ACL changes — your core business logic is untouched.
 
 ### Benefits
 - Encapsulation — external chaos contained in one place
@@ -240,11 +240,9 @@ Think of them in 3 groups:
 **Data & Domain Integrity** → Soft Delete, Anti-Corruption Layer
 - Both protect data correctness — Soft Delete protects against accidental data loss, ACL protects your domain model from external corruption.
 
-## Suggested Next Topics (natural extensions, fits your current GfG checklist)
+## Suggested Next Topics
 1. **Circuit Breaker Pattern** (Resilience4j) — pairs directly with Failover
-2. **Saga Pattern** — for distributed transactions across microservices (relevant once eG-Health has more than a couple of services needing consistency)
+2. **Saga Pattern** — for distributed transactions across microservices (relevant once more than a couple of services need to stay consistent)
 3. **CQRS (Command Query Responsibility Segregation)** — often paired with Soft Delete/Event Sourcing
 4. **API Gateway Pattern** (Spring Cloud Gateway) — the front door to Aggregator, Failover routing, and rate limiting all at once
-5. **Idempotency** — you already have this on your checklist; it's what makes Failover retries and Aggregator partial-failure retries *safe*
-
-If you want, I can turn any single one of these (e.g., Circuit Breaker, or a hands-on consistent-hashing implementation in Java) into a focused deep-dive with working code.
+5. **Idempotency** — it's what makes Failover retries and Aggregator partial-failure retries *safe*

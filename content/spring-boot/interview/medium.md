@@ -5,9 +5,7 @@ level: medium
 
 # Spring Boot — Interview (Medium)
 
-# Spring Boot Intermediate — Interview Study Guide (Q1–23)
-
-> **Spring Boot 3.x** · Jakarta EE (`jakarta.*`) · Java 17+ · Maven
+> Examples target **Spring Boot 3.x** · Jakarta EE (`jakarta.*`) · Java 17+ · Maven. The concepts carry over to Spring Boot 4; see the Spring Boot notes for what changed in 4.x.
 
 ---
 

@@ -128,7 +128,7 @@ public class DiagnosticsGateway {
 }
 
 /*
- eG-Health Platform Architecture (simplified):
+ Example: healthcare platform architecture (simplified):
 
  Angular SPA → CDN (static assets, edge caching)
              → Nginx (SSL termination, reverse proxy)

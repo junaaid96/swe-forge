@@ -13,6 +13,92 @@
     "nextjs",
     "testing-quality"
   ],
-  "quiz": [],
-  "problems": []
+  "quiz": [
+    {
+      "id": "re-q1",
+      "question": "Why should list items have a stable key (not the array index) when the list can reorder?",
+      "options": [
+        "Keys make rendering faster in every case",
+        "React uses keys to match elements between renders; index keys attach state to the wrong items after reorders or inserts",
+        "Keys are required for CSS",
+        "Index keys cause syntax errors"
+      ],
+      "correctIndex": 1,
+      "explanation": "Keys give list items a stable identity. With index keys, inserting or reordering shifts identities, so component state and DOM (e.g., input values) end up on the wrong item."
+    },
+    {
+      "id": "re-q2",
+      "question": "What does the dependency array of useEffect control?",
+      "options": [
+        "Which props the component receives",
+        "When the effect re-runs: after renders where any listed value changed",
+        "The order of effects",
+        "Server-side rendering"
+      ],
+      "correctIndex": 1,
+      "explanation": "With [] the effect runs after mount only; with values it re-runs when any of them changes (compared with Object.is); with no array it runs after every render. The cleanup runs before the next run and on unmount."
+    },
+    {
+      "id": "re-q3",
+      "question": "Calling setCount(count + 1) three times in one click handler increments count by…",
+      "options": [
+        "3",
+        "1",
+        "0",
+        "It throws an error"
+      ],
+      "correctIndex": 1,
+      "explanation": "All three calls read the same count from the current render, and updates are batched. Use the updater form setCount(c => c + 1) to increment by 3."
+    },
+    {
+      "id": "re-q4",
+      "question": "What does the React Compiler (React 19 era) mainly do?",
+      "options": [
+        "Compiles JSX to WebAssembly",
+        "Automatically memoizes components and values, reducing the need for manual useMemo/useCallback",
+        "Replaces the virtual DOM",
+        "Adds TypeScript types"
+      ],
+      "correctIndex": 1,
+      "explanation": "The compiler analyses components at build time and inserts memoization, so most manual useMemo, useCallback and React.memo becomes unnecessary — as long as components follow the Rules of React."
+    },
+    {
+      "id": "re-q5",
+      "question": "In the Next.js App Router, React Server Components…",
+      "options": [
+        "Run in the browser only",
+        "Render on the server, can fetch data directly, and ship no component JavaScript to the client",
+        "Can use useState and onClick",
+        "Must be wrapped in useEffect"
+      ],
+      "correctIndex": 1,
+      "explanation": "Server Components render on the server and send their output; interactivity (state, effects, event handlers) needs a Client Component marked with 'use client'."
+    }
+  ],
+  "problems": [
+    {
+      "id": "re-p1",
+      "title": "Stale closure bug",
+      "difficulty": "medium",
+      "points": 20,
+      "prompt": "useEffect(() => { const id = setInterval(() => setCount(count + 1), 1000); return () => clearInterval(id); }, []); The counter stops at 1. Why, and how do you fix it?",
+      "hints": [
+        "What value of count does the interval capture?",
+        "Updater function"
+      ],
+      "solution": "The effect runs once and the interval callback closes over count from the first render (0), so it keeps setting 1. Use the functional update setCount(c => c + 1) (keeping [] deps), or include count in the dependency array so the interval is recreated."
+    },
+    {
+      "id": "re-p2",
+      "title": "Fetching data in an effect correctly",
+      "difficulty": "medium",
+      "points": 20,
+      "prompt": "A component fetches /api/user/:id in useEffect. When id changes quickly, an older response sometimes overwrites the newer one. Fix it.",
+      "hints": [
+        "Cleanup function",
+        "AbortController"
+      ],
+      "solution": "Create an AbortController in the effect, pass its signal to fetch, and abort in the cleanup; ignore AbortError. Alternatively set an ignore flag in cleanup and skip setState when it's set. In real apps use a data library (TanStack Query) or framework loaders, which handle races and caching."
+    }
+  ]
 }

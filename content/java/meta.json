@@ -14,6 +14,92 @@
     "cs-fundamentals",
     "dsa"
   ],
-  "quiz": [],
-  "problems": []
+  "quiz": [
+    {
+      "id": "jv-q1",
+      "question": "Which statement about == and equals() on Strings is correct?",
+      "options": [
+        "== compares contents; equals() compares references",
+        "== compares references; equals() compares contents",
+        "Both always compare contents",
+        "Both always compare references"
+      ],
+      "correctIndex": 1,
+      "explanation": "== checks whether two references point to the same object; String.equals() compares the characters. Literals may be interned, which is why == sometimes 'works' by accident."
+    },
+    {
+      "id": "jv-q2",
+      "question": "If two objects are equal according to equals(), then…",
+      "options": [
+        "Their hashCode() values may differ",
+        "Their hashCode() values must be equal",
+        "They must be the same instance",
+        "toString() must return the same value"
+      ],
+      "correctIndex": 1,
+      "explanation": "The equals/hashCode contract: equal objects must have equal hash codes, otherwise HashMap/HashSet lookups break. Unequal objects may still collide."
+    },
+    {
+      "id": "jv-q3",
+      "question": "Which collection gives O(1) average lookup by key and keeps insertion order?",
+      "options": [
+        "TreeMap",
+        "HashMap",
+        "LinkedHashMap",
+        "PriorityQueue"
+      ],
+      "correctIndex": 2,
+      "explanation": "LinkedHashMap is a HashMap plus a doubly linked list of entries, preserving insertion (or access) order. TreeMap is sorted with O(log n) operations."
+    },
+    {
+      "id": "jv-q4",
+      "question": "What does a Java record give you automatically?",
+      "options": [
+        "Mutable fields with setters",
+        "A private constructor only",
+        "Final fields, a canonical constructor, accessors, equals(), hashCode() and toString()",
+        "Lazy-loaded JPA entity behaviour"
+      ],
+      "correctIndex": 2,
+      "explanation": "Records (final since Java 16) are transparent, shallowly immutable data carriers; the compiler generates the canonical constructor, accessors, equals, hashCode and toString."
+    },
+    {
+      "id": "jv-q5",
+      "question": "Virtual threads (Java 21+) are best suited to…",
+      "options": [
+        "CPU-bound number crunching",
+        "Large numbers of I/O-bound blocking tasks",
+        "Replacing all synchronization",
+        "Running code on the GPU"
+      ],
+      "correctIndex": 1,
+      "explanation": "Virtual threads are cheap and unmount from their carrier thread while blocked on I/O, so thread-per-request blocking code scales. CPU-bound work still needs a bounded pool sized to the cores."
+    }
+  ],
+  "problems": [
+    {
+      "id": "jv-p1",
+      "title": "Fix the broken HashMap key",
+      "difficulty": "medium",
+      "points": 20,
+      "prompt": "A Point class overrides equals() but not hashCode(). map.put(new Point(1,2), \"A\"); map.get(new Point(1,2)) returns null. Explain why and fix it.",
+      "hints": [
+        "Which method picks the bucket?",
+        "Use Objects.hash or a record."
+      ],
+      "solution": "HashMap uses hashCode() to pick the bucket before calling equals(); without an override, the two equal points have identity hash codes and land in different buckets. Override hashCode() consistently (return Objects.hash(x, y)), or declare record Point(int x, int y), which generates both."
+    },
+    {
+      "id": "jv-p2",
+      "title": "Make it immutable",
+      "difficulty": "easy",
+      "points": 15,
+      "prompt": "class Order { private List<String> items; public List<String> getItems() { return items; } } — make Order immutable and safe to share across threads.",
+      "hints": [
+        "final class and fields",
+        "Defensive copies"
+      ],
+      "solution": "Make the class and fields final, set items in the constructor with this.items = List.copyOf(items), expose only the unmodifiable list (or return a copy), and provide no setters. A record Order(List<String> items) with a compact constructor doing items = List.copyOf(items) achieves the same."
+    }
+  ]
 }

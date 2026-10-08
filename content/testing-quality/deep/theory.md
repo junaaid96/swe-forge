@@ -39,7 +39,7 @@ assertNotNull / assertTrue / assertFalse / assertIterableEquals
 
 Parameterized tests:
 @ParameterizedTest + @CsvSource({"0,false", "1,true", "-1,false"}) — multiple inputs, one test method
-@MethodSource("provideTestData") — method returns Stream<Arguments>
+@MethodSource("provideTestData") — method returns `Stream<Arguments>`
 
 Organization: @DisplayName("human readable"), @Nested for grouping, @Disabled for skipping.
 

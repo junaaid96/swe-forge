@@ -1,4 +1,4 @@
-# 04 · Docker & Containers
+# Docker & Containers
 
 > You've used Docker as a developer. The DevOps bar is higher: you need **small, secure, reproducible images**, correct signal handling, and to know what a container *is* at the kernel level.
 
@@ -209,7 +209,7 @@ volumes:
 | `:1.4.0` (semver) | ✅ For releases. Add it alongside the SHA tag |
 | `@sha256:<digest>` | ✅✅ Strongest pinning. The tag can't be moved under you |
 
-Registry for this role: **Azure Container Registry (ACR)**. Push with `az acr login -n <acr>` then `docker push <acr>.azurecr.io/medilab-api:<sha>`. AKS pulls using the **AcrPull** role on the kubelet identity, with no passwords (see [08-terraform](../devops-cloud/07-terraform.md)).
+Registry for this role: **Azure Container Registry (ACR)**. Push with `az acr login -n <acr>` then `docker push <acr>.azurecr.io/medilab-api:<sha>`. AKS pulls using the **AcrPull** role on the kubelet identity, with no passwords (see [Terraform](./07-terraform.md)).
 
 ---
 
@@ -218,7 +218,7 @@ Registry for this role: **Azure Container Registry (ACR)**. Push with `az acr lo
 ```bash
 docker images medilab-api                  # size
 docker history medilab-api:<tag>           # size per layer (and leaked ENV!)
-trivy image medilab-api:<tag>              # CVE scan (pin the Trivy version — see 11-security)
+trivy image medilab-api:<tag>              # CVE scan (pin the Trivy version — see the Security guide)
 docker scout cves medilab-api:<tag>        # Docker's scanner
 ```
 

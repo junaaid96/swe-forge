@@ -14,6 +14,92 @@
     "nodejs",
     "nextjs"
   ],
-  "quiz": [],
-  "problems": []
+  "quiz": [
+    {
+      "id": "js-q1",
+      "question": "What does this print? console.log(1); setTimeout(() => console.log(2)); Promise.resolve().then(() => console.log(3)); console.log(4);",
+      "options": [
+        "1 2 3 4",
+        "1 4 2 3",
+        "1 4 3 2",
+        "1 3 4 2"
+      ],
+      "correctIndex": 2,
+      "explanation": "Synchronous code runs first (1, 4), then the microtask queue (promise callback: 3), then the next macrotask (timer: 2)."
+    },
+    {
+      "id": "js-q2",
+      "question": "What's the difference between let/const and var?",
+      "options": [
+        "No difference",
+        "let/const are block-scoped and have a temporal dead zone; var is function-scoped and hoisted as undefined",
+        "var is block-scoped",
+        "const makes objects deeply immutable"
+      ],
+      "correctIndex": 1,
+      "explanation": "let/const are block-scoped and can't be used before declaration (TDZ). var is function-scoped and initialized to undefined when hoisted. const only prevents rebinding, not mutation."
+    },
+    {
+      "id": "js-q3",
+      "question": "What is a closure?",
+      "options": [
+        "A function bundled with references to the variables of the scope where it was created",
+        "A way to close a browser tab",
+        "A sealed object",
+        "A synchronous callback"
+      ],
+      "correctIndex": 0,
+      "explanation": "A closure keeps access to its outer scope's variables even after that scope has returned — the basis of module patterns, memoization and React hooks."
+    },
+    {
+      "id": "js-q4",
+      "question": "Which comparison is true?",
+      "options": [
+        "NaN === NaN",
+        "[] === []",
+        "null == undefined",
+        "'1' === 1"
+      ],
+      "correctIndex": 2,
+      "explanation": "Loose equality treats null and undefined as equal to each other only. NaN is never equal to itself (use Number.isNaN), and distinct arrays are different references."
+    },
+    {
+      "id": "js-q5",
+      "question": "Promise.allSettled differs from Promise.all because it…",
+      "options": [
+        "Rejects as soon as one promise rejects",
+        "Waits for every promise and reports each one's status",
+        "Returns only the first result",
+        "Runs promises sequentially"
+      ],
+      "correctIndex": 1,
+      "explanation": "Promise.all short-circuits on the first rejection; allSettled always resolves with {status, value|reason} for each input. Promise.race and Promise.any settle on the first result."
+    }
+  ],
+  "problems": [
+    {
+      "id": "js-p1",
+      "title": "Debounce",
+      "difficulty": "medium",
+      "points": 20,
+      "prompt": "Implement debounce(fn, ms) so a search box only calls the API after the user stops typing for ms milliseconds.",
+      "hints": [
+        "Keep a timer in a closure",
+        "clearTimeout on each call"
+      ],
+      "solution": "function debounce(fn, ms) { let t; return function (...args) { clearTimeout(t); t = setTimeout(() => fn.apply(this, args), ms); }; } — each call resets the timer, so fn runs once, ms after the last call. Add a cancel method if callers need to abort."
+    },
+    {
+      "id": "js-p2",
+      "title": "Run with a concurrency limit",
+      "difficulty": "hard",
+      "points": 25,
+      "prompt": "You have 100 URLs. Fetch them all, but never more than 5 at a time, and return results in the original order.",
+      "hints": [
+        "Worker pool",
+        "Shared index"
+      ],
+      "solution": "Create 5 async workers that loop: take the next index from a shared counter, await fetch(urls[i]), store the result at results[i]. Await Promise.all(workers). Order is preserved because results are written by index; wrap each fetch in try/catch (or use allSettled semantics) so one failure doesn't stop the pool."
+    }
+  ]
 }

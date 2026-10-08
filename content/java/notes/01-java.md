@@ -1,6 +1,6 @@
 # Java — Deep Dive & Interview Reference (2026)
 
-**Current state (Sept 2026):** **Java 25 (LTS, Sept 2025)** is the target for new production work; **Java 26** (Mar 2026) is the current non-LTS feature release and **Java 27 (LTS)** lands this month. Java 21 remains widely deployed. Virtual threads, records, sealed types, pattern matching for `switch`, and the sequenced collections are all final and mainstream now.
+**Current state (Oct 2026):** **Java 25 (LTS, Sept 2025)** is the target for new production work; **Java 27** (15 Sept 2026) is the current six-month, non-LTS feature release (it makes G1 the default GC everywhere and compact object headers the default). The next LTS is expected to be Java 29 in September 2027. Java 21 remains widely deployed. Virtual threads, records, sealed types, pattern matching for `switch`, and the sequenced collections are all final and mainstream now.
 
 ---
 

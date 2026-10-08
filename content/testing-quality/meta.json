@@ -158,7 +158,7 @@
         "Speed vs realism",
         "Layer under test"
       ],
-      "solution": "Pure unit: mock repository (fast, isolated). Repository correctness: @DataJpaTest with real SQL dialect/H2. Don’t mix concerns in one test.",
+      "solution": "Pure unit test: mock the repository (fast, isolated; tests service logic only). Repository/query correctness: @DataJpaTest against a real database via Testcontainers (H2 dialect differences hide bugs). Keep the two concerns in separate tests.",
       "points": 15
     },
     {

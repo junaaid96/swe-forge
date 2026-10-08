@@ -1,16 +1,16 @@
 # 5. Messaging & Async — Kafka, RabbitMQ, Outbox, Saga in Spring Boot
 
-You've already gone deep on Outbox, Saga, and idempotency at the architecture-pattern level. This file is deliberately lighter on theory and focused on **how those patterns actually get wired up in Spring Boot code**, plus what changed in Kafka in 2026.
+This guide assumes you know Outbox, Saga and idempotency at the architecture-pattern level (see [Backend architecture patterns](../backend/01-backend-architecture-patterns.md)). It's deliberately lighter on theory and focused on **how those patterns actually get wired up in Spring Boot code**, plus what changed in Kafka 4.x.
 
 ## 5.1 Kafka 4.0 — ZooKeeper is gone, not deprecated
 
-This is the headline infrastructure change since you last looked at Kafka. <cite index="18-1">Apache Kafka 4.0 ships with ZooKeeper mode fully removed — KRaft, Kafka's own Raft-based metadata consensus, is now the only supported mode</cite>. <cite index="19-1">The metadata quorum now lives inside Kafka itself, run by dedicated controller nodes executing the Raft protocol — for most platform teams this is the biggest operational shift since tiered storage</cite>, because it removes an entire separate distributed system (ZooKeeper) from your infrastructure.
+This is the headline Kafka infrastructure change. Apache Kafka 4.0 (March 2025) ships with ZooKeeper mode fully removed — KRaft, Kafka's own Raft-based metadata consensus, is now the only supported mode. The metadata quorum now lives inside Kafka itself, run by dedicated controller nodes executing the Raft protocol — for most platform teams this is the biggest operational shift since tiered storage, because it removes an entire separate distributed system (ZooKeeper) from your infrastructure.
 
 Practical implications if you're standing up new Kafka clusters:
-- <cite index="21-1">Broker upgrades to 4.0+ require KRaft mode; clusters still in ZooKeeper mode must migrate to KRaft *before* upgrading — you cannot jump straight from ZooKeeper-3.x to Kafka 4.0</cite>.
-- <cite index="22-1">Reported operational gains from teams who've migrated: one fintech team cut cluster setup time by 40%, and Aiven migrated 15,000 servers with zero downtime</cite> — the migration pain is real but time-boxed, the payoff is ongoing.
-- <cite index="24-1">Kafka 4.0 also brings general availability of KIP-848, a new consumer group rebalance protocol designed to dramatically improve rebalance performance</cite> — fewer "stop the world" pauses during consumer scaling events.
-- <cite index="24-1">KIP-932 (Queues for Kafka, early access) introduces "share groups" — cooperative consumption where multiple consumers in the same group can read from the same partition with per-message acknowledgment</cite>, closer to a traditional queue (RabbitMQ-style) semantics layered onto Kafka's log model. Worth watching if you've ever reached for RabbitMQ specifically because Kafka's per-partition-single-consumer model didn't fit.
+- Broker upgrades to 4.0+ require KRaft mode. A cluster still running in ZooKeeper mode must first move to a 3.x bridge release (3.9 is recommended), migrate its metadata to KRaft there, and only then upgrade to 4.x; you cannot jump straight from a ZooKeeper-based 3.x cluster to 4.0.
+- The migration is real work but time-boxed, and the payoff (one fewer distributed system to run, patch and monitor) is ongoing.
+- Kafka 4.0 also brings general availability of KIP-848, a new consumer group rebalance protocol designed to dramatically improve rebalance performance — fewer "stop the world" pauses during consumer scaling events.
+- KIP-932 (Queues for Kafka) introduces **share groups**: cooperative consumption where multiple consumers in the same group can read from the same partition with per-record acknowledgement (accept, release, reject), giving traditional queue (RabbitMQ-style) semantics on top of Kafka's log. It was early access in 4.0, preview in 4.1, and became **generally available in Kafka 4.2** (February 2026) via `KafkaShareConsumer`. Worth evaluating if you've ever reached for RabbitMQ only because Kafka's one-consumer-per-partition model didn't fit.
 
 ## 5.2 Spring Kafka — basic producer/consumer
 
@@ -38,14 +38,15 @@ public class OrderEventConsumer {
 spring:
   kafka:
     consumer:
-      properties:
-        isolation.level: read_committed   # only see committed transactional messages
+      enable-auto-commit: false           # Spring Kafka commits offsets for you
+      isolation-level: read_committed     # only see committed transactional messages
+    listener:
       ack-mode: manual                    # pairs with Acknowledgment above
 ```
 
 ## 5.3 Where Outbox actually lives in this stack
 
-The Transactional Outbox Pattern you've already studied solves the dual-write problem: you can't atomically both (a) commit a DB change and (b) publish a Kafka message, because they're two different systems. Here's the concrete Spring Boot shape:
+The Transactional Outbox Pattern solves the dual-write problem: you can't atomically both (a) commit a DB change and (b) publish a Kafka message, because they're two different systems. Here's the concrete Spring Boot shape:
 
 ```java
 @Service
@@ -65,27 +66,32 @@ public class OrderService {
 ```
 
 Then either:
-- **Debezium (CDC)** tails the Postgres write-ahead log, sees the new `outbox_events` row, and publishes it to Kafka — no application polling code needed, lowest latency, the approach you already flagged as relevant.
+- **Debezium (CDC)** tails the Postgres write-ahead log, sees the new `outbox_events` row, and publishes it to Kafka — no application polling code needed and the lowest latency, at the cost of running CDC infrastructure.
 - **A `@Scheduled` poller** queries `outbox_events where published = false` every few seconds and publishes + marks as sent — simpler to reason about, no CDC infrastructure, but adds polling latency and load.
 
 ```java
 @Scheduled(fixedDelay = 2000)
+@Transactional
 public void publishPendingEvents() {
-    List<OutboxEvent> pending = outboxRepository.findByPublishedFalseOrderByCreatedAt();
-    pending.forEach(evt -> {
-        kafkaTemplate.send(evt.getTopic(), evt.getPayload());
+    List<OutboxEvent> pending = outboxRepository.findTop100ByPublishedFalseOrderByCreatedAt();
+    for (OutboxEvent evt : pending) {
+        // Wait for the broker ack before marking the row as sent; a crash in between
+        // just means the event is re-published later (consumers must be idempotent).
+        kafkaTemplate.send(evt.getTopic(), evt.getAggregateId(), evt.getPayload()).join();
         evt.markPublished();
-    });
-    outboxRepository.saveAll(pending);
+    }
 }
 ```
 
+With several app instances, make sure only one poller claims a batch at a time (for example `SELECT ... FOR UPDATE SKIP LOCKED`, or ShedLock around the scheduled method).
+
 ## 5.4 Where idempotency actually lives
 
-Since you identified idempotency as your single most critical next topic: the consumer side is where it bites in practice. Kafka (and most brokers) guarantee **at-least-once** delivery by default, meaning your `@KafkaListener` method *will* occasionally receive the same message twice (consumer crash after processing but before committing offset, rebalance timing, etc.). The fix is always the same shape — a dedup/idempotency-key check before the side effect:
+Idempotency bites hardest on the consumer side. Kafka (and most brokers) guarantee **at-least-once** delivery by default, meaning your `@KafkaListener` method *will* occasionally receive the same message twice (consumer crash after processing but before committing offset, rebalance timing, etc.). The fix is always the same shape — a dedup/idempotency-key check before the side effect:
 
 ```java
 @KafkaListener(topics = "order-events")
+@Transactional
 public void onOrderPlaced(OrderPlacedEvent event) {
     if (processedEventRepository.existsById(event.eventId())) {
         return; // already handled — safe no-op
@@ -95,7 +101,9 @@ public void onOrderPlaced(OrderPlacedEvent event) {
 }
 ```
 
-For exactly this reason, Kafka's **transactional producer** (`read_committed` isolation shown above) plus idempotent producer config (`enable.idempotence=true`, on by default since Kafka 3.0) protects the *producer* side from duplicate writes on retry — but consumer-side idempotency like above is still your responsibility, because "exactly-once" only holds within a single Kafka-to-Kafka pipeline, not once you cross into your own database or an external API call.
+Keep the dedupe insert and the side effect in the **same database transaction**, and give `processed_events.event_id` a primary-key or unique constraint: if two deliveries race past the `existsById` check, the second insert fails and its transaction rolls back instead of reserving stock twice.
+
+On the producer side, Kafka's **transactional producer** (read by consumers with the `read_committed` isolation shown above) plus idempotent producer config (`enable.idempotence=true`, on by default since Kafka 3.0) protects the *producer* side from duplicate writes on retry — but consumer-side idempotency like above is still your responsibility, because "exactly-once" only holds within a single Kafka-to-Kafka pipeline, not once you cross into your own database or an external API call.
 
 ## 5.5 Saga — orchestration vs choreography, in code terms
 
@@ -136,9 +144,9 @@ Kafka is a distributed commit log optimized for high-throughput, replayable even
 @EnableAsync
 @Configuration
 public class AsyncConfig {
-    @Bean
+    @Bean(name = "taskExecutor") // the name @Async looks up by default
     Executor taskExecutor() {
-        return Executors.newVirtualThreadPerTaskExecutor(); // Java 21+, pairs with file 1
+        return Executors.newVirtualThreadPerTaskExecutor(); // Java 21+, see Core framework
     }
 }
 
@@ -153,4 +161,4 @@ public class NotificationService {
 - Kafka Streams / ksqlDB if you need stream processing (windowed aggregations, joins between topics) rather than just pub/sub
 - Schema Registry (Avro/Protobuf) for enforcing message contracts across producer/consumer teams — prevents the "someone changed the JSON shape and broke three consumers" incident
 - Dead-letter queues and retry topics — what happens after your idempotency check *still* fails N times
-- Next file: `06-caching-and-storage.md` — the Outbox table itself is a storage design decision, and this is where that discussion continues
+- Next: [Caching & storage](./06-caching-and-storage.md) — the Outbox table itself is a storage design decision, and this is where that discussion continues

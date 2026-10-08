@@ -13,6 +13,93 @@
     "ui-ux",
     "testing-quality"
   ],
-  "quiz": [],
-  "problems": []
+  "quiz": [
+    {
+      "id": "ng-q1",
+      "question": "What are Angular signals?",
+      "options": [
+        "A Node.js event emitter",
+        "Reactive values that track their readers so Angular updates only what depends on them",
+        "A routing guard",
+        "A replacement for TypeScript"
+      ],
+      "correctIndex": 1,
+      "explanation": "signal(), computed() and effect() give fine-grained reactivity; templates that read a signal re-render when it changes, enabling zoneless change detection."
+    },
+    {
+      "id": "ng-q2",
+      "question": "What does ChangeDetectionStrategy.OnPush do?",
+      "options": [
+        "Disables change detection entirely",
+        "Checks the component only when inputs change by reference, an event fires inside it, an async pipe or signal it reads emits, or it's marked dirty",
+        "Runs change detection on every timer tick",
+        "Pushes changes to the server"
+      ],
+      "correctIndex": 1,
+      "explanation": "OnPush skips subtrees whose inputs haven't changed by reference, which pairs well with immutable data and signals."
+    },
+    {
+      "id": "ng-q3",
+      "question": "Which RxJS operator cancels the previous inner request when a new search term arrives?",
+      "options": [
+        "mergeMap",
+        "concatMap",
+        "switchMap",
+        "exhaustMap"
+      ],
+      "correctIndex": 2,
+      "explanation": "switchMap unsubscribes from the previous inner observable — ideal for typeahead search. concatMap queues, mergeMap runs in parallel, exhaustMap ignores new values while busy."
+    },
+    {
+      "id": "ng-q4",
+      "question": "Standalone components mean…",
+      "options": [
+        "Components that can't have inputs",
+        "Components that declare their own imports and don't need an NgModule",
+        "Components rendered on the server only",
+        "Components without templates"
+      ],
+      "correctIndex": 1,
+      "explanation": "Standalone components (the default since Angular 19) import their dependencies directly, so NgModules are optional."
+    },
+    {
+      "id": "ng-q5",
+      "question": "Why should you avoid calling methods in templates like {{ total() }} when total is a plain method?",
+      "options": [
+        "It's a syntax error",
+        "It runs on every change-detection cycle and can be slow",
+        "Methods can't return numbers",
+        "It breaks routing"
+      ],
+      "correctIndex": 1,
+      "explanation": "Template expressions are re-evaluated on every check. Use a computed() signal, a pure pipe, or a precomputed field. (Calling a signal like count() is fine — it's a cheap read.)"
+    }
+  ],
+  "problems": [
+    {
+      "id": "ng-p1",
+      "title": "Typeahead search",
+      "difficulty": "medium",
+      "points": 20,
+      "prompt": "Build a search box that calls the API at most once per 300 ms pause, skips duplicate terms, and ignores stale responses.",
+      "hints": [
+        "debounceTime",
+        "distinctUntilChanged",
+        "switchMap"
+      ],
+      "solution": "this.results$ = this.term.valueChanges.pipe(debounceTime(300), map(t => t.trim()), distinctUntilChanged(), switchMap(t => t ? this.api.search(t).pipe(catchError(() => of([]))) : of([]))); render with the async pipe (or toSignal) so the subscription is cleaned up automatically."
+    },
+    {
+      "id": "ng-p2",
+      "title": "Memory leak hunt",
+      "difficulty": "easy",
+      "points": 15,
+      "prompt": "A component subscribes to a route-params observable in ngOnInit and never unsubscribes. What's the risk and the modern fix?",
+      "hints": [
+        "Who completes the stream?",
+        "takeUntilDestroyed"
+      ],
+      "solution": "Long-lived observables keep the callback (and the component) alive after it's destroyed, causing leaks and duplicate work. Use the async pipe or toSignal, or pipe(takeUntilDestroyed()) (from @angular/core/rxjs-interop), which unsubscribes when the component is destroyed."
+    }
+  ]
 }

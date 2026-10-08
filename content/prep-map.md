@@ -75,7 +75,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 - **Django Admin**: Auto-generated admin interface. ModelAdmin customization. list_display, search_fields, list_filter. Actions for bulk operations.
 
 **Django REST Framework (DRF)**
-- **Serializers**: Converting between complex types and JSON. ModelSerializer for automatic field generation. Validation with validate_<field> methods.
+- **Serializers**: Converting between complex types and JSON. ModelSerializer for automatic field generation. Validation with `validate_<field>` methods.
 - **ViewSets & Routers**: ViewSet combines logic for CRUD. ModelViewSet includes all operations. Router automatically generates URL patterns.
 - **Authentication & Permissions**: TokenAuthentication, SessionAuthentication, JWTAuthentication. Permission classes: IsAuthenticated, IsAdminUser, custom permissions.
 - **Pagination**: PageNumberPagination, LimitOffsetPagination, CursorPagination. Performance implications of each type.
@@ -330,15 +330,15 @@ This is a checklist of what to know in each area. Every **bold term** below also
 - **Literal Types**: Specific string/number values as types. "GET" | "POST" | "PUT" | "DELETE". Const assertions.
 
 **Advanced Types**
-- **Generics**: Reusable type-safe code. <T> syntax. Constraints with extends. Generic functions, interfaces, classes.
-- **Utility Types**: Partial<T>, Required<T>, Readonly<T>, Pick<T, K>, Omit<T, K>, Record<K, T>, ReturnType<T>. Built-in type transformations.
+- **Generics**: Reusable type-safe code. `<T>` syntax. Constraints with extends. Generic functions, interfaces, classes.
+- **Utility Types**: `Partial<T>`, `Required<T>`, `Readonly<T>`, `Pick<T, K>`, `Omit<T, K>`, `Record<K, T>`, `ReturnType<T>`. Built-in type transformations.
 - **Mapped Types**: Creating new types from old. keyof operator. in operator. Transformation patterns.
 - **Conditional Types**: T extends U ? X : Y. Type narrowing based on conditions. Inference with infer keyword.
 - **Template Literal Types**: String manipulation at type level. `${A}${B}` for string combinations.
 
 **TypeScript with React**
 - **Typing Components**: React.FC vs function components. Props typing. Children typing. Event handlers.
-- **Hooks Typing**: useState<Type>(), useRef<Type>(null), useContext<Type>(). Generic hook typing.
+- **Hooks Typing**: `useState<Type>()`, `useRef<Type>(null)`, `useContext<Type>()`. Generic hook typing.
 - **Event Types**: React.MouseEvent, React.ChangeEvent, React.FormEvent. Proper event parameter typing.
 - **Ref Types**: RefObject vs MutableRefObject. ForwardRef typing. useImperativeHandle.
 - **Props with Children**: React.ReactNode vs React.ReactElement vs JSX.Element. When to use each.

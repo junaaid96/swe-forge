@@ -74,8 +74,8 @@
         "ConcurrentHashMap",
         "Stack"
       ],
-      "correctIndex": 1,
-      "explanation": "ConcurrentHashMap is designed for concurrent access."
+      "correctIndex": 2,
+      "explanation": "ConcurrentHashMap is designed for concurrent access (fine-grained locking/CAS per bin); ArrayList, HashMap and Stack are not safe for unsynchronized concurrent updates."
     },
     {
       "id": "net-q1",
@@ -159,7 +159,7 @@
         "Bad CSS"
       ],
       "correctIndex": 1,
-      "explanation": "cgroup memory limit."
+      "explanation": "The kernel OOM killer terminated the container for exceeding its cgroup memory limit (exit code 137)."
     },
     {
       "id": "os-q3",
@@ -170,7 +170,7 @@
         "Missing index always",
         "Idempotency"
       ],
-      "correctIndex": 1,
+      "correctIndex": 0,
       "explanation": "Socket/file descriptor leak or limit too low."
     },
     {
@@ -220,7 +220,7 @@
         "array of locks",
         "hash id to stripe"
       ],
-      "solution": "Lock[] stripes = new Lock[1024]; lock = stripes[orderId.hashCode() & 1023]; lock.lock() around critical section.",
+      "solution": "Lock[] stripes = new ReentrantLock[1024], each initialized; lock = stripes[orderId.hashCode() & 1023] (power-of-two mask keeps the index non-negative); lock.lock() in try/finally around the critical section. Unrelated orders rarely contend, and the lock count stays bounded. Guava's Striped<Lock> does the same.",
       "points": 25
     },
     {

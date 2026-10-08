@@ -56,12 +56,12 @@
       "question": "@Transactional on a private method in Spring…",
       "options": [
         "Always works",
-        "Is a silent no-op (AOP proxies public methods)",
+        "Is silently ignored (the proxy cannot intercept private methods)",
         "Rolls back checked exceptions by default",
         "Forces REQUIRES_NEW"
       ],
       "correctIndex": 1,
-      "explanation": "Spring AOP only intercepts calls through the proxy on public methods."
+      "explanation": "Spring's AOP proxy can't intercept private methods, so no transaction starts. Since Spring 6.0, protected and package-private methods work with class-based (CGLIB) proxies, but private never does — and self-invocation (this.method()) also bypasses the proxy."
     },
     {
       "id": "db-q5",

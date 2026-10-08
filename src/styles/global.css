@@ -228,7 +228,40 @@ mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1
 .top-link:hover { background: var(--bg-hover); color: var(--text); }
 .top-link.active { color: var(--accent); background: var(--accent-soft); }
 main { flex: 1; padding: 28px clamp(16px, 3vw, 40px) 56px; outline: none; }
-.site-foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; padding: 18px clamp(16px, 3vw, 40px); border-top: 1px solid var(--line); color: var(--muted); font-size: 0.8rem; }
+.site-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 8px 16px; padding: 18px clamp(16px, 3vw, 40px); border-top: 1px solid var(--line); color: var(--muted); font-size: 0.8rem; }
+/* "Developed by <CodeJBorg />" credit pill. Colours come only from theme
+   tokens (--accent is the brand primary), so it follows light and dark mode. */
+.site-foot-end { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.credit-pill {
+  display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px;
+  border-radius: 999px; border: 1px solid color-mix(in srgb, var(--text) 15%, transparent);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.025em; color: var(--muted);
+  text-decoration: none; transition: color 0.3s, border-color 0.3s, background-color 0.3s;
+}
+.credit-pill:hover, .credit-pill:focus-visible {
+  text-decoration: none; color: var(--text);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+.credit-pill:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.credit-pill-icon {
+  display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px;
+  border-radius: 50%; background: var(--accent); color: var(--accent-contrast);
+}
+.credit-pill-name { font-weight: 600; color: var(--text); }
+.credit-pill-bracket { color: var(--accent); }
+.credit-pill-cursor { display: inline-block; width: 2px; height: 14px; background: var(--accent); }
+.credit-pill-arrow { opacity: 0.4; transition: opacity 0.3s, transform 0.3s; }
+.credit-pill:hover .credit-pill-arrow, .credit-pill:focus-visible .credit-pill-arrow { opacity: 1; transform: translate(2px, -2px); }
+@media (prefers-reduced-motion: no-preference) {
+  .credit-pill-cursor { animation: credit-blink 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+}
+@keyframes credit-blink { 50% { opacity: 0.5; } }
+@media (max-width: 640px) {
+  .site-foot { flex-direction: column; align-items: center; text-align: center; }
+  .site-foot-end { justify-content: center; }
+}
 .drawer-backdrop { position: fixed; inset: 0; z-index: 39; background: rgb(0 0 0 / 0.45); }
 .page-loading { display: flex; align-items: center; gap: 10px; color: var(--muted); padding: 40px 0; }
 .spinner { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--line-strong); border-top-color: var(--accent); animation: spin 0.8s linear infinite; }

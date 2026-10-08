@@ -3,7 +3,7 @@ import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-do
 import { CommandPalette } from './CommandPalette';
 import { ShortcutsDialog } from './ShortcutsDialog';
 import { Sidebar } from './Sidebar';
-import { IconClose, IconKeyboard, IconMenu, IconMoon, IconSearch, IconSun } from './Icons';
+import { IconArrowUpRight, IconClose, IconCode, IconKeyboard, IconMenu, IconMoon, IconSearch, IconSun } from './Icons';
 import { Logo } from './Logo';
 import { toggleTheme, useTheme } from '../lib/theme';
 import { isTyping } from '../lib/hotkeys';
@@ -113,9 +113,28 @@ export function Layout() {
         </main>
         <footer className="site-foot">
           <span>Forgeline · notes are plain Markdown in <code>content/</code> · progress stays in your browser</span>
-          <button type="button" className="link-btn" onClick={() => setHelp(true)}>
-            Keyboard shortcuts
-          </button>
+          <div className="site-foot-end">
+            <button type="button" className="link-btn" onClick={() => setHelp(true)}>
+              Keyboard shortcuts
+            </button>
+            <a
+              href="https://junaidul.pro.bd/codejborg"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Developed by CodeJBorg — visit developer website"
+              className="credit-pill"
+            >
+              <span className="credit-pill-icon">
+                <IconCode width={14} height={14} strokeWidth={2.25} />
+              </span>
+              <span>Developed by</span>
+              <span className="credit-pill-name">
+                <span className="credit-pill-bracket">&lt;</span>CodeJBorg<span className="credit-pill-bracket"> /&gt;</span>
+              </span>
+              <span aria-hidden="true" className="credit-pill-cursor" />
+              <IconArrowUpRight width={14} height={14} className="credit-pill-arrow" />
+            </a>
+          </div>
         </footer>
       </div>
 

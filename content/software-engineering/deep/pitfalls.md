@@ -68,8 +68,8 @@ OutOfMemoryError: memory leak — unclosed streams, static collections growing f
 Deadlock: two threads waiting for each other's locks. Fix: consistent lock ordering, tryLock() with timeout.
 
 Production tools:
-jstack <pid>: thread dump → find BLOCKED threads (deadlock detection).
-jmap -dump:file=h.hprof <pid>: heap dump → analyze in VisualVM or Eclipse MAT.
+`jstack <pid>`: thread dump → find BLOCKED threads (deadlock detection).
+`jmap -dump:file=h.hprof <pid>`: heap dump → analyze in VisualVM or Eclipse MAT.
 Spring Actuator /actuator/loggers: change log level at runtime without restart.
 
 ### Practical code

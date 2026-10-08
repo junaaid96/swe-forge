@@ -1,4 +1,4 @@
-# 4. Engineering Workflow, Code Review & Working in the AI Era
+# 2. Engineering Workflow, Code Review & Working in the AI Era
 
 ---
 

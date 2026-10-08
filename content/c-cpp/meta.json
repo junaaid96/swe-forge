@@ -1,0 +1,18 @@
+{
+  "id": "c-cpp",
+  "slug": "c-cpp",
+  "title": "C & C++",
+  "emoji": "⚙️",
+  "order": 10,
+  "tag": "Language",
+  "accent": "#475569",
+  "blurb": "Memory, pointers, UB, RAII, templates and modern C++.",
+  "group": "languages",
+  "relatedTopics": [
+    "cs-fundamentals",
+    "rust",
+    "dsa"
+  ],
+  "quiz": [],
+  "problems": []
+}

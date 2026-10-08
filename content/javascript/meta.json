@@ -1,0 +1,19 @@
+{
+  "id": "javascript",
+  "slug": "javascript",
+  "title": "JavaScript & TypeScript",
+  "emoji": "🟨",
+  "order": 7,
+  "tag": "Language",
+  "accent": "#CA8A04",
+  "blurb": "The JS runtime model, async, the type system, and typing React code.",
+  "group": "languages",
+  "relatedTopics": [
+    "frontend",
+    "react",
+    "nodejs",
+    "nextjs"
+  ],
+  "quiz": [],
+  "problems": []
+}

@@ -5,31 +5,6 @@ level: medium
 
 # Behavioral — Interview (Medium)
 
-> Placeholder Q&A stubs. Full answers will be filled in later.
-
-## Q1. Conflict with a teammate
-
-**Answer:** Content coming soon.
-
-**Key takeaway:** TBD.
-
----
-
-## Q2. Missed deadline / failure story
-
-**Answer:** Content coming soon.
-
-**Key takeaway:** TBD.
-
----
-
-## Q3. Ownership example
-
-**Answer:** Content coming soon.
-
-**Key takeaway:** TBD.
-
----
 
 ## Q-Guide-beh-own. Ownership / delivered under ambiguity?
 

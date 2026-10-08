@@ -3,9 +3,11 @@
   "slug": "testing-quality",
   "title": "Testing & Quality",
   "emoji": "🧪",
-  "order": 21,
+  "order": 5,
   "tag": "QA",
   "accent": "#059669",
+  "blurb": "Testing strategy, the pyramid, frontend/E2E testing and quality gates.",
+  "group": "craft",
   "relatedTopics": [
     "software-engineering",
     "devops-cloud",

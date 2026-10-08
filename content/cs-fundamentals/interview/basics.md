@@ -5,31 +5,6 @@ level: basics
 
 # CS Fundamentals — Interview (Basics)
 
-> Placeholder Q&A stubs. Full answers will be filled in later.
-
-## Q1. Process vs thread
-
-**Answer:** Content coming soon.
-
-**Key takeaway:** TBD.
-
----
-
-## Q2. Stack vs heap
-
-**Answer:** Content coming soon.
-
-**Key takeaway:** TBD.
-
----
-
-## Q3. What is DNS?
-
-**Answer:** Content coming soon.
-
-**Key takeaway:** TBD.
-
----
 
 ## Q-Guide-mcq-acid. What does Atomicity guarantee??
 

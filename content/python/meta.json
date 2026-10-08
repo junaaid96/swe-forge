@@ -3,9 +3,11 @@
   "slug": "python",
   "title": "Python",
   "emoji": "🐍",
-  "order": 4,
+  "order": 8,
   "tag": "Language",
   "accent": "#2563EB",
+  "blurb": "Python data model, idioms, typing, concurrency and tooling.",
+  "group": "languages",
   "relatedTopics": [
     "django",
     "backend",

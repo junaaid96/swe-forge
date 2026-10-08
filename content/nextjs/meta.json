@@ -3,9 +3,11 @@
   "slug": "nextjs",
   "title": "Next.js",
   "emoji": "▲",
-  "order": 9,
+  "order": 14,
   "tag": "Framework",
   "accent": "#111827",
+  "blurb": "Routing, rendering modes (SSG/SSR/ISR/RSC), data fetching and deployment.",
+  "group": "frontend",
   "relatedTopics": [
     "react",
     "frontend",

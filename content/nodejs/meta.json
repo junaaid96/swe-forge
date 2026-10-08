@@ -3,9 +3,11 @@
   "slug": "nodejs",
   "title": "Node.js",
   "emoji": "🟢",
-  "order": 6,
+  "order": 19,
   "tag": "Runtime",
   "accent": "#15803D",
+  "blurb": "Event loop, Express, streams, clustering and running Node in production.",
+  "group": "backend",
   "relatedTopics": [
     "backend",
     "nextjs",

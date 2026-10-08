@@ -3,9 +3,11 @@
   "slug": "system-design",
   "title": "System Design",
   "emoji": "🏛️",
-  "order": 17,
+  "order": 24,
   "tag": "HLD",
   "accent": "#9333EA",
+  "blurb": "Scalability, distributed systems, messaging and the system design interview.",
+  "group": "systems",
   "relatedTopics": [
     "backend",
     "database",

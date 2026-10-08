@@ -3,9 +3,11 @@
   "slug": "database",
   "title": "Database",
   "emoji": "🗄️",
-  "order": 18,
+  "order": 25,
   "tag": "Data",
   "accent": "#0369A1",
+  "blurb": "SQL, modelling, indexing, transactions, scaling, NoSQL and caching.",
+  "group": "systems",
   "relatedTopics": [
     "backend",
     "system-design",

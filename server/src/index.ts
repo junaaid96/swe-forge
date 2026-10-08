@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/api/health', (_req, res) => {
-  res.json({ ok: true, service: 'swe-forge-api' });
+  res.json({ ok: true, service: 'forgeline-api' });
 });
 
 app.use('/api/topics', topicsRouter);
@@ -19,5 +19,5 @@ app.use('/api/interview', interviewRouter);
 app.use('/api/search', searchRouter);
 
 app.listen(port, '0.0.0.0', () => {
-  console.log(`SWE Forge API listening on http://0.0.0.0:${port}`);
+  console.log(`Forgeline API listening on http://0.0.0.0:${port}`);
 });

@@ -1,143 +1,112 @@
-import { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { ConfirmDialog } from './ConfirmDialog';
-import { ROADMAP } from '../data/roadmap';
-import { useTopicSummaries } from '../hooks/useTopics';
-import { getCompletionStats, getTopicProgress, progressStore, useProgress } from '../store/progress';
+import { useMemo, type ReactNode } from 'react';
+import { useCatalog } from '../lib/content';
+import { useProgress } from '../lib/progress';
+import { allStats, dueCount, overall } from '../lib/stats';
+import { IconBookmark, IconCards, IconCheck, IconHome, IconMap, IconRadar, IconTimer, IconFlame } from './Icons';
+import { Logo } from './Logo';
+import { Bar } from './Ring';
 
-interface SidebarProps {
-  open: boolean;
-  onClose: () => void;
-}
+export function Sidebar({ onNavigate }: { onNavigate: () => void }) {
+  const { data: catalog } = useCatalog();
+  const state = useProgress();
+  const { pathname } = useLocation();
+  const stats = useMemo(() => (catalog ? allStats(catalog, state) : null), [catalog, state]);
+  const totals = useMemo(() => (catalog ? overall(catalog, state) : null), [catalog, state]);
+  const due = dueCount(state);
+  const activeSlug = pathname.match(/^\/topics\/([^/]+)/)?.[1];
 
-export function Sidebar({ open, onClose }: SidebarProps) {
-  const progress = useProgress();
-  const stats = getCompletionStats(progress);
-  const location = useLocation();
-  const { topics, loading } = useTopicSummaries();
-  const [resetOpen, setResetOpen] = useState(false);
+  const link = (to: string, label: string, icon: ReactNode, badge?: number, end = false) => (
+    <NavLink to={to} end={end} className={({ isActive }) => `side-link ${isActive ? 'active' : ''}`} onClick={onNavigate}>
+      {icon}
+      <span>{label}</span>
+      {badge ? <span className="badge" aria-label={`${badge} due`}>{badge}</span> : null}
+    </NavLink>
+  );
 
   return (
-    <aside className={`sidebar ${open ? 'open' : ''}`}>
-      <NavLink to="/" className="brand" onClick={onClose}>
-        <div className="brand-mark" aria-hidden>
-          <span />
-        </div>
-        <div className="brand-text">
-          <strong>SWE Forge</strong>
-          <span>Stacks · Study</span>
-        </div>
+    <div className="sidebar-inner">
+      <NavLink to="/" className="brand" onClick={onNavigate} aria-label="Forgeline home">
+        <Logo />
+        <span>
+          <strong>Forgeline</strong>
+          <small>Software engineering, forged daily</small>
+        </span>
       </NavLink>
 
-      <div className="sidebar-progress">
-        <div className="sidebar-progress-head">
-          <small>Overall progress</small>
-          <strong>{stats.pct}%</strong>
-        </div>
-        <div className="progress-bar">
-          <span style={{ width: `${stats.pct}%` }} />
-        </div>
-        <div className="score-chip">
-          <div>
-            <small>Score</small>
-            <strong>{progress.totalScore}</strong>
-          </div>
-          <div>
-            <small>Streak</small>
-            <strong>{progress.streak}d</strong>
-          </div>
-          <div>
-            <small>Done</small>
-            <strong>
-              {stats.completed}/{stats.total}
-            </strong>
-          </div>
-        </div>
-      </div>
-
-      <nav className="nav-scroll" aria-label="Topics">
-        <NavLink
-          to="/"
-          end
-          className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-          onClick={onClose}
-        >
-          <span className="emoji">🏠</span>
-          <span className="meta">
-            <strong>Home</strong>
-            <small>All topics</small>
-          </span>
-        </NavLink>
-        <NavLink
-          to="/scoreboard"
-          className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-          onClick={onClose}
-        >
-          <span className="emoji">🏆</span>
-          <span className="meta">
-            <strong>Scoreboard</strong>
-            <small>Quiz & progress</small>
-          </span>
-        </NavLink>
-
-        {loading ? <div className="nav-section">Loading topics…</div> : null}
-
-        {ROADMAP.map((group) => {
-          const groupTopics = topics.filter((t) => group.slugs.includes(t.slug));
-          if (!groupTopics.length) return null;
-          return (
-            <div key={group.id} className="nav-group">
-              <div className="nav-section">{group.label}</div>
-              {groupTopics.map((topic) => {
-                const tp = getTopicProgress(progress, topic.slug);
-                const active = location.pathname.includes(`/topics/${topic.slug}`);
-                return (
-                  <NavLink
-                    key={topic.slug}
-                    to={`/topics/${topic.slug}`}
-                    className={`nav-link ${active ? 'active' : ''}`}
-                    style={{ ['--cat' as string]: topic.accent }}
-                    onClick={onClose}
-                  >
-                    <span className="emoji">{topic.emoji}</span>
-                    <span className="meta">
-                      <strong>{topic.title}</strong>
-                      <small>
-                        {topic.interviewLevels.length}I · {topic.deepTracks.length}D
-                        {topic.quizCount ? ` · ${topic.quizCount}Q` : ''}
-                      </small>
-                    </span>
-                    <span
-                      className={`dot ${tp.completed ? 'done' : tp.interviewVisited.length || tp.deepVisited.length ? 'started' : ''}`}
-                      title={tp.completed ? 'Completed' : 'In progress'}
-                    />
-                  </NavLink>
-                );
-              })}
-            </div>
-          );
-        })}
+      <nav aria-label="Main" className="side-section">
+        {link('/', 'Home', <IconHome />, undefined, true)}
+        {link('/prep-map', 'Prep map', <IconMap />)}
+        {link('/flashcards', 'Flashcards', <IconCards />, due)}
+        {link('/mock', 'Mock interview', <IconTimer />)}
+        {link('/skills', 'Skill map', <IconRadar />)}
+        {link('/bookmarks', 'Bookmarks', <IconBookmark />)}
       </nav>
 
-      <div className="sidebar-foot">
-        <button type="button" className="ghost-btn" onClick={() => setResetOpen(true)}>
-          Reset progress
-        </button>
-      </div>
+      <nav aria-label="Topics" className="side-topics">
+        {catalog?.groups.map((g) => (
+          <div key={g.id} className="side-group">
+            <p className="side-group-label">{g.label}</p>
+            <ul>
+              {g.topics.map((slug) => {
+                const t = catalog.topics.find((x) => x.slug === slug);
+                if (!t) return null;
+                const s = stats?.get(slug);
+                const open = activeSlug === slug;
+                return (
+                  <li key={slug}>
+                    <NavLink
+                      to={`/topics/${slug}`}
+                      end
+                      className={`side-topic ${open ? 'open' : ''}`}
+                      style={{ ['--topic' as string]: t.accent }}
+                      onClick={onNavigate}
+                      aria-current={pathname === `/topics/${slug}` ? 'page' : undefined}
+                    >
+                      <span className="emoji" aria-hidden>
+                        {t.emoji}
+                      </span>
+                      <span className="side-topic-title">{t.title}</span>
+                      {s && s.mastery > 0 ? <span className="side-pct">{s.mastery}%</span> : null}
+                    </NavLink>
+                    {open && t.pages.length ? (
+                      <ul className="side-pages">
+                        {t.pages.map((p) => {
+                          const read = Boolean(state.pages[p.key]?.readAt);
+                          return (
+                            <li key={p.key}>
+                              <NavLink to={p.url} className={({ isActive }) => `side-page ${isActive ? 'active' : ''}`} onClick={onNavigate}>
+                                <span className={`read-dot ${read ? 'read' : ''}`} aria-label={read ? 'Read' : 'Unread'}>
+                                  {read ? <IconCheck width={10} height={10} strokeWidth={3} /> : null}
+                                </span>
+                                <span>{p.title}</span>
+                              </NavLink>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </nav>
 
-      <ConfirmDialog
-        open={resetOpen}
-        title="Reset all progress?"
-        message="This clears your scores, streak, and completion status for every topic. This cannot be undone."
-        confirmLabel="Reset everything"
-        cancelLabel="Keep progress"
-        variant="danger"
-        onCancel={() => setResetOpen(false)}
-        onConfirm={() => {
-          progressStore.reset();
-          setResetOpen(false);
-        }}
-      />
-    </aside>
+      {totals ? (
+        <div className="side-foot">
+          <div className="side-foot-row">
+            <span>
+              {totals.read}/{totals.total} pages read
+            </span>
+            <span className="streak" title="Study streak">
+              <IconFlame width={14} height={14} /> {state.streak}d
+            </span>
+          </div>
+          <Bar value={totals.total ? (totals.read / totals.total) * 100 : 0} label="Pages read" />
+        </div>
+      ) : null}
+    </div>
   );
 }

@@ -3,9 +3,11 @@
   "slug": "ai-ml",
   "title": "AI / ML Engineering",
   "emoji": "🤖",
-  "order": 23,
+  "order": 28,
   "tag": "AI era",
   "accent": "#A21CAF",
+  "blurb": "LLM application engineering, evaluation and ML systems.",
+  "group": "ai",
   "relatedTopics": [
     "system-design",
     "backend",

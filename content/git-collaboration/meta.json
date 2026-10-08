@@ -3,9 +3,11 @@
   "slug": "git-collaboration",
   "title": "Git & Collaboration",
   "emoji": "🌿",
-  "order": 20,
+  "order": 6,
   "tag": "VCS",
   "accent": "#EA580C",
+  "blurb": "Git internals, branching workflows and collaborating through PRs.",
+  "group": "craft",
   "relatedTopics": [
     "software-engineering",
     "devops-cloud",

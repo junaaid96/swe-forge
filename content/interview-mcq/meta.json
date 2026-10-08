@@ -1,0 +1,18 @@
+{
+  "id": "interview-mcq",
+  "slug": "interview-mcq",
+  "title": "MCQ Test Prep",
+  "emoji": "📝",
+  "order": 1,
+  "tag": "Screening tests",
+  "accent": "#7C3AED",
+  "blurb": "Programming, DSA, CS fundamentals and logical-reasoning guides for MCQ screening rounds.",
+  "group": "interview",
+  "relatedTopics": [
+    "cs-fundamentals",
+    "dsa",
+    "behavioral"
+  ],
+  "quiz": [],
+  "problems": []
+}

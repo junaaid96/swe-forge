@@ -3,9 +3,11 @@
   "slug": "frontend",
   "title": "Frontend",
   "emoji": "🎨",
-  "order": 7,
+  "order": 12,
   "tag": "Web UI",
   "accent": "#DB2777",
+  "blurb": "How browsers work: HTML/CSS/JS, rendering, web APIs, performance and security.",
+  "group": "frontend",
   "relatedTopics": [
     "react",
     "nextjs",

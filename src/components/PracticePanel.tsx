@@ -1,87 +1,48 @@
 import { useState } from 'react';
-import type { PracticeProblem } from '../data/types';
-import { progressStore } from '../store/progress';
+import type { PracticeProblem } from '../lib/types';
+import { progress, useProgress } from '../lib/progress';
 
-interface PracticePanelProps {
-  slug: string;
-  problems: PracticeProblem[];
-  solvedIds: string[];
-}
-
-export function PracticePanel({ slug, problems, solvedIds }: PracticePanelProps) {
-  const [openHints, setOpenHints] = useState<Record<string, number>>({});
-  const [showSolution, setShowSolution] = useState<Record<string, boolean>>({});
-
-  if (!problems.length) {
-    return <div className="empty-state">Practice problems coming soon.</div>;
-  }
-
+export function PracticePanel({ slug, problems }: { slug: string; problems: PracticeProblem[] }) {
+  const state = useProgress();
+  const solved = state.problems[slug] ?? [];
+  const [hints, setHints] = useState<Record<string, number>>({});
+  const [solution, setSolution] = useState<Record<string, boolean>>({});
   return (
-    <div className="problem-shell">
-      <p className="muted" style={{ marginTop: 0 }}>
-        Work the problem yourself first. Reveal hints one at a time, then the solution. Marking solved
-        adds points once.
-      </p>
-      {problems.map((problem) => {
-        const solved = solvedIds.includes(problem.id);
-        const hintCount = openHints[problem.id] ?? 0;
-        const solutionOpen = showSolution[problem.id] ?? false;
-
+    <div className="problems">
+      {problems.map((p) => {
+        const h = hints[p.id] ?? 0;
+        const done = solved.includes(p.id);
         return (
-          <article key={problem.id} className="problem-card">
-            <div style={{ display: 'flex', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap' }}>
-              <h3>
-                {problem.title}{' '}
-                <span className={`diff ${problem.difficulty}`}>{problem.difficulty}</span>
-              </h3>
-              <strong style={{ color: 'var(--brand-deep)' }}>+{problem.points} pts</strong>
-            </div>
-            <p style={{ margin: 0, lineHeight: 1.6 }}>{problem.prompt}</p>
-
-            {hintCount > 0 ? (
-              <div className="tip-list">
-                {problem.hints.slice(0, hintCount).map((h) => (
-                  <div key={h} className="tip" style={{ background: 'var(--accent-soft)', borderLeftColor: 'var(--accent)' }}>
-                    <span>💡</span>
-                    <span>{h}</span>
-                  </div>
+          <article key={p.id} className={`problem ${done ? 'done' : ''}`}>
+            <header>
+              <h3>{p.title}</h3>
+              <span className={`chip diff-${p.difficulty}`}>{p.difficulty}</span>
+            </header>
+            <p>{p.prompt}</p>
+            {h > 0 ? (
+              <ul className="hints">
+                {p.hints.slice(0, h).map((x) => (
+                  <li key={x}>💡 {x}</li>
                 ))}
-              </div>
+              </ul>
             ) : null}
-
-            {solutionOpen ? (
-              <div className="explain">
+            {solution[p.id] ? (
+              <p className="explain">
                 <strong>Solution: </strong>
-                {problem.solution}
-              </div>
+                {p.solution}
+              </p>
             ) : null}
-
-            <div className="row-actions">
-              {hintCount < problem.hints.length ? (
-                <button
-                  type="button"
-                  className="secondary-btn"
-                  onClick={() =>
-                    setOpenHints((s) => ({ ...s, [problem.id]: Math.min(problem.hints.length, hintCount + 1) }))
-                  }
-                >
-                  Show hint ({hintCount}/{problem.hints.length})
+            <div className="row">
+              {h < p.hints.length ? (
+                <button type="button" className="btn btn-sm" onClick={() => setHints((s) => ({ ...s, [p.id]: h + 1 }))}>
+                  Hint {h + 1}/{p.hints.length}
                 </button>
               ) : null}
-              <button
-                type="button"
-                className="secondary-btn"
-                onClick={() => setShowSolution((s) => ({ ...s, [problem.id]: !solutionOpen }))}
-              >
-                {solutionOpen ? 'Hide solution' : 'Reveal solution'}
+              <button type="button" className="btn btn-sm" onClick={() => setSolution((s) => ({ ...s, [p.id]: !s[p.id] }))} aria-expanded={Boolean(solution[p.id])}>
+                {solution[p.id] ? 'Hide solution' : 'Reveal solution'}
               </button>
-              <button
-                type="button"
-                className="primary-btn"
-                disabled={solved}
-                onClick={() => progressStore.solveProblem(slug, problem.id)}
-              >
-                {solved ? 'Solved ✓' : 'Mark solved'}
+              <button type="button" className={`btn btn-sm ${done ? 'btn-good' : 'btn-primary'}`} onClick={() => progress.toggleProblem(slug, p.id)} aria-pressed={done}>
+                {done ? 'Solved ✓' : 'Mark solved'}
               </button>
             </div>
           </article>

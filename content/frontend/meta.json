@@ -14,6 +14,94 @@
     "angular",
     "ui-ux"
   ],
-  "quiz": [],
-  "problems": []
+  "quiz": [
+    {
+      "id": "fe-q1",
+      "question": "What does the defer attribute on a script tag do?",
+      "options": [
+        "Runs the script before HTML parsing",
+        "Downloads in parallel and executes after parsing finishes, in document order",
+        "Executes as soon as it downloads, in any order",
+        "Prevents the script from running"
+      ],
+      "correctIndex": 1,
+      "explanation": "defer scripts don't block parsing and run in order before DOMContentLoaded; async scripts run as soon as they arrive, out of order — fine for independent scripts such as analytics."
+    },
+    {
+      "id": "fe-q2",
+      "question": "Which Core Web Vital measures responsiveness to user input?",
+      "options": [
+        "LCP",
+        "CLS",
+        "INP",
+        "TTFB"
+      ],
+      "correctIndex": 2,
+      "explanation": "Interaction to Next Paint (INP) replaced FID in March 2024. LCP measures loading, CLS measures visual stability; TTFB is a diagnostic metric."
+    },
+    {
+      "id": "fe-q3",
+      "question": "The best defence against stored XSS when rendering user content is…",
+      "options": [
+        "Escaping/encoding output for its context (plus a Content Security Policy)",
+        "Hiding the input field",
+        "Using HTTPS",
+        "Minifying JavaScript"
+      ],
+      "correctIndex": 0,
+      "explanation": "Encode user data for the context it's placed in (HTML, attribute, URL, JS); frameworks do this by default. Sanitize if you must render HTML, and add a CSP as defence in depth."
+    },
+    {
+      "id": "fe-q4",
+      "question": "What does CORS protect?",
+      "options": [
+        "The server from all attacks",
+        "Users: it controls whether a browser lets a page read responses from another origin",
+        "Databases from SQL injection",
+        "Cookies from being stored"
+      ],
+      "correctIndex": 1,
+      "explanation": "CORS is a browser-enforced relaxation of the same-origin policy. It isn't server-side access control; non-browser clients ignore it."
+    },
+    {
+      "id": "fe-q5",
+      "question": "Which change most often causes layout shift (CLS)?",
+      "options": [
+        "Images and embeds without reserved dimensions",
+        "Using CSS variables",
+        "Compressing images",
+        "Using HTTP/2"
+      ],
+      "correctIndex": 0,
+      "explanation": "Give images, video and ads explicit width/height or aspect-ratio, and avoid inserting content above existing content, so the browser can reserve space."
+    }
+  ],
+  "problems": [
+    {
+      "id": "fe-p1",
+      "title": "Fix a slow LCP",
+      "difficulty": "medium",
+      "points": 20,
+      "prompt": "A landing page's hero image is the LCP element and takes 4 s. List five fixes.",
+      "hints": [
+        "Discovery",
+        "Size",
+        "Priority"
+      ],
+      "solution": "Serve a correctly sized, compressed AVIF/WebP via srcset/sizes; don't lazy-load the hero; add fetchpriority=\"high\" (or a preload) so it's discovered early; serve it from a CDN; cut render-blocking CSS/JS and improve TTFB (caching, SSR/SSG). Re-measure with field data (CrUX/RUM), not just a lab run."
+    },
+    {
+      "id": "fe-p2",
+      "title": "Accessible modal",
+      "difficulty": "medium",
+      "points": 20,
+      "prompt": "List the behaviours an accessible modal dialog needs.",
+      "hints": [
+        "Focus",
+        "Keyboard",
+        "Semantics"
+      ],
+      "solution": "Use the native <dialog> element with showModal() (or role=dialog + aria-modal), label it with aria-labelledby, move focus into it on open and trap focus inside, close on Escape, make the background inert, and return focus to the triggering element on close."
+    }
+  ]
 }

@@ -14,6 +14,92 @@
     "frontend",
     "api-design"
   ],
-  "quiz": [],
-  "problems": []
+  "quiz": [
+    {
+      "id": "nd-q1",
+      "question": "Why is a long synchronous CPU task dangerous in a Node.js server?",
+      "options": [
+        "It leaks memory",
+        "It blocks the single event loop, so every other request waits",
+        "It disables TLS",
+        "It crashes the process immediately"
+      ],
+      "correctIndex": 1,
+      "explanation": "JavaScript runs on one thread per process; while it's busy, no other callbacks run. Offload CPU work to worker_threads, a separate service, or a queue."
+    },
+    {
+      "id": "nd-q2",
+      "question": "In Express 5, an async route handler that throws…",
+      "options": [
+        "Crashes the process",
+        "Hangs the request forever",
+        "Is forwarded to the error-handling middleware automatically",
+        "Is silently ignored"
+      ],
+      "correctIndex": 2,
+      "explanation": "Express 5 forwards rejected promises from handlers and middleware to next(err); Express 4 needed a wrapper or explicit try/catch."
+    },
+    {
+      "id": "nd-q3",
+      "question": "Which runs first after the current operation completes?",
+      "options": [
+        "setTimeout(fn, 0)",
+        "setImmediate(fn)",
+        "process.nextTick(fn)",
+        "A file-system callback"
+      ],
+      "correctIndex": 2,
+      "explanation": "process.nextTick callbacks run before promise microtasks and before the event loop moves to the next phase; overusing it can starve I/O."
+    },
+    {
+      "id": "nd-q4",
+      "question": "How should a Node service handle SIGTERM from Kubernetes?",
+      "options": [
+        "Exit immediately",
+        "Stop accepting new connections, finish in-flight requests, close DB pools, then exit",
+        "Ignore it",
+        "Restart itself"
+      ],
+      "correctIndex": 1,
+      "explanation": "Graceful shutdown: server.close(), fail readiness, drain in-flight work within the grace period, close resources, then process.exit. Otherwise deploys drop requests."
+    },
+    {
+      "id": "nd-q5",
+      "question": "What does the libuv thread pool handle by default?",
+      "options": [
+        "All JavaScript execution",
+        "File-system operations, DNS lookup (getaddrinfo), crypto and zlib work",
+        "Network socket I/O",
+        "HTTP routing"
+      ],
+      "correctIndex": 1,
+      "explanation": "Network I/O uses the OS's non-blocking APIs (epoll/kqueue/IOCP); fs, dns.lookup, crypto and zlib use the pool (4 threads by default, UV_THREADPOOL_SIZE)."
+    }
+  ],
+  "problems": [
+    {
+      "id": "nd-p1",
+      "title": "Streaming a large file",
+      "difficulty": "medium",
+      "points": 20,
+      "prompt": "An endpoint reads a 2 GB CSV with fs.readFile and sends it, and memory spikes. Fix it.",
+      "hints": [
+        "Streams",
+        "Backpressure"
+      ],
+      "solution": "Stream it: await pipeline(fs.createReadStream(path), res) (from node:stream/promises) — or with a Transform stream for processing. pipeline handles backpressure and closes streams on errors, so memory stays flat."
+    },
+    {
+      "id": "nd-p2",
+      "title": "Centralised error handling",
+      "difficulty": "easy",
+      "points": 15,
+      "prompt": "Design error handling for an Express 5 API so clients get consistent JSON errors and internals don't leak.",
+      "hints": [
+        "Error middleware",
+        "Operational vs programmer errors"
+      ],
+      "solution": "Throw typed errors (e.g., NotFoundError with status 404) from handlers, then add one final app.use((err, req, res, next) => ...) that logs with a request ID and returns { error: { code, message } } with the right status; return a generic 500 message in production. Validate input at the edge; let programmer errors crash and restart under the process manager."
+    }
+  ]
 }

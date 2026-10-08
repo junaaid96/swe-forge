@@ -12,6 +12,93 @@
     "software-engineering",
     "git-collaboration"
   ],
-  "quiz": [],
-  "problems": []
+  "quiz": [
+    {
+      "id": "bh-q1",
+      "question": "STAR stands for…",
+      "options": [
+        "Strategy, Tactics, Action, Review",
+        "Situation, Task, Action, Result",
+        "Story, Team, Achievement, Reflection",
+        "Scope, Timeline, Analysis, Risk"
+      ],
+      "correctIndex": 1,
+      "explanation": "Set the Situation and your Task, spend most of the time on your Actions, and end with a measurable Result and what you learned."
+    },
+    {
+      "id": "bh-q2",
+      "question": "In a STAR answer, most of your time should go to…",
+      "options": [
+        "The situation background",
+        "Your specific actions and decisions",
+        "Team members' contributions",
+        "Company history"
+      ],
+      "correctIndex": 1,
+      "explanation": "Interviewers assess what you did and why. Keep the context short; say 'I' for your own actions."
+    },
+    {
+      "id": "bh-q3",
+      "question": "Asked about a failure, the strongest answer…",
+      "options": [
+        "Says you've never failed",
+        "Blames a colleague",
+        "Owns a real mistake, explains how you mitigated it, and what you changed afterwards",
+        "Picks a trivial non-failure"
+      ],
+      "correctIndex": 2,
+      "explanation": "Honesty, accountability and learning (tests, alerts, process changes) are exactly what the question tests."
+    },
+    {
+      "id": "bh-q4",
+      "question": "When you disagree with a teammate's technical approach, interviewers want to hear that you…",
+      "options": [
+        "Escalated to the manager immediately",
+        "Compared options with data against agreed criteria, then committed to the decision",
+        "Implemented your way quietly",
+        "Avoided the conflict"
+      ],
+      "correctIndex": 1,
+      "explanation": "'Disagree, then commit' — show you can use evidence (spikes, benchmarks, decision docs) and keep the relationship healthy."
+    },
+    {
+      "id": "bh-q5",
+      "question": "What makes a 'Result' convincing?",
+      "options": [
+        "Vague claims like 'it went well'",
+        "Concrete, measurable outcomes (latency, revenue, time saved, incidents avoided) and what you learned",
+        "Listing technologies used",
+        "Saying the team was happy"
+      ],
+      "correctIndex": 1,
+      "explanation": "Numbers and impact make results credible; pair them with a reflection on what you'd do differently."
+    }
+  ],
+  "problems": [
+    {
+      "id": "bh-p1",
+      "title": "Build your story bank",
+      "difficulty": "easy",
+      "points": 15,
+      "prompt": "Prepare six STAR stories that can cover most behavioral questions. Which themes should they cover?",
+      "hints": [
+        "Ownership",
+        "Conflict",
+        "Failure"
+      ],
+      "solution": "Ownership/initiative, a technical disagreement, a failure or incident, a tight deadline or trade-off, learning something quickly, and helping or mentoring others. For each, write 3–4 bullets per STAR step with real numbers, and practise telling it in about 2 minutes."
+    },
+    {
+      "id": "bh-p2",
+      "title": "Answer 'Why do you want to work here?'",
+      "difficulty": "easy",
+      "points": 10,
+      "prompt": "Outline a strong answer.",
+      "hints": [
+        "Research",
+        "Connect to your experience"
+      ],
+      "solution": "Connect three things: what you know about the company (product, tech stack, mission — researched, not generic), the specific work in this role that excites you, and the experience you bring that fits. Close with what you hope to learn or contribute. Avoid salary or perks as the main reason."
+    }
+  ]
 }

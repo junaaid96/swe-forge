@@ -13,6 +13,92 @@
     "rust",
     "dsa"
   ],
-  "quiz": [],
-  "problems": []
+  "quiz": [
+    {
+      "id": "cc-q1",
+      "question": "What happens when you dereference a pointer after free() in C?",
+      "options": [
+        "It returns 0",
+        "Undefined behaviour",
+        "A compile error",
+        "The memory is reallocated automatically"
+      ],
+      "correctIndex": 1,
+      "explanation": "Use-after-free is undefined behaviour and a major source of security bugs. Set pointers to NULL after free and use tools like AddressSanitizer."
+    },
+    {
+      "id": "cc-q2",
+      "question": "RAII in C++ means…",
+      "options": [
+        "Resources are acquired in constructors and released in destructors, tied to object lifetime",
+        "Using raw new/delete everywhere",
+        "A garbage collector",
+        "Runtime type identification"
+      ],
+      "correctIndex": 0,
+      "explanation": "RAII makes cleanup automatic and exception-safe: std::unique_ptr, std::lock_guard and std::fstream all release their resources when they go out of scope."
+    },
+    {
+      "id": "cc-q3",
+      "question": "Which smart pointer expresses exclusive ownership?",
+      "options": [
+        "std::shared_ptr",
+        "std::weak_ptr",
+        "std::unique_ptr",
+        "std::auto_ptr"
+      ],
+      "correctIndex": 2,
+      "explanation": "unique_ptr is move-only with zero overhead; shared_ptr uses reference counting; weak_ptr observes without owning; auto_ptr was removed in C++17."
+    },
+    {
+      "id": "cc-q4",
+      "question": "What does std::move actually do?",
+      "options": [
+        "Moves memory to another address",
+        "Casts its argument to an rvalue reference so a move constructor or move assignment can be chosen",
+        "Deletes the source object",
+        "Copies the object faster"
+      ],
+      "correctIndex": 1,
+      "explanation": "std::move is just a cast; the move happens only if a move operation is selected. The moved-from object stays valid but in an unspecified state."
+    },
+    {
+      "id": "cc-q5",
+      "question": "Why is a virtual destructor needed in a polymorphic base class?",
+      "options": [
+        "To make the class abstract",
+        "So deleting a derived object through a base pointer calls the derived destructor",
+        "To enable templates",
+        "It's never needed"
+      ],
+      "correctIndex": 1,
+      "explanation": "Without it, delete base_ptr is undefined behaviour and typically skips the derived destructor, leaking resources."
+    }
+  ],
+  "problems": [
+    {
+      "id": "cc-p1",
+      "title": "Find the bugs",
+      "difficulty": "medium",
+      "points": 20,
+      "prompt": "char *dup(const char *s) { char *d = malloc(strlen(s)); strcpy(d, s); return d; } — find and fix the bugs.",
+      "hints": [
+        "The terminator",
+        "malloc can fail"
+      ],
+      "solution": "It allocates one byte too few (no room for the '\\0'), so strcpy overflows, and it doesn't check malloc's result. Fix: size_t n = strlen(s) + 1; char *d = malloc(n); if (!d) return NULL; memcpy(d, s, n); return d; (or use strdup, standard since C23)."
+    },
+    {
+      "id": "cc-p2",
+      "title": "Rule of zero",
+      "difficulty": "easy",
+      "points": 15,
+      "prompt": "A class owns a heap buffer via a raw pointer and has a hand-written destructor but no copy constructor. What goes wrong, and what's the modern fix?",
+      "hints": [
+        "Shallow copies",
+        "Let members manage resources"
+      ],
+      "solution": "Copying the object copies the pointer, so both copies free the same buffer (double free) — the rule of three/five was violated. Modern fix (rule of zero): hold the buffer in std::vector or std::unique_ptr<T[]>, delete the hand-written destructor, and let the compiler-generated operations do the right thing."
+    }
+  ]
 }

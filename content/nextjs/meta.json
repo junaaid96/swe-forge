@@ -14,6 +14,92 @@
     "nodejs",
     "devops-cloud"
   ],
-  "quiz": [],
-  "problems": []
+  "quiz": [
+    {
+      "id": "nx-q1",
+      "question": "In the App Router, components inside app/ are by default…",
+      "options": [
+        "Client Components",
+        "Server Components",
+        "Static HTML only",
+        "Web Workers"
+      ],
+      "correctIndex": 1,
+      "explanation": "Everything in app/ is a Server Component unless the file (or an importer) starts with 'use client'."
+    },
+    {
+      "id": "nx-q2",
+      "question": "What is a Server Action?",
+      "options": [
+        "A cron job",
+        "An async server function (marked 'use server') that forms or client code can call directly to mutate data",
+        "A Next.js middleware",
+        "A REST endpoint generator"
+      ],
+      "correctIndex": 1,
+      "explanation": "Server Actions run on the server and can be passed to <form action>; validate input and check authorization inside them, because they're publicly reachable endpoints."
+    },
+    {
+      "id": "nx-q3",
+      "question": "Incremental Static Regeneration (ISR) means…",
+      "options": [
+        "Every request is server-rendered",
+        "Static pages are regenerated in the background after a revalidate interval or on-demand revalidation",
+        "Pages are rendered only in the browser",
+        "The site is rebuilt on every commit"
+      ],
+      "correctIndex": 1,
+      "explanation": "ISR serves the cached static page and regenerates it after the revalidate period (or when revalidatePath/revalidateTag is called), giving static speed with fresh data."
+    },
+    {
+      "id": "nx-q4",
+      "question": "Where should a secret API key used to call a third-party API live in a Next.js app?",
+      "options": [
+        "In a NEXT_PUBLIC_ environment variable",
+        "In server-only code (Server Components, Route Handlers, Server Actions) via a non-public env var",
+        "Hard-coded in a Client Component",
+        "In localStorage"
+      ],
+      "correctIndex": 1,
+      "explanation": "Variables prefixed NEXT_PUBLIC_ are inlined into the client bundle. Keep secrets in non-prefixed env vars read only on the server; the server-only package can enforce the boundary."
+    },
+    {
+      "id": "nx-q5",
+      "question": "What does loading.tsx in a route segment do?",
+      "options": [
+        "Preloads images",
+        "Wraps the segment in a Suspense boundary and shows its UI while the segment streams in",
+        "Disables caching",
+        "Defines the 404 page"
+      ],
+      "correctIndex": 1,
+      "explanation": "loading.tsx gives instant loading UI using React Suspense and streaming; not-found.tsx and error.tsx handle 404s and errors."
+    }
+  ],
+  "problems": [
+    {
+      "id": "nx-p1",
+      "title": "Pick the rendering strategy",
+      "difficulty": "medium",
+      "points": 20,
+      "prompt": "Choose rendering for: (a) a marketing page, (b) a product page whose price changes hourly, (c) a logged-in dashboard.",
+      "hints": [
+        "Static vs ISR vs dynamic",
+        "Per-user data can't be shared"
+      ],
+      "solution": "(a) Fully static (prerendered at build). (b) Static with time-based revalidation (e.g., revalidate: 3600) or on-demand revalidateTag when prices change. (c) Dynamic per-request rendering (it reads cookies/session), streaming slow parts with Suspense; never cache per-user data in a shared cache."
+    },
+    {
+      "id": "nx-p2",
+      "title": "Secure a Server Action",
+      "difficulty": "medium",
+      "points": 20,
+      "prompt": "A Server Action deleteProject(id) is called from a button in a Client Component. What must it check?",
+      "hints": [
+        "Who is calling?",
+        "Input validation"
+      ],
+      "solution": "Treat it as a public endpoint: authenticate the session inside the action, verify the user owns or may delete project id (authorization), validate the input (e.g., with Zod), then revalidate affected paths/tags. Hiding the button in the UI is not access control."
+    }
+  ]
 }

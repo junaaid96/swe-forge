@@ -13,6 +13,92 @@
     "dsa",
     "behavioral"
   ],
-  "quiz": [],
-  "problems": []
+  "quiz": [
+    {
+      "id": "mc-q1",
+      "question": "What is the time complexity of binary search on a sorted array of n elements?",
+      "options": [
+        "O(n)",
+        "O(log n)",
+        "O(n log n)",
+        "O(1)"
+      ],
+      "correctIndex": 1,
+      "explanation": "Each step halves the remaining range, so at most about log₂ n + 1 comparisons."
+    },
+    {
+      "id": "mc-q2",
+      "question": "Which HTTP status code means the client is authenticated but not allowed to access the resource?",
+      "options": [
+        "401 Unauthorized",
+        "403 Forbidden",
+        "404 Not Found",
+        "400 Bad Request"
+      ],
+      "correctIndex": 1,
+      "explanation": "401 actually means unauthenticated (missing or invalid credentials); 403 means authenticated but not authorized."
+    },
+    {
+      "id": "mc-q3",
+      "question": "Which normal form removes transitive dependencies (non-key attributes depending on other non-key attributes)?",
+      "options": [
+        "1NF",
+        "2NF",
+        "3NF",
+        "None of these"
+      ],
+      "correctIndex": 2,
+      "explanation": "1NF: atomic values; 2NF: no partial dependency on part of a composite key; 3NF: no transitive dependencies."
+    },
+    {
+      "id": "mc-q4",
+      "question": "If 5 machines make 5 widgets in 5 minutes, how long do 100 machines take to make 100 widgets?",
+      "options": [
+        "100 minutes",
+        "20 minutes",
+        "5 minutes",
+        "1 minute"
+      ],
+      "correctIndex": 2,
+      "explanation": "Each machine makes one widget in 5 minutes, so 100 machines make 100 widgets in the same 5 minutes."
+    },
+    {
+      "id": "mc-q5",
+      "question": "Which OSI layer does TCP operate at?",
+      "options": [
+        "Network (3)",
+        "Transport (4)",
+        "Session (5)",
+        "Data link (2)"
+      ],
+      "correctIndex": 1,
+      "explanation": "TCP and UDP are transport-layer protocols; IP is the network layer."
+    }
+  ],
+  "problems": [
+    {
+      "id": "mc-p1",
+      "title": "Trace the output",
+      "difficulty": "easy",
+      "points": 10,
+      "prompt": "int x = 5; System.out.println(x++ + ++x); — what is printed in Java?",
+      "hints": [
+        "Post-increment returns the old value",
+        "Evaluate left to right"
+      ],
+      "solution": "12. x++ yields 5 and makes x = 6; then ++x makes x = 7 and yields 7; 5 + 7 = 12."
+    },
+    {
+      "id": "mc-p2",
+      "title": "Time-and-work puzzle",
+      "difficulty": "medium",
+      "points": 15,
+      "prompt": "A can finish a job in 10 days and B in 15 days. Working together, how many days do they take?",
+      "hints": [
+        "Add rates",
+        "Rate = 1/days"
+      ],
+      "solution": "Rates: A = 1/10, B = 1/15 job per day. Together: 1/10 + 1/15 = 3/30 + 2/30 = 1/6, so 6 days."
+    }
+  ]
 }

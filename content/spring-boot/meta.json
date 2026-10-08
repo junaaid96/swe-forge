@@ -14,6 +14,92 @@
     "database",
     "security"
   ],
-  "quiz": [],
-  "problems": []
+  "quiz": [
+    {
+      "id": "sb-q1",
+      "question": "What does @SpringBootApplication combine?",
+      "options": [
+        "@Configuration, @EnableAutoConfiguration and @ComponentScan",
+        "@Controller, @Service and @Repository",
+        "@EnableWebMvc and @EnableJpaRepositories",
+        "@Bean and @Autowired"
+      ],
+      "correctIndex": 0,
+      "explanation": "It's a meta-annotation for @SpringBootConfiguration (a @Configuration), @EnableAutoConfiguration and @ComponentScan of the class's package and sub-packages."
+    },
+    {
+      "id": "sb-q2",
+      "question": "Why does calling a @Transactional method from another method in the same bean often not start a transaction?",
+      "options": [
+        "Transactions need XML configuration",
+        "Self-invocation bypasses the Spring proxy",
+        "@Transactional only works on interfaces",
+        "The method must be static"
+      ],
+      "correctIndex": 1,
+      "explanation": "Spring applies @Transactional through a proxy; this.method() calls the target directly, skipping the proxy. Move the method to another bean or restructure the call."
+    },
+    {
+      "id": "sb-q3",
+      "question": "By default, @Transactional rolls back on…",
+      "options": [
+        "Every exception, checked or unchecked",
+        "RuntimeException and Error only",
+        "Checked exceptions only",
+        "Nothing unless rollbackFor is set"
+      ],
+      "correctIndex": 1,
+      "explanation": "The default rollback rule is unchecked exceptions (RuntimeException) and Errors; checked exceptions commit unless you add rollbackFor."
+    },
+    {
+      "id": "sb-q4",
+      "question": "Which injection style is recommended for required dependencies?",
+      "options": [
+        "Field injection with @Autowired",
+        "Setter injection",
+        "Constructor injection",
+        "Static field injection"
+      ],
+      "correctIndex": 2,
+      "explanation": "Constructor injection allows final fields, fails fast when a dependency is missing, and makes classes trivial to unit test with plain new."
+    },
+    {
+      "id": "sb-q5",
+      "question": "In Spring Boot 4 / Spring Framework 7, what is the recommended synchronous HTTP client?",
+      "options": [
+        "RestTemplate",
+        "RestClient",
+        "HttpURLConnection",
+        "Feign only"
+      ],
+      "correctIndex": 1,
+      "explanation": "RestClient is the fluent synchronous client; the Spring team plans to deprecate RestTemplate in Framework 7.1 and remove it in 8. WebClient remains the reactive option."
+    }
+  ],
+  "problems": [
+    {
+      "id": "sb-p1",
+      "title": "Find the N+1",
+      "difficulty": "medium",
+      "points": 20,
+      "prompt": "GET /customers returns 50 customers and logs 51 SQL queries because each CustomerDto reads customer.getOrders(). Give two fixes.",
+      "hints": [
+        "JOIN FETCH or @EntityGraph",
+        "Or a DTO projection"
+      ],
+      "solution": "Load the association in the same query: a repository method with @Query(\"select distinct c from Customer c left join fetch c.orders\") or @EntityGraph(attributePaths = \"orders\"); or skip entities and select a DTO projection with only the needed columns. Paginating with a collection fetch join needs care (fetch IDs first, then fetch join by IDs). Verify with SQL logging or Hibernate statistics."
+    },
+    {
+      "id": "sb-p2",
+      "title": "Health probes on Kubernetes",
+      "difficulty": "easy",
+      "points": 15,
+      "prompt": "Configure a Spring Boot service so Kubernetes stops sending traffic while it's warming up, but doesn't restart it.",
+      "hints": [
+        "Actuator probe groups",
+        "Readiness vs liveness"
+      ],
+      "solution": "Enable management.endpoint.health.probes.enabled=true (on by default when Boot detects Kubernetes) and point the readinessProbe at /actuator/health/readiness and the livenessProbe at /actuator/health/liveness. Readiness failing removes the pod from Service endpoints; only liveness failing triggers a restart. Add a startupProbe for slow starts."
+    }
+  ]
 }

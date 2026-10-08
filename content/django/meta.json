@@ -14,6 +14,92 @@
     "database",
     "security"
   ],
-  "quiz": [],
-  "problems": []
+  "quiz": [
+    {
+      "id": "dj-q1",
+      "question": "QuerySets in Django are…",
+      "options": [
+        "Executed immediately when created",
+        "Lazy: the SQL runs only when the QuerySet is evaluated (iterated, sliced with a step, len(), list(), etc.)",
+        "Always cached across requests",
+        "Only usable in templates"
+      ],
+      "correctIndex": 1,
+      "explanation": "Chaining filter()/exclude() just builds the query; evaluation hits the database, and the results are cached on that QuerySet instance."
+    },
+    {
+      "id": "dj-q2",
+      "question": "Which fixes N+1 queries for a ForeignKey accessed in a loop?",
+      "options": [
+        "prefetch_related only",
+        "select_related (a SQL JOIN)",
+        "values_list",
+        "raw()"
+      ],
+      "correctIndex": 1,
+      "explanation": "select_related follows ForeignKey/OneToOne with a JOIN; prefetch_related runs a second query for many-to-many and reverse relations and joins them in Python."
+    },
+    {
+      "id": "dj-q3",
+      "question": "What does F('stock') - 1 in an update() do?",
+      "options": [
+        "Reads stock into Python, then writes it back",
+        "Performs the arithmetic in the database, avoiding race conditions",
+        "Creates a new field",
+        "Raises an error"
+      ],
+      "correctIndex": 1,
+      "explanation": "F expressions reference column values in SQL (UPDATE ... SET stock = stock - 1), so concurrent updates don't overwrite each other."
+    },
+    {
+      "id": "dj-q4",
+      "question": "Why must you run makemigrations and commit the migration files?",
+      "options": [
+        "Django ignores models without migrations",
+        "Migrations are versioned schema changes every environment applies in the same order",
+        "They speed up queries",
+        "They are only needed for SQLite"
+      ],
+      "correctIndex": 1,
+      "explanation": "Migrations are code: reviewed, committed, and applied with migrate in each environment, keeping schemas consistent."
+    },
+    {
+      "id": "dj-q5",
+      "question": "In Django REST Framework, where does per-object authorization belong?",
+      "options": [
+        "In the serializer's Meta",
+        "In permission classes (has_object_permission) and queryset filtering",
+        "In settings.DEBUG",
+        "In the URL pattern"
+      ],
+      "correctIndex": 1,
+      "explanation": "Filter get_queryset() to what the user may see and implement has_object_permission; otherwise users can reach other users' objects by ID (BOLA/IDOR)."
+    }
+  ],
+  "problems": [
+    {
+      "id": "dj-p1",
+      "title": "Safe stock decrement",
+      "difficulty": "medium",
+      "points": 20,
+      "prompt": "Two users buy the last item at the same time and both orders succeed. Fix the view.",
+      "hints": [
+        "Atomic transaction",
+        "Row lock or conditional update"
+      ],
+      "solution": "Inside transaction.atomic(), either lock the row with Product.objects.select_for_update().get(pk=id) and check stock before decrementing, or do a conditional update: updated = Product.objects.filter(pk=id, stock__gt=0).update(stock=F('stock') - 1) and fail if updated == 0. Create the order in the same transaction."
+    },
+    {
+      "id": "dj-p2",
+      "title": "Paginate an API",
+      "difficulty": "easy",
+      "points": 10,
+      "prompt": "An endpoint returns 50,000 rows and times out. Fix it in DRF.",
+      "hints": [
+        "Pagination classes",
+        "Indexes"
+      ],
+      "solution": "Enable pagination (PageNumberPagination with a max page size, or CursorPagination for large or real-time tables), order by an indexed column, select only needed fields (only()/values()), and fix N+1 queries with select_related/prefetch_related."
+    }
+  ]
 }

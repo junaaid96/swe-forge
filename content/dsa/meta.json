@@ -3,9 +3,11 @@
   "slug": "dsa",
   "title": "DSA",
   "emoji": "🧩",
-  "order": 14,
+  "order": 23,
   "tag": "Algorithms",
   "accent": "#B45309",
+  "blurb": "Complexity, data structures, problem patterns, graphs, DP and advanced algorithms.",
+  "group": "cs",
   "relatedTopics": [
     "cs-fundamentals",
     "low-level-design",

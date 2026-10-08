@@ -5,31 +5,6 @@ level: medium
 
 # System Design — Interview (Medium)
 
-> Placeholder Q&A stubs. Full answers will be filled in later.
-
-## Q1. Caching layers and CDN
-
-**Answer:** Content coming soon.
-
-**Key takeaway:** TBD.
-
----
-
-## Q2. Sharding and replication
-
-**Answer:** Content coming soon.
-
-**Key takeaway:** TBD.
-
----
-
-## Q3. Message queues and fan-out
-
-**Answer:** Content coming soon.
-
-**Key takeaway:** TBD.
-
----
 
 ## Q-Guide-sd-url. Design a URL shortener?
 

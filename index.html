@@ -2,17 +2,32 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forgeline · Software engineering study hub</title>
     <meta
       name="description"
-      content="SWE Forge — learn software engineering topics, take quizzes, solve practice problems, and track your score."
+      content="Forgeline: topic-wise software engineering notes, interview Q&A, spaced-repetition flashcards, timed mock interviews and a skill map. Everything runs in your browser."
     />
-    <title>SWE Forge · Software Engineering Study Hall</title>
+    <meta name="theme-color" content="#f7f7f5" />
+    <meta property="og:title" content="Forgeline · Software engineering study hub" />
+    <meta property="og:description" content="Learn it. Drill it. Track it. Notes, flashcards, mock interviews and a skill map for software engineers." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/data/catalog.json" as="fetch" type="application/json" crossorigin="anonymous" />
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem('forgeline:theme');
+          if (!t) t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          document.documentElement.dataset.theme = t;
+          if (t === 'dark') document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0f1115');
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
+    <noscript>Forgeline needs JavaScript to run.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

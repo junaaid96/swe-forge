@@ -1,0 +1,17 @@
+{
+  "id": "rust",
+  "slug": "rust",
+  "title": "Rust",
+  "emoji": "🦀",
+  "order": 11,
+  "tag": "Language",
+  "accent": "#B45309",
+  "blurb": "Ownership, borrowing, traits, error handling and fearless concurrency.",
+  "group": "languages",
+  "relatedTopics": [
+    "c-cpp",
+    "cs-fundamentals"
+  ],
+  "quiz": [],
+  "problems": []
+}

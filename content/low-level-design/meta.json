@@ -3,9 +3,11 @@
   "slug": "low-level-design",
   "title": "Low-Level Design",
   "emoji": "🧱",
-  "order": 15,
+  "order": 4,
   "tag": "OOP design",
   "accent": "#C2410C",
+  "blurb": "OOP, SOLID and design patterns applied to class-level design.",
+  "group": "craft",
   "relatedTopics": [
     "software-engineering",
     "system-design",

@@ -3,9 +3,11 @@
   "slug": "cs-fundamentals",
   "title": "CS Fundamentals",
   "emoji": "🧮",
-  "order": 13,
+  "order": 22,
   "tag": "Foundations",
   "accent": "#4F46E5",
+  "blurb": "OS, networking, concurrency and computer architecture essentials.",
+  "group": "cs",
   "relatedTopics": [
     "dsa",
     "backend",

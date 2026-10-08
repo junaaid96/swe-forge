@@ -1,29 +1,32 @@
 {
-  "name": "swe-forge",
+  "name": "forgeline",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
-    "dev": "concurrently -k -n api,web -c teal,magenta \"npm run dev:api\" \"npm run dev:web\"",
-    "dev:web": "vite",
+    "content": "node scripts/build-content.mjs",
+    "predev": "npm run content",
+    "dev": "vite",
+    "dev:full": "npm run content && concurrently -k -n api,web -c teal,magenta \"npm run dev:api\" \"vite\"",
     "dev:api": "npm --prefix server run dev",
+    "prebuild": "npm run content",
     "build": "tsc -b && vite build",
-    "lint": "oxlint",
     "preview": "vite preview",
-    "start:api": "npm --prefix server run start",
-    "scaffold:content": "node --import tsx scripts/scaffold-content.ts",
-    "migrate:content": "node --import tsx scripts/migrate-to-content.ts",
-    "finish:expand-deep": "node --import tsx scripts/finish-expand-deep.ts"
+    "lint": "oxlint",
+    "start:api": "npm --prefix server run start"
   },
   "dependencies": {
     "concurrently": "^9.2.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
+    "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-markdown": "^10.1.0",
     "react-router-dom": "^7.18.1",
+    "rehype-highlight": "^7.0.2",
+    "rehype-slug": "^6.0.0",
     "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
@@ -37,5 +40,6 @@
     "tsx": "^4.20.5",
     "typescript": "~6.0.2",
     "vite": "^8.1.1"
-  }
+  },
+  "description": "Forgeline: a static software engineering study hub with guides, interview prep, flashcards, mock interviews and a skill map."
 }

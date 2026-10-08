@@ -68,3 +68,6 @@ temp/
 .nyc_output/
 playwright-report/
 test-results/
+
+# Generated content (npm run content)
+public/data/

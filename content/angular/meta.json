@@ -3,9 +3,11 @@
   "slug": "angular",
   "title": "Angular",
   "emoji": "🅰️",
-  "order": 10,
+  "order": 15,
   "tag": "Framework",
   "accent": "#DC2626",
+  "blurb": "Components, DI, RxJS, routing, forms and change detection.",
+  "group": "frontend",
   "relatedTopics": [
     "frontend",
     "ui-ux",

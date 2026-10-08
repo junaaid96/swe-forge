@@ -6,6 +6,8 @@
   "order": 16,
   "tag": "Product UI",
   "accent": "#BE185D",
+  "blurb": "Usability heuristics, accessibility, layout and interaction design for engineers.",
+  "group": "frontend",
   "relatedTopics": [
     "frontend",
     "react",

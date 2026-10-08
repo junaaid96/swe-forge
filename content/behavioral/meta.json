@@ -2,10 +2,12 @@
   "id": "behavioral",
   "slug": "behavioral",
   "title": "Behavioral",
-  "emoji": "💬",
-  "order": 24,
+  "emoji": "🎤",
+  "order": 2,
   "tag": "STAR",
   "accent": "#CA8A04",
+  "blurb": "STAR stories, technical communication, clarifying questions and mock-interview habits.",
+  "group": "interview",
   "relatedTopics": [
     "software-engineering",
     "git-collaboration"

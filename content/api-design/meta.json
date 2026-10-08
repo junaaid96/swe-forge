@@ -3,9 +3,11 @@
   "slug": "api-design",
   "title": "API Design",
   "emoji": "🔌",
-  "order": 12,
+  "order": 18,
   "tag": "Interfaces",
   "accent": "#7C3AED",
+  "blurb": "REST/GraphQL/gRPC design, versioning, idempotency and pagination.",
+  "group": "backend",
   "relatedTopics": [
     "backend",
     "system-design",

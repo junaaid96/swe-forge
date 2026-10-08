@@ -3,9 +3,11 @@
   "slug": "backend",
   "title": "Backend",
   "emoji": "🖥️",
-  "order": 11,
+  "order": 17,
   "tag": "Server",
   "accent": "#0284C7",
+  "blurb": "Backend fundamentals, architecture patterns, caching and optimisation.",
+  "group": "backend",
   "relatedTopics": [
     "api-design",
     "database",

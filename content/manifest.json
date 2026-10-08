@@ -1,66 +1,204 @@
 {
-  "version": 1,
+  "version": 2,
+  "groups": [
+    {
+      "id": "interview",
+      "label": "Interview prep",
+      "hint": "MCQ drills · behavioral",
+      "topics": [
+        "interview-mcq",
+        "behavioral"
+      ]
+    },
+    {
+      "id": "craft",
+      "label": "Engineering craft",
+      "hint": "Clean code · design · testing · git",
+      "topics": [
+        "software-engineering",
+        "low-level-design",
+        "testing-quality",
+        "git-collaboration"
+      ]
+    },
+    {
+      "id": "languages",
+      "label": "Languages",
+      "hint": "JS/TS · Python · Java · C/C++ · Rust",
+      "topics": [
+        "javascript",
+        "python",
+        "java",
+        "c-cpp",
+        "rust"
+      ]
+    },
+    {
+      "id": "frontend",
+      "label": "Frontend",
+      "hint": "Web platform · React · Next · Angular · UI/UX",
+      "topics": [
+        "frontend",
+        "react",
+        "nextjs",
+        "angular",
+        "ui-ux"
+      ]
+    },
+    {
+      "id": "backend",
+      "label": "Backend & frameworks",
+      "hint": "APIs · Node · Spring Boot · Django",
+      "topics": [
+        "backend",
+        "api-design",
+        "nodejs",
+        "spring-boot",
+        "django"
+      ]
+    },
+    {
+      "id": "cs",
+      "label": "CS & algorithms",
+      "hint": "Fundamentals · DSA",
+      "topics": [
+        "cs-fundamentals",
+        "dsa"
+      ]
+    },
+    {
+      "id": "systems",
+      "label": "Systems & data",
+      "hint": "System design · databases",
+      "topics": [
+        "system-design",
+        "database"
+      ]
+    },
+    {
+      "id": "ops",
+      "label": "DevOps, cloud & security",
+      "hint": "Linux → Kubernetes → cloud · AppSec",
+      "topics": [
+        "devops-cloud",
+        "security"
+      ]
+    },
+    {
+      "id": "ai",
+      "label": "AI engineering",
+      "hint": "LLMs · ML systems",
+      "topics": [
+        "ai-ml"
+      ]
+    }
+  ],
   "topics": [
+    {
+      "id": "interview-mcq",
+      "slug": "interview-mcq",
+      "title": "MCQ Test Prep",
+      "emoji": "📝",
+      "order": 1,
+      "tag": "Screening tests",
+      "accent": "#7C3AED"
+    },
+    {
+      "id": "behavioral",
+      "slug": "behavioral",
+      "title": "Behavioral",
+      "emoji": "🎤",
+      "order": 2,
+      "tag": "STAR",
+      "accent": "#CA8A04"
+    },
     {
       "id": "software-engineering",
       "slug": "software-engineering",
       "title": "Software Engineering",
-      "emoji": "🛠️",
-      "order": 1,
+      "emoji": "🧭",
+      "order": 3,
       "tag": "Best practices hub",
       "accent": "#0D9488"
     },
     {
-      "id": "java",
-      "slug": "java",
-      "title": "Java",
-      "emoji": "☕",
-      "order": 2,
-      "tag": "Language",
+      "id": "low-level-design",
+      "slug": "low-level-design",
+      "title": "Low-Level Design",
+      "emoji": "🧱",
+      "order": 4,
+      "tag": "OOP design",
+      "accent": "#C2410C"
+    },
+    {
+      "id": "testing-quality",
+      "slug": "testing-quality",
+      "title": "Testing & Quality",
+      "emoji": "🧪",
+      "order": 5,
+      "tag": "QA",
+      "accent": "#059669"
+    },
+    {
+      "id": "git-collaboration",
+      "slug": "git-collaboration",
+      "title": "Git & Collaboration",
+      "emoji": "🌿",
+      "order": 6,
+      "tag": "VCS",
       "accent": "#EA580C"
     },
     {
-      "id": "spring-boot",
-      "slug": "spring-boot",
-      "title": "Spring Boot",
-      "emoji": "🌱",
-      "order": 3,
-      "tag": "Framework",
-      "accent": "#16A34A"
+      "id": "javascript",
+      "slug": "javascript",
+      "title": "JavaScript & TypeScript",
+      "emoji": "🟨",
+      "order": 7,
+      "tag": "Language",
+      "accent": "#CA8A04"
     },
     {
       "id": "python",
       "slug": "python",
       "title": "Python",
       "emoji": "🐍",
-      "order": 4,
+      "order": 8,
       "tag": "Language",
       "accent": "#2563EB"
     },
     {
-      "id": "django",
-      "slug": "django",
-      "title": "Django",
-      "emoji": "🎸",
-      "order": 5,
-      "tag": "Framework",
-      "accent": "#0F766E"
+      "id": "java",
+      "slug": "java",
+      "title": "Java",
+      "emoji": "☕",
+      "order": 9,
+      "tag": "Language",
+      "accent": "#EA580C"
     },
     {
-      "id": "nodejs",
-      "slug": "nodejs",
-      "title": "Node.js",
-      "emoji": "🟢",
-      "order": 6,
-      "tag": "Runtime",
-      "accent": "#15803D"
+      "id": "c-cpp",
+      "slug": "c-cpp",
+      "title": "C & C++",
+      "emoji": "⚙️",
+      "order": 10,
+      "tag": "Language",
+      "accent": "#475569"
+    },
+    {
+      "id": "rust",
+      "slug": "rust",
+      "title": "Rust",
+      "emoji": "🦀",
+      "order": 11,
+      "tag": "Language",
+      "accent": "#B45309"
     },
     {
       "id": "frontend",
       "slug": "frontend",
       "title": "Frontend",
       "emoji": "🎨",
-      "order": 7,
+      "order": 12,
       "tag": "Web UI",
       "accent": "#DB2777"
     },
@@ -69,7 +207,7 @@
       "slug": "react",
       "title": "React",
       "emoji": "⚛️",
-      "order": 8,
+      "order": 13,
       "tag": "Library",
       "accent": "#0891B2"
     },
@@ -78,7 +216,7 @@
       "slug": "nextjs",
       "title": "Next.js",
       "emoji": "▲",
-      "order": 9,
+      "order": 14,
       "tag": "Framework",
       "accent": "#111827"
     },
@@ -87,54 +225,9 @@
       "slug": "angular",
       "title": "Angular",
       "emoji": "🅰️",
-      "order": 10,
+      "order": 15,
       "tag": "Framework",
       "accent": "#DC2626"
-    },
-    {
-      "id": "backend",
-      "slug": "backend",
-      "title": "Backend",
-      "emoji": "🖥️",
-      "order": 11,
-      "tag": "Server",
-      "accent": "#0284C7"
-    },
-    {
-      "id": "api-design",
-      "slug": "api-design",
-      "title": "API Design",
-      "emoji": "🔌",
-      "order": 12,
-      "tag": "Interfaces",
-      "accent": "#7C3AED"
-    },
-    {
-      "id": "cs-fundamentals",
-      "slug": "cs-fundamentals",
-      "title": "CS Fundamentals",
-      "emoji": "🧮",
-      "order": 13,
-      "tag": "Foundations",
-      "accent": "#4F46E5"
-    },
-    {
-      "id": "dsa",
-      "slug": "dsa",
-      "title": "DSA",
-      "emoji": "🧩",
-      "order": 14,
-      "tag": "Algorithms",
-      "accent": "#B45309"
-    },
-    {
-      "id": "low-level-design",
-      "slug": "low-level-design",
-      "title": "Low-Level Design",
-      "emoji": "🧱",
-      "order": 15,
-      "tag": "OOP design",
-      "accent": "#C2410C"
     },
     {
       "id": "ui-ux",
@@ -146,11 +239,74 @@
       "accent": "#BE185D"
     },
     {
+      "id": "backend",
+      "slug": "backend",
+      "title": "Backend",
+      "emoji": "🖥️",
+      "order": 17,
+      "tag": "Server",
+      "accent": "#0284C7"
+    },
+    {
+      "id": "api-design",
+      "slug": "api-design",
+      "title": "API Design",
+      "emoji": "🔌",
+      "order": 18,
+      "tag": "Interfaces",
+      "accent": "#7C3AED"
+    },
+    {
+      "id": "nodejs",
+      "slug": "nodejs",
+      "title": "Node.js",
+      "emoji": "🟢",
+      "order": 19,
+      "tag": "Runtime",
+      "accent": "#15803D"
+    },
+    {
+      "id": "spring-boot",
+      "slug": "spring-boot",
+      "title": "Spring Boot",
+      "emoji": "🍃",
+      "order": 20,
+      "tag": "Framework",
+      "accent": "#16A34A"
+    },
+    {
+      "id": "django",
+      "slug": "django",
+      "title": "Django",
+      "emoji": "🐍",
+      "order": 21,
+      "tag": "Framework",
+      "accent": "#0F766E"
+    },
+    {
+      "id": "cs-fundamentals",
+      "slug": "cs-fundamentals",
+      "title": "CS Fundamentals",
+      "emoji": "🧮",
+      "order": 22,
+      "tag": "Foundations",
+      "accent": "#4F46E5"
+    },
+    {
+      "id": "dsa",
+      "slug": "dsa",
+      "title": "DSA",
+      "emoji": "🧩",
+      "order": 23,
+      "tag": "Algorithms",
+      "accent": "#B45309"
+    },
+    {
       "id": "system-design",
       "slug": "system-design",
       "title": "System Design",
       "emoji": "🏛️",
-      "order": 17,
+      "order": 24,
       "tag": "HLD",
       "accent": "#9333EA"
     },
@@ -159,7 +315,7 @@
       "slug": "database",
       "title": "Database",
       "emoji": "🗄️",
-      "order": 18,
+      "order": 25,
       "tag": "Data",
       "accent": "#0369A1"
     },
@@ -167,35 +323,17 @@
       "id": "devops-cloud",
       "slug": "devops-cloud",
       "title": "DevOps & Cloud",
-      "emoji": "☁️",
-      "order": 19,
+      "emoji": "🚀",
+      "order": 26,
       "tag": "Ops",
       "accent": "#4F46E5"
-    },
-    {
-      "id": "git-collaboration",
-      "slug": "git-collaboration",
-      "title": "Git & Collaboration",
-      "emoji": "🌿",
-      "order": 20,
-      "tag": "VCS",
-      "accent": "#EA580C"
-    },
-    {
-      "id": "testing-quality",
-      "slug": "testing-quality",
-      "title": "Testing & Quality",
-      "emoji": "🧪",
-      "order": 21,
-      "tag": "QA",
-      "accent": "#059669"
     },
     {
       "id": "security",
       "slug": "security",
       "title": "Security",
-      "emoji": "🔒",
-      "order": 22,
+      "emoji": "🔐",
+      "order": 27,
       "tag": "AppSec",
       "accent": "#BE123C"
     },
@@ -204,18 +342,9 @@
       "slug": "ai-ml",
       "title": "AI / ML Engineering",
       "emoji": "🤖",
-      "order": 23,
+      "order": 28,
       "tag": "AI era",
       "accent": "#A21CAF"
-    },
-    {
-      "id": "behavioral",
-      "slug": "behavioral",
-      "title": "Behavioral",
-      "emoji": "💬",
-      "order": 24,
-      "tag": "STAR",
-      "accent": "#CA8A04"
     }
   ]
 }

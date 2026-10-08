@@ -5,31 +5,6 @@ level: medium
 
 # DSA — Interview (Medium)
 
-> Placeholder Q&A stubs. Full answers will be filled in later.
-
-## Q1. BFS/DFS on trees and graphs
-
-**Answer:** Content coming soon.
-
-**Key takeaway:** TBD.
-
----
-
-## Q2. Binary search variants
-
-**Answer:** Content coming soon.
-
-**Key takeaway:** TBD.
-
----
-
-## Q3. Heaps / Top-K
-
-**Answer:** Content coming soon.
-
-**Key takeaway:** TBD.
-
----
 
 ## Q-Guide-dsa-hash. Hash map lookups?
 

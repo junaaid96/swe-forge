@@ -3,9 +3,11 @@
   "slug": "react",
   "title": "React",
   "emoji": "⚛️",
-  "order": 8,
+  "order": 13,
   "tag": "Library",
   "accent": "#0891B2",
+  "blurb": "React core, hooks, performance patterns, state, data fetching and tooling.",
+  "group": "frontend",
   "relatedTopics": [
     "frontend",
     "nextjs",

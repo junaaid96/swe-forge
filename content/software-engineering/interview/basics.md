@@ -5,31 +5,6 @@ level: basics
 
 # Software Engineering — Interview (Basics)
 
-> Placeholder Q&A stubs. Full answers will be filled in later.
-
-## Q1. What are the main phases of the SDLC?
-
-**Answer:** Content coming soon.
-
-**Key takeaway:** TBD.
-
----
-
-## Q2. Explain DRY, KISS, and YAGNI with examples.
-
-**Answer:** Content coming soon.
-
-**Key takeaway:** TBD.
-
----
-
-## Q3. What does “done” mean vs “works on my machine”?
-
-**Answer:** Content coming soon.
-
-**Key takeaway:** TBD.
-
----
 
 ## Q-Guide-w1. Week 1 — Foundations?
 

@@ -3,9 +3,11 @@
   "slug": "java",
   "title": "Java",
   "emoji": "☕",
-  "order": 2,
+  "order": 9,
   "tag": "Language",
   "accent": "#EA580C",
+  "blurb": "Java language, JVM, collections, concurrency and interview Q&A.",
+  "group": "languages",
   "relatedTopics": [
     "spring-boot",
     "backend",

@@ -37,7 +37,7 @@ List<Order> findWithLineItemsByStatus(@Param("status") OrderStatus status);
 List<Order> findByStatus(OrderStatus status);
 ```
 
-**What's new in 2026 — Hibernate ORM 7.1 (ships with Spring Boot 4 / Jakarta Persistence 3.2):** <cite index="9-1">Hibernate ORM 7.1 no longer allows a detached entity to be reassociated with a persistence context</cite>. If any of your code does `session.update(detachedEntity)` or relies on implicit reattachment, that pattern breaks — you now need `merge()` explicitly, which is the safer, more predictable behavior anyway (it copies detached state into a managed instance instead of silently attaching the detached one).
+**What's new — Hibernate ORM 7 (ships with Spring Boot 4 / Jakarta Persistence 3.2):** the legacy native methods deprecated in Hibernate 6 (`Session.save()`, `update()`, `saveOrUpdate()`, `delete()`) are gone, and detached entities are no longer silently reattached to a persistence context. If any of your code does `session.update(detachedEntity)` or relies on implicit reattachment, use the JPA-standard methods instead: `persist()` for new entities and `merge()` for detached ones. `merge()` is the safer, more predictable behaviour anyway: it copies detached state into a managed instance and returns that instance.
 
 ## 2.2 PostgreSQL + HikariCP
 
@@ -55,7 +55,7 @@ spring:
       max-lifetime: 1800000
 ```
 
-**Pool sizing rule of thumb (from HikariCP's own formula):** `connections = ((core_count * 2) + effective_spindle_count)`. For a typical cloud DB on SSD, that's roughly `(CPU cores * 2) + 1`. Bigger is *not* better — PostgreSQL handles a moderate number of connections efficiently but each one is a full backend process with its own memory; too many idle connections just wastes DB-side RAM and can cause more contention, not less. This is the exact interaction flagged in the previous file: enabling virtual threads means your app can *issue* far more concurrent DB calls, so you'll want PgBouncer (transaction-mode pooling) in front of Postgres for high-fan-out services rather than just cranking `maximum-pool-size`.
+**Pool sizing rule of thumb (from HikariCP's own formula):** `connections = ((core_count * 2) + effective_spindle_count)`. For a typical cloud DB on SSD, that's roughly `(CPU cores * 2) + 1`. Bigger is *not* better — PostgreSQL handles a moderate number of connections efficiently but each one is a full backend process with its own memory; too many idle connections just wastes DB-side RAM and can cause more contention, not less. This is the interaction flagged in the [Core framework](./01-core-framework.md) guide: enabling virtual threads means your app can *issue* far more concurrent DB calls, so you'll want PgBouncer (transaction-mode pooling) in front of Postgres for high-fan-out services rather than just cranking `maximum-pool-size`.
 
 ## 2.3 Database Migrations — Flyway vs Liquibase
 
@@ -78,7 +78,7 @@ spring:
     locations: classpath:db/migration
 ```
 
-Flyway (plain SQL, simpler mental model) vs Liquibase (XML/YAML/JSON changesets, supports rollback definitions and is more DB-agnostic) — for a Postgres-only microservices shop like yours, Flyway's plain-SQL approach is usually the lower-friction choice since you're not trying to abstract across multiple DB vendors.
+Flyway (plain SQL, simpler mental model) vs Liquibase (XML/YAML/JSON changesets, supports rollback definitions and is more DB-agnostic) — for a Postgres-only microservices shop, Flyway's plain-SQL approach is usually the lower-friction choice since you're not trying to abstract across multiple DB vendors.
 
 ## 2.4 JdbcTemplate — when you skip the ORM entirely
 
@@ -89,12 +89,17 @@ For reporting queries, bulk operations, or anywhere object-relational mapping ov
 public class OrderReportDao {
     private final JdbcTemplate jdbc;
 
+    public OrderReportDao(JdbcTemplate jdbc) {
+        this.jdbc = jdbc;
+    }
+
+    // Half-open range [from, to + 1 day) so the whole of the last day is included
     public List<RevenueByDay> revenueByDay(LocalDate from, LocalDate to) {
         return jdbc.query(
             "select created_at::date as day, sum(total) as revenue " +
-            "from orders where created_at between ? and ? group by 1 order by 1",
+            "from orders where created_at >= ? and created_at < ? group by 1 order by 1",
             (rs, rowNum) -> new RevenueByDay(rs.getDate("day").toLocalDate(), rs.getBigDecimal("revenue")),
-            from, to
+            from, to.plusDays(1)
         );
     }
 }
@@ -102,10 +107,10 @@ public class OrderReportDao {
 
 ## 2.5 MongoDB (polyglot persistence) and H2 (testing)
 
-`Spring Data MongoDB` mirrors the JPA repository pattern (`MongoRepository<T, ID>`), useful for document-shaped data (catalogs, event logs, audit trails) sitting alongside your relational core data. H2 is an in-memory DB used almost exclusively for fast integration tests — but note the field below: **Testcontainers with real PostgreSQL has mostly replaced H2-for-tests** as the recommended practice, because H2's SQL dialect quietly diverges from Postgres in ways that hide real bugs (see `08-monitoring-and-testing.md`).
+`Spring Data MongoDB` mirrors the JPA repository pattern (`MongoRepository<T, ID>`), useful for document-shaped data (catalogs, event logs, audit trails) sitting alongside your relational core data. H2 is an in-memory DB used almost exclusively for fast integration tests — but note the trend: **Testcontainers with real PostgreSQL has mostly replaced H2-for-tests** as the recommended practice, because H2's SQL dialect quietly diverges from Postgres in ways that hide real bugs (see [Monitoring & testing](./08-monitoring-and-testing.md)).
 
 ## Go Deeper
 - Second-level cache (Hibernate + Redis/Ehcache) — only worth it for read-heavy, rarely-changing reference data; easy to introduce stale-data bugs otherwise
-- Optimistic locking with `@Version` for concurrent update conflicts — directly relevant to your idempotency/Saga work
-- `@Transactional` propagation levels (`REQUIRED` vs `REQUIRES_NEW` vs `NESTED`) — required reading before you touch the Outbox Pattern implementation in the next file
-- Database-per-Service pattern (which you've already studied) is exactly why this file doesn't cover cross-service joins — that's what the Saga/CQRS patterns in your architecture notes solve
+- Optimistic locking with `@Version` for concurrent update conflicts — directly relevant to idempotency and Saga steps
+- `@Transactional` propagation levels (`REQUIRED` vs `REQUIRES_NEW` vs `NESTED`) — required reading before you implement the Outbox Pattern in [Messaging & async](./05-messaging-and-async.md)
+- The Database-per-Service pattern is exactly why this guide doesn't cover cross-service joins — that's what the Saga and CQRS patterns in [Backend architecture patterns](../backend/01-backend-architecture-patterns.md) solve

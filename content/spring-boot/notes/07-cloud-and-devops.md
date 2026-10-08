@@ -1,6 +1,6 @@
 # 7. Cloud & DevOps — Docker, Kubernetes, Spring Cloud, CI/CD, Terraform
 
-You flagged Cloud Security as one of your two highest-leverage tracks — the Gateway API section below is the biggest concrete 2026 change in this space.
+Cloud security is one of the highest-leverage tracks for backend engineers; the Gateway API section below is the biggest concrete change in this space in 2026.
 
 ## 7.1 Docker — packaging a Spring Boot app correctly
 
@@ -49,9 +49,9 @@ spec:
 
 Readiness vs liveness is the distinction that trips people up: **liveness** failing → Kubernetes restarts the pod (use for "this process is deadlocked/corrupted"). **Readiness** failing → Kubernetes stops routing traffic to it but doesn't restart it (use for "temporarily can't serve traffic," e.g., DB connection pool exhausted, still recovering from startup). Spring Boot Actuator exposes both groups automatically once you enable `management.endpoint.health.probes.enabled: true`.
 
-## 7.3 Service discovery: you already made the right call
+## 7.3 Service discovery: Kubernetes-native beats Eureka on Kubernetes
 
-Your existing preference for Kubernetes-native service discovery over Eureka holds up well in 2026 — when you're already running on Kubernetes, its built-in Service + DNS-based discovery (`order-service.default.svc.cluster.local`) does the same job Eureka was built for, without running a separate Spring Cloud component to keep alive and consistent with the actual cluster state. Eureka still earns its place in non-Kubernetes deployments (VMs, bare Spring Cloud stacks) — it's specifically redundant once Kubernetes itself is doing service registration and health-checked routing for you.
+When you're already running on Kubernetes, its built-in Service + DNS-based discovery (`order-service.default.svc.cluster.local`) does the same job Eureka was built for, without running a separate Spring Cloud component to keep alive and consistent with the actual cluster state. Eureka still earns its place in non-Kubernetes deployments (VMs, bare Spring Cloud stacks) — it's specifically redundant once Kubernetes itself is doing service registration and health-checked routing for you.
 
 ## 7.4 Spring Cloud Config Server vs Kubernetes ConfigMaps/Secrets
 
@@ -70,9 +70,9 @@ env:
 
 ## 7.5 Ingress → Gateway API: the concrete 2026 migration
 
-This is the single most important networking change to know about. <cite index="27-1">As of 2026, the Kubernetes Gateway API has reached General Availability and is production-ready</cite>, positioned as the successor to Ingress. <cite index="29-1">Core Gateway API resources — GatewayClass, Gateway, HTTPRoute, GRPCRoute, TLSRoute, and ReferenceGrant — have reached GA</cite>.
+This is the single most important networking change to know about. The Kubernetes Gateway API is GA, production-ready and positioned as the successor to Ingress: GatewayClass, Gateway and HTTPRoute have been GA since v1.0 (2023), GRPCRoute since v1.1 (2024), and TLSRoute joined the Standard channel in v1.5 (2026).
 
-Why it exists: <cite index="29-1">classic Ingress has annotation overload (advanced features require controller-specific, non-portable annotations) and no role separation between infrastructure config and application routing</cite>. Gateway API fixes both with a **role-oriented model**:
+Why it exists: classic Ingress has annotation overload (advanced features require controller-specific, non-portable annotations) and no role separation between infrastructure config and application routing. Gateway API fixes both with a **role-oriented model**:
 
 ```yaml
 # Platform team owns this (infrastructure concern)
@@ -86,6 +86,7 @@ spec:
       protocol: HTTPS
       port: 443
       tls: { certificateRefs: [{ name: wildcard-tls }] }
+      allowedRoutes: { namespaces: { from: All } }   # default is Same; lets app namespaces attach routes
 
 ---
 # Application team owns this (routing concern) — clean separation
@@ -100,7 +101,7 @@ spec:
       backendRefs: [{ name: order-service, port: 8080 }]
 ```
 
-**Is this urgent for you specifically?** <cite index="30-1">If you're using the Ingress-NGINX Controller specifically, it's scheduled for end-of-life March 31, 2026 — after that, no security patches, bug fixes, or compatibility guarantees with newer Kubernetes releases</cite>. If that's your current controller, migration planning is not optional. <cite index="32-1">Ingress itself as an API is not being removed and will remain supported indefinitely</cite> — but <cite index="32-1">all new features go into Gateway API, not Ingress</cite>, and <cite index="32-1">both can coexist on the same cluster during an incremental migration</cite>, so there's no need for a risky big-bang cutover.
+**Is this urgent?** If you run the community Ingress-NGINX controller, yes: it was retired in March 2026, so there are no more security patches, bug fixes or compatibility guarantees with newer Kubernetes releases. If that's your current controller, migration planning is not optional. Ingress itself as an API is not being removed and will remain supported indefinitely — but all new features go into Gateway API, not Ingress, and both can coexist on the same cluster during an incremental migration, so there's no need for a risky big-bang cutover.
 
 ## 7.6 Helm — templating Kubernetes manifests
 
@@ -124,7 +125,7 @@ Helm's real value is templating the *differences* between environments (dev/stag
 
 ```
 1. Push to main → GitHub Actions / GitLab CI triggers
-2. Build + unit test + Testcontainers integration test (see file 8)
+2. Build + unit test + Testcontainers integration test (see Monitoring & testing)
 3. Build container image, tag with git SHA, push to registry
 4. Update Helm values (image tag) → commit to a GitOps repo (Argo CD / Flux watches it)
 5. Argo CD/Flux syncs the change to the cluster → rolling deployment
@@ -137,22 +138,25 @@ The GitOps step (5) is the modern default over CI directly running `kubectl appl
 
 ```hcl
 resource "aws_eks_cluster" "main" {
-  name     = "egeneration-prod"
+  name     = "orders-prod"
   role_arn = aws_iam_role.eks_cluster.arn
   vpc_config { subnet_ids = var.private_subnet_ids }
 }
 
 resource "aws_rds_cluster" "postgres" {
-  engine         = "aurora-postgresql"
-  engine_version = "16.4"
-  database_name  = "orders"
+  cluster_identifier          = "orders-db"
+  engine                      = "aurora-postgresql"
+  engine_version              = "16.4"
+  database_name               = "orders"
+  master_username             = "orders_admin"
+  manage_master_user_password = true   # password generated and stored in Secrets Manager
 }
 ```
 
 Terraform manages the *cluster and cloud resources themselves* (VPC, EKS/GKE cluster, RDS instance, IAM roles) — a different layer from Helm, which manages *what runs inside* an already-provisioned cluster. Both are declarative and both maintain state, but conflating "infra provisioning" with "app deployment" in one tool is a common early mistake — keeping Terraform for cluster/cloud-resource lifecycle and Helm/GitOps for application lifecycle keeps blast radius contained.
 
 ## Go Deeper
-- Service mesh (Istio/Linkerd) for mTLS + east-west traffic policy — <cite index="34-1">the Gateway API's GAMMA initiative extends the same API to also model this east-west, pod-to-pod traffic, blurring the historical line between "ingress controller" and "service mesh"</cite>
+- Service mesh (Istio/Linkerd) for mTLS + east-west traffic policy — the Gateway API's GAMMA initiative extends the same API to also model this east-west, pod-to-pod traffic, blurring the historical line between "ingress controller" and "service mesh"
 - Horizontal Pod Autoscaler tied to custom Prometheus metrics (not just CPU) — connects directly to the next file
 - Blue/green vs canary deployment strategies on top of the CI/CD pipeline above
-- Next file: `08-monitoring-and-testing.md` — how you'd actually know any of this is healthy in production
+- Next: [Monitoring & testing](./08-monitoring-and-testing.md) — how you'd actually know any of this is healthy in production

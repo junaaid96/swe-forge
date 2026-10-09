@@ -1,12 +1,15 @@
 # Forgeline
 
+**Live:** [swe-forge.vercel.app](https://swe-forge.vercel.app/)
+
 **Forgeline** is a fast, static study hub for software engineering: guides, deep dives, interview Q&A, MCQ test prep, spaced-repetition flashcards, timed mock interviews and a skill map. It all runs in the browser. Progress lives in `localStorage`, and there is no account or backend to run.
 
 > Forgeline merges two earlier projects: **SWE Forge** (this repository) and **PrepShelf** (static Markdown guides plus interview MCQs). All PrepShelf content now lives under `content/`, in one taxonomy.
 
 ## Features
 
-- **28 topics in 9 groups:** Interview prep, Engineering craft, Languages, Frontend, Backend, CS foundations, Systems & data, DevOps & security, AI/ML.
+- **28 topics in 9 groups:** Interview prep, Engineering craft, Languages, Frontend, Backend, CS foundations, Systems & data, DevOps & security, AI/ML. 115 Markdown pages in all.
+- **Quizzes and practice on every topic:** 200 MCQs and 80 practice problems across all 28 topics, defined in each topic's `meta.json`.
 - **Readers for every kind of page:** guides (`notes`), six deep-dive tracks, and interview Q&A in four levels. Each has a table of contents with scroll spy, syntax highlighting, copyable code blocks, heading anchors, a reading progress bar and prev/next navigation.
 - **Prep map** (`/prep-map`): a topic-wise interview checklist that links every area to where it is covered.
 - **Command palette search** (`Ctrl/⌘ K` or `/`): section-level full-text search across all content.
@@ -14,6 +17,7 @@
 - **Mock interview mode** (`/mock`): a timed session of random questions across the topics you choose. You answer MCQs directly and self-grade open questions. At the end you get a score summary with per-topic results, weak areas linked to study material, a list of missed questions with "add to flashcards", and your session history.
 - **Skill map dashboard** (`/skills`): a radar chart of every topic group plus a roadmap of all topics. Each tile shows pages read, cards mastered and quiz/mock scores, along with a ranked "what to study next" list. You can also export, import or reset your progress.
 - **Progress tracking:** read/bookmark state, quiz scores, solved practice problems and a daily streak.
+- **Footer credit:** a "Developed by `<CodeJBorg />`" pill linking to [junaidul.pro.bd/codejborg](https://junaidul.pro.bd/codejborg).
 - **UX:** light/dark theme with no flash on load, responsive layout with a mobile drawer, keyboard shortcuts (`?` lists them), a skip link, ARIA-labelled navigation and dialogs, reduced-motion support and print styles.
 
 ## Quick start
@@ -34,6 +38,10 @@ Requires Node 20+ (tested on Node 22).
 | `npm run dev` | Vite dev server (frontend only, which is all the site needs) |
 | `npm run dev:full` | Vite + the optional Express API together |
 | `npm run dev:api` / `npm run start:api` | optional legacy Express API in `server/` |
+
+## Content quality
+
+The content was reviewed after the merge: leaked citation markup (e.g. `<cite index=…>`) was stripped, placeholder interview answers were replaced with complete ones, wrong quiz answer keys and explanations were fixed, personal references were neutralised, internal links were repaired, and version facts (e.g. Spring Boot 4) were brought up to date. When editing content, keep it plain Markdown with no tool-generated markup.
 
 ## Content model
 

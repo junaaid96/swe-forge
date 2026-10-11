@@ -1,0 +1,91 @@
+{
+  "slug": "ai-data-scientist",
+  "title": "AI and Data Scientist",
+  "emoji": "\ud83d\udd2c",
+  "accent": "#0D9488",
+  "order": 9,
+  "blurb": "Maths, statistics, machine learning, deep learning and the full arc of a data science project.",
+  "source": "https://roadmap.sh/ai-data-scientist",
+  "stages": [
+    {
+      "title": "Mathematics",
+      "hint": "",
+      "items": [
+        {
+          "label": "Linear algebra, calculus and probability",
+          "ref": "data-science/notes/01-math-foundations-for-data-science"
+        }
+      ]
+    },
+    {
+      "title": "Statistics and experiments",
+      "hint": "",
+      "items": [
+        {
+          "label": "Statistics and A/B tests",
+          "ref": "data-analysis/notes/02-statistics-for-analysts"
+        }
+      ]
+    },
+    {
+      "title": "Programming and data",
+      "hint": "",
+      "items": [
+        {
+          "label": "Python",
+          "ref": "python/notes/01-python"
+        },
+        {
+          "label": "pandas, visualisation and storytelling",
+          "ref": "data-analysis/notes/03-python-for-analysis-visualisation-and-storytelling"
+        },
+        {
+          "label": "SQL",
+          "ref": "database/notes/01-sql-and-data-modelling"
+        }
+      ]
+    },
+    {
+      "title": "Machine learning",
+      "hint": "",
+      "items": [
+        {
+          "label": "Supervised learning",
+          "ref": "machine-learning/notes/01-supervised-learning-fundamentals"
+        },
+        {
+          "label": "Unsupervised learning, evaluation and features",
+          "ref": "machine-learning/notes/02-unsupervised-learning-evaluation-and-features"
+        }
+      ]
+    },
+    {
+      "title": "Deep learning and LLMs",
+      "hint": "",
+      "items": [
+        {
+          "label": "Deep learning with PyTorch",
+          "ref": "machine-learning/notes/03-deep-learning-with-pytorch"
+        },
+        {
+          "label": "LLM apps and RAG",
+          "ref": "ai-engineering/notes/02-embeddings-vector-search-and-rag"
+        }
+      ]
+    },
+    {
+      "title": "Delivering impact",
+      "hint": "",
+      "items": [
+        {
+          "label": "End-to-end data science project",
+          "ref": "data-science/notes/02-end-to-end-data-science-project"
+        },
+        {
+          "label": "MLOps lifecycle",
+          "ref": "mlops/notes/01-ml-lifecycle-experiment-tracking-and-pipelines"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "id": "machine-learning",
+  "slug": "machine-learning",
+  "title": "Machine Learning",
+  "emoji": "🧠",
+  "order": 33,
+  "tag": "ML",
+  "accent": "#DB2777",
+  "blurb": "Supervised and unsupervised learning, evaluation, feature engineering and deep learning with PyTorch, with runnable code.",
+  "group": "ai",
+  "relatedTopics": [
+    "data-science",
+    "mlops",
+    "ai-ml"
+  ],
+  "quiz": [
+    {
+      "id": "ml-q1",
+      "question": "Training error is low and validation error is high. What is happening?",
+      "options": [
+        "Underfitting",
+        "Overfitting (high variance)",
+        "Data is perfectly clean",
+        "The learning rate is too low"
+      ],
+      "correctIndex": 1,
+      "explanation": "The model fits noise in the training set; regularise, simplify or add data."
+    },
+    {
+      "id": "ml-q2",
+      "question": "Which is an example of data leakage when predicting order cancellation?",
+      "options": [
+        "Using distance as a feature",
+        "Using a refund_issued column that is set after cancellation",
+        "Using time-based splits",
+        "Scaling features"
+      ],
+      "correctIndex": 1,
+      "explanation": "Features unavailable at prediction time inflate offline metrics and fail in production."
+    },
+    {
+      "id": "ml-q3",
+      "question": "For tabular business data, which model family is usually the strongest default?",
+      "options": [
+        "k-NN",
+        "Gradient-boosted trees (LightGBM, XGBoost, CatBoost)",
+        "Deep CNNs",
+        "Naive Bayes"
+      ],
+      "correctIndex": 1,
+      "explanation": "Boosted trees handle mixed features, interactions and missing values with modest tuning."
+    },
+    {
+      "id": "ml-q4",
+      "question": "With 0.5% positives, which metric is most informative?",
+      "options": [
+        "Accuracy",
+        "PR AUC / precision-recall at the operating threshold",
+        "Mean squared error",
+        "R²"
+      ],
+      "correctIndex": 1,
+      "explanation": "Accuracy is misleading on imbalanced data; precision-recall reflects rare-class performance."
+    },
+    {
+      "id": "ml-q5",
+      "question": "What does k-means require before fitting numeric features with very different ranges?",
+      "options": [
+        "One-hot encoding",
+        "Feature scaling",
+        "Label encoding",
+        "Nothing"
+      ],
+      "correctIndex": 1,
+      "explanation": "k-means uses Euclidean distance, so large-range features would dominate."
+    },
+    {
+      "id": "ml-q6",
+      "question": "What does self-attention compute for each token?",
+      "options": [
+        "A fixed n-gram count",
+        "A weighted mix of all tokens' values, weighted by query–key similarity",
+        "The next character only",
+        "A convolution over pixels"
+      ],
+      "correctIndex": 1,
+      "explanation": "softmax(QKᵀ/√d)·V lets every token draw on relevant context anywhere in the sequence."
+    },
+    {
+      "id": "ml-q7",
+      "question": "What is the purpose of model.eval() in PyTorch?",
+      "options": [
+        "Starts training",
+        "Switches layers like Dropout and BatchNorm to inference behaviour",
+        "Saves the model",
+        "Computes gradients"
+      ],
+      "correctIndex": 1,
+      "explanation": "Some layers behave differently in training and inference."
+    }
+  ],
+  "problems": [
+    {
+      "id": "ml-p1",
+      "title": "Predict delivery ETAs",
+      "difficulty": "medium",
+      "prompt": "Build and evaluate an ETA model for a delivery app.",
+      "hints": [
+        "time split",
+        "baseline",
+        "pipeline",
+        "quantile"
+      ],
+      "solution": "Time-based split, median baseline, scikit-learn Pipeline with preprocessing, LightGBM, MAE by city, error analysis, consider predicting a high quantile to avoid under-promising, retrain as prep times drift.",
+      "points": 10
+    },
+    {
+      "id": "ml-p2",
+      "title": "Fix an over-optimistic fraud model",
+      "difficulty": "hard",
+      "prompt": "A fraud model has 0.97 ROC AUC offline but poor precision live. Diagnose.",
+      "hints": [
+        "group split",
+        "point-in-time features",
+        "PR AUC",
+        "threshold by capacity"
+      ],
+      "solution": "Check for entity leakage (group split by device/user), point-in-time feature correctness, evaluate PR AUC and precision at the review team's capacity, calibrate, slice by segment, then monitor live.",
+      "points": 10
+    }
+  ]
+}

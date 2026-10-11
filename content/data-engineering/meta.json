@@ -1,0 +1,144 @@
+{
+  "id": "data-engineering",
+  "slug": "data-engineering",
+  "title": "Data Engineering",
+  "emoji": "🏗️",
+  "order": 35,
+  "tag": "DE",
+  "accent": "#2563EB",
+  "blurb": "Model and move data reliably: warehouses and lakehouses, dbt and orchestration, Spark at scale, Kafka streaming, quality and governance.",
+  "group": "ai",
+  "relatedTopics": [
+    "database",
+    "postgresql",
+    "data-analysis"
+  ],
+  "quiz": [
+    {
+      "id": "de-q1",
+      "question": "Why are columnar formats fast for analytical queries?",
+      "options": [
+        "They use more indexes",
+        "Queries read only the needed columns, which compress well",
+        "They store rows in order",
+        "They avoid disk entirely"
+      ],
+      "correctIndex": 1,
+      "explanation": "Scanning one compressed column of a billion rows is far cheaper than reading whole rows."
+    },
+    {
+      "id": "de-q2",
+      "question": "What must you declare first when designing a fact table?",
+      "options": [
+        "The colour scheme",
+        "The grain (what one row represents)",
+        "The number of dimensions",
+        "The partition count"
+      ],
+      "correctIndex": 1,
+      "explanation": "Mixed grains cause double counting."
+    },
+    {
+      "id": "de-q3",
+      "question": "Which SCD type preserves history by adding a new row with validity dates?",
+      "options": [
+        "Type 0",
+        "Type 1",
+        "Type 2",
+        "Type 4 only"
+      ],
+      "correctIndex": 2,
+      "explanation": "Type 2 keeps each version with valid_from/valid_to so facts link to the version true at the time."
+    },
+    {
+      "id": "de-q4",
+      "question": "Re-running yesterday's load doubled the rows. What principle was violated?",
+      "options": [
+        "Atomicity of dashboards",
+        "Idempotency",
+        "Normalisation",
+        "Eventual consistency"
+      ],
+      "correctIndex": 1,
+      "explanation": "Use MERGE or partition overwrite so reruns produce the same result."
+    },
+    {
+      "id": "de-q5",
+      "question": "One Spark task runs far longer than the others in a stage. Most likely cause?",
+      "options": [
+        "Too much memory",
+        "Data skew on a hot key",
+        "Broadcast join",
+        "Caching"
+      ],
+      "correctIndex": 1,
+      "explanation": "Fix with AQE skew handling, separate null/hot keys, salting or broadcasting."
+    },
+    {
+      "id": "de-q6",
+      "question": "How is message ordering guaranteed in Kafka?",
+      "options": [
+        "Across the whole topic",
+        "Within a partition, so key messages by the entity that needs ordering",
+        "Only with ZooKeeper",
+        "By consumer group size"
+      ],
+      "correctIndex": 1,
+      "explanation": "All events with the same key go to the same partition and keep order."
+    },
+    {
+      "id": "de-q7",
+      "question": "What does a watermark do in stream processing?",
+      "options": [
+        "Encrypts events",
+        "Estimates event-time progress so windows can close and late events are bounded",
+        "Compresses data",
+        "Assigns partitions"
+      ],
+      "correctIndex": 1,
+      "explanation": "Watermarks trade completeness for latency."
+    },
+    {
+      "id": "de-q8",
+      "question": "What do open table formats such as Apache Iceberg add to files in object storage?",
+      "options": [
+        "A GUI",
+        "ACID transactions, schema evolution, time travel and efficient MERGE/deletes",
+        "Faster networking",
+        "Automatic dashboards"
+      ],
+      "correctIndex": 1,
+      "explanation": "They turn a data lake into a reliable lakehouse readable by many engines."
+    }
+  ],
+  "problems": [
+    {
+      "id": "de-p1",
+      "title": "Analytics model for a delivery app",
+      "difficulty": "hard",
+      "prompt": "Design the warehouse model and pipeline for orders, deliveries and payments.",
+      "hints": [
+        "grain",
+        "conformed dimensions",
+        "SCD2",
+        "tests"
+      ],
+      "solution": "Bronze/silver/gold with CDC ingestion; facts at declared grains (order lines, deliveries, payments), conformed dimensions (date, customer SCD2, restaurant, rider, zone), dbt with unique/not_null/relationships/freshness tests and ledger reconciliation, Airflow DAG by data interval, idempotent MERGE loads, documented metrics.",
+      "points": 10
+    },
+    {
+      "id": "de-p2",
+      "title": "Real-time zone dashboard",
+      "difficulty": "hard",
+      "prompt": "Show orders vs available riders per zone every 30 seconds.",
+      "hints": [
+        "Kafka keys",
+        "event time windows",
+        "watermarks",
+        "idempotent sink"
+      ],
+      "solution": "CDC and rider events into Kafka keyed by zone, Flink tumbling event-time windows with a watermark, join with rider availability state, write to a low-latency store, schema registry compatibility, lag/freshness monitoring and alerts.",
+      "points": 10
+    }
+  ]
+}

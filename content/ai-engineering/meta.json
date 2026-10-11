@@ -1,0 +1,132 @@
+{
+  "id": "ai-engineering",
+  "slug": "ai-engineering",
+  "title": "AI Engineering",
+  "emoji": "🤖",
+  "order": 30,
+  "tag": "LLM apps",
+  "accent": "#7C3AED",
+  "blurb": "Build products on LLMs: APIs, prompting, structured output, RAG, agents, evaluation and operations.",
+  "group": "ai",
+  "relatedTopics": [
+    "ai-ml",
+    "machine-learning",
+    "backend"
+  ],
+  "quiz": [
+    {
+      "id": "aie-q1",
+      "question": "Why does a chatbot need the conversation history re-sent on every API call?",
+      "options": [
+        "The API caches it but needs confirmation",
+        "LLM APIs are stateless; the model only sees what is in the current request",
+        "It improves the temperature setting",
+        "It is only required for streaming"
+      ],
+      "correctIndex": 1,
+      "explanation": "Models are stateless; chat \"memory\" is the history you resend, which costs input tokens every call."
+    },
+    {
+      "id": "aie-q2",
+      "question": "What is the most reliable way to get machine-readable output from an LLM?",
+      "options": [
+        "Ask politely for JSON in the prompt",
+        "Use a high temperature",
+        "Use schema-enforced structured output or tool calling, then validate (e.g. Pydantic/Zod)",
+        "Parse the text with regular expressions"
+      ],
+      "correctIndex": 2,
+      "explanation": "Schema-constrained output plus validation (and re-asking on failure) removes parse failures."
+    },
+    {
+      "id": "aie-q3",
+      "question": "In a RAG system, a user asks about \"order o_4821\" and retrieval misses the right document. What most likely helps?",
+      "options": [
+        "A bigger LLM",
+        "Hybrid search that combines keyword (BM25) and vector retrieval",
+        "Higher temperature",
+        "Removing chunk metadata"
+      ],
+      "correctIndex": 1,
+      "explanation": "Exact identifiers are matched far better by keyword search; hybrid retrieval combines both."
+    },
+    {
+      "id": "aie-q4",
+      "question": "Where must permission checks for RAG documents be enforced?",
+      "options": [
+        "In the system prompt",
+        "In the retrieval query filter, before content reaches the model",
+        "In the UI only",
+        "After the answer is generated"
+      ],
+      "correctIndex": 1,
+      "explanation": "Prompts cannot enforce access control; filter by access level at retrieval time."
+    },
+    {
+      "id": "aie-q5",
+      "question": "What is the primary defence against prompt injection in an agent that can send emails?",
+      "options": [
+        "A stronger system prompt",
+        "Least-privilege, user-scoped tools plus human approval for irreversible actions",
+        "Lower temperature",
+        "Longer context window"
+      ],
+      "correctIndex": 1,
+      "explanation": "Security must come from the system: scoped permissions, approvals, allow-lists and sandboxing."
+    },
+    {
+      "id": "aie-q6",
+      "question": "What is a key pitfall of LLM-as-judge evaluation?",
+      "options": [
+        "It cannot output numbers",
+        "Position and verbosity bias, so rubrics and human calibration are needed",
+        "It only works for code",
+        "It is always slower than humans"
+      ],
+      "correctIndex": 1,
+      "explanation": "Judges favour position, length and sometimes their own outputs; use anchored rubrics, pairwise randomised comparisons and calibration."
+    },
+    {
+      "id": "aie-q7",
+      "question": "Which metric best reflects how fast a streamed LLM response feels to users?",
+      "options": [
+        "Total tokens",
+        "Time to first token (TTFT)",
+        "Context window size",
+        "Embedding dimension"
+      ],
+      "correctIndex": 1,
+      "explanation": "Perceived speed is dominated by when the first tokens appear."
+    }
+  ],
+  "problems": [
+    {
+      "id": "aie-p1",
+      "title": "Design a support RAG bot",
+      "difficulty": "hard",
+      "prompt": "Design a RAG assistant over a help centre and order data for a delivery app. Cover ingestion, retrieval, generation, security and evaluation.",
+      "hints": [
+        "chunk by headings + metadata",
+        "hybrid + rerank",
+        "permission filters",
+        "eval set + citations"
+      ],
+      "solution": "Ingest: parse, chunk by structure with metadata (url, updated, audience), embed, incremental re-index. Retrieve: hybrid BM25+vector with access filters, rerank top 30 to 5. Generate: grounded prompt with citations and refusal rule; order lookups via user-scoped tools. Operate: eval set with retrieval hit-rate and judged faithfulness in CI, tracing, cost/latency dashboards, injection tests.",
+      "points": 10
+    },
+    {
+      "id": "aie-p2",
+      "title": "Cut LLM cost by 70%",
+      "difficulty": "medium",
+      "prompt": "A summarisation feature costs too much. Propose and validate cost reductions.",
+      "hints": [
+        "measure tokens",
+        "smaller model routing",
+        "caching",
+        "batch API"
+      ],
+      "solution": "Log tokens per request, trim context, cap max_tokens, enable prompt caching, route to a smaller model and verify quality on an eval set, cache identical requests, move non-urgent work to batch APIs; ship behind a canary watching quality metrics.",
+      "points": 10
+    }
+  ]
+}

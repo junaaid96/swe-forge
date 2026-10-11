@@ -1,0 +1,94 @@
+{
+  "id": "data-science",
+  "slug": "data-science",
+  "title": "Data Science",
+  "emoji": "🔬",
+  "order": 32,
+  "tag": "DS",
+  "accent": "#0D9488",
+  "blurb": "The maths behind models and the full arc of a data science project, from framing to proven impact.",
+  "group": "ai",
+  "relatedTopics": [
+    "data-analysis",
+    "machine-learning",
+    "mlops"
+  ],
+  "quiz": [
+    {
+      "id": "ds-q1",
+      "question": "Why standardise features before gradient descent?",
+      "options": [
+        "It is required by NumPy",
+        "It makes the loss surface well-conditioned so gradient descent converges faster and more stably",
+        "It removes outliers",
+        "It increases model capacity"
+      ],
+      "correctIndex": 1,
+      "explanation": "Features on very different scales create elongated loss surfaces and zig-zagging updates."
+    },
+    {
+      "id": "ds-q2",
+      "question": "A test is 95% sensitive with a 2% false-positive rate; prevalence is 0.5%. Roughly what share of positives are true?",
+      "options": [
+        "95%",
+        "About 19%",
+        "50%",
+        "2%"
+      ],
+      "correctIndex": 1,
+      "explanation": "By Bayes: 0.95×0.005 / (0.95×0.005 + 0.02×0.995) ≈ 0.19. Base rates dominate."
+    },
+    {
+      "id": "ds-q3",
+      "question": "Minimising cross-entropy loss in logistic regression is equivalent to…",
+      "options": [
+        "Minimising absolute error",
+        "Maximising the Bernoulli likelihood of the labels",
+        "Maximising variance",
+        "Minimising the number of features"
+      ],
+      "correctIndex": 1,
+      "explanation": "Cross-entropy is the negative log-likelihood of a Bernoulli model."
+    },
+    {
+      "id": "ds-q4",
+      "question": "For a churn model built from weekly snapshots, how should you split data?",
+      "options": [
+        "Randomly by row",
+        "By time: train on earlier snapshots, test on later ones",
+        "By customer name",
+        "It does not matter"
+      ],
+      "correctIndex": 1,
+      "explanation": "Time-based splits mimic deployment and prevent future information leaking into training."
+    },
+    {
+      "id": "ds-q5",
+      "question": "The churn model has high AUC but the retention campaign showed no gain. Most likely reason?",
+      "options": [
+        "AUC was miscalculated",
+        "Predicting churn is not predicting who responds to the offer (uplift)",
+        "The model was overfit to the test set",
+        "Too few features"
+      ],
+      "correctIndex": 1,
+      "explanation": "Target persuadable customers using experiments and uplift modelling."
+    }
+  ],
+  "problems": [
+    {
+      "id": "ds-p1",
+      "title": "Frame a churn project",
+      "difficulty": "medium",
+      "prompt": "Turn \"build a churn model\" into a well-framed project.",
+      "hints": [
+        "decision",
+        "label definition",
+        "business metric",
+        "constraints"
+      ],
+      "solution": "Define the decision (who gets which offer under a budget), a precise churn label and observation window, the success metric (incremental net revenue via A/B test), constraints (refresh cadence, explainability, no sensitive attributes), and a baseline rule to beat.",
+      "points": 10
+    }
+  ]
+}

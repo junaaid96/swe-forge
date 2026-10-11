@@ -87,10 +87,16 @@
     },
     {
       "id": "ai",
-      "label": "AI engineering",
-      "hint": "LLMs · ML systems",
+      "label": "AI & data",
+      "hint": "LLMs · ML · MLOps · data engineering · analytics",
       "topics": [
-        "ai-ml"
+        "ai-ml",
+        "ai-engineering",
+        "data-analysis",
+        "data-science",
+        "machine-learning",
+        "mlops",
+        "data-engineering"
       ]
     }
   ],
@@ -355,6 +361,60 @@
       "order": 29,
       "tag": "DBA",
       "accent": "#336791"
+    },
+    {
+      "id": "ai-engineering",
+      "slug": "ai-engineering",
+      "title": "AI Engineering",
+      "emoji": "🤖",
+      "order": 30,
+      "tag": "LLM apps",
+      "accent": "#7C3AED"
+    },
+    {
+      "id": "data-analysis",
+      "slug": "data-analysis",
+      "title": "Data Analysis",
+      "emoji": "📊",
+      "order": 31,
+      "tag": "Analytics",
+      "accent": "#0891B2"
+    },
+    {
+      "id": "data-science",
+      "slug": "data-science",
+      "title": "Data Science",
+      "emoji": "🔬",
+      "order": 32,
+      "tag": "DS",
+      "accent": "#0D9488"
+    },
+    {
+      "id": "machine-learning",
+      "slug": "machine-learning",
+      "title": "Machine Learning",
+      "emoji": "🧠",
+      "order": 33,
+      "tag": "ML",
+      "accent": "#DB2777"
+    },
+    {
+      "id": "mlops",
+      "slug": "mlops",
+      "title": "MLOps",
+      "emoji": "⚙️",
+      "order": 34,
+      "tag": "MLOps",
+      "accent": "#EA580C"
+    },
+    {
+      "id": "data-engineering",
+      "slug": "data-engineering",
+      "title": "Data Engineering",
+      "emoji": "🏗️",
+      "order": 35,
+      "tag": "DE",
+      "accent": "#2563EB"
     }
   ]
 }

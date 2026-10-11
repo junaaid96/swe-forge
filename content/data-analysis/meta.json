@@ -1,0 +1,120 @@
+{
+  "id": "data-analysis",
+  "slug": "data-analysis",
+  "title": "Data Analysis",
+  "emoji": "📊",
+  "order": 31,
+  "tag": "Analytics",
+  "accent": "#0891B2",
+  "blurb": "Ask sharp questions, clean data, use statistics correctly, and turn analysis into decisions with clear charts and stories.",
+  "group": "ai",
+  "relatedTopics": [
+    "database",
+    "data-science",
+    "data-engineering"
+  ],
+  "quiz": [
+    {
+      "id": "da-q1",
+      "question": "Delivery times are right-skewed. Which summary best describes the typical customer experience?",
+      "options": [
+        "Mean",
+        "Median",
+        "Maximum",
+        "Standard deviation"
+      ],
+      "correctIndex": 1,
+      "explanation": "The median is robust to the long tail; add p90 to describe bad experiences."
+    },
+    {
+      "id": "da-q2",
+      "question": "What does a p-value of 0.03 mean?",
+      "options": [
+        "3% chance the null hypothesis is true",
+        "If there were no real effect, data this extreme would occur about 3% of the time",
+        "The effect size is 3%",
+        "97% chance the result will replicate"
+      ],
+      "correctIndex": 1,
+      "explanation": "A p-value is computed assuming the null is true; it is not the probability the null is true."
+    },
+    {
+      "id": "da-q3",
+      "question": "Why is stopping an A/B test as soon as p < 0.05 a problem?",
+      "options": [
+        "It reduces sample ratio",
+        "Repeated peeking inflates the false-positive rate",
+        "It makes the test underpowered for guardrails only",
+        "It is fine if the lift is large"
+      ],
+      "correctIndex": 1,
+      "explanation": "Checking repeatedly gives many chances to cross the threshold by chance; fix the duration or use sequential methods."
+    },
+    {
+      "id": "da-q4",
+      "question": "A 50/50 experiment ends with 52.5%/47.5% of 200,000 users. What should you suspect?",
+      "options": [
+        "A great result",
+        "Sample ratio mismatch from an assignment or logging bug",
+        "Seasonality",
+        "Novelty effect"
+      ],
+      "correctIndex": 1,
+      "explanation": "Such an imbalance at that scale is extremely unlikely by chance; results cannot be trusted until fixed."
+    },
+    {
+      "id": "da-q5",
+      "question": "Revenue is summed from UTC timestamps for a Dhaka business. What can go wrong?",
+      "options": [
+        "Nothing",
+        "Orders near midnight land on the wrong day/month",
+        "Currency conversion errors",
+        "Duplicate rows"
+      ],
+      "correctIndex": 1,
+      "explanation": "Asia/Dhaka is UTC+6, so late-evening orders shift dates; convert to the business time zone first."
+    },
+    {
+      "id": "da-q6",
+      "question": "Which chart is best to show change in a metric over 12 months?",
+      "options": [
+        "Pie chart",
+        "Line chart",
+        "Scatter plot",
+        "Histogram"
+      ],
+      "correctIndex": 1,
+      "explanation": "Line charts show trends over time; bars compare categories."
+    }
+  ],
+  "problems": [
+    {
+      "id": "da-p1",
+      "title": "Explain a metric drop",
+      "difficulty": "medium",
+      "prompt": "Repeat orders fell 12% in September. Describe your investigation.",
+      "hints": [
+        "data quality first",
+        "segment",
+        "what changed",
+        "quantify"
+      ],
+      "solution": "Verify the data (freshness, definitions, time zones, logging changes), segment by city, platform, cohort and channel to localise, line up changes (releases, pricing, competition, seasonality), quantify contributions, and recommend actions with confidence levels.",
+      "points": 10
+    },
+    {
+      "id": "da-p2",
+      "title": "Design an A/B test",
+      "difficulty": "medium",
+      "prompt": "Plan a test of a new checkout flow.",
+      "hints": [
+        "primary metric + guardrails",
+        "power analysis",
+        "randomise by user",
+        "no peeking"
+      ],
+      "solution": "State the hypothesis and one primary metric (conversion), guardrails (refunds, latency), run a power analysis for the minimum detectable effect, randomise by user, run whole weeks without peeking, check sample ratio, analyse the effect with CI, correct for multiple metrics, document the decision.",
+      "points": 10
+    }
+  ]
+}

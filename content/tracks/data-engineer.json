@@ -1,0 +1,103 @@
+{
+  "slug": "data-engineer",
+  "title": "Data Engineer",
+  "emoji": "\ud83c\udfd7\ufe0f",
+  "accent": "#2563EB",
+  "order": 10,
+  "blurb": "Model, move and serve data reliably, from SQL and warehouses to Spark, Kafka and governance.",
+  "source": "https://roadmap.sh/data-engineer",
+  "stages": [
+    {
+      "title": "Foundations",
+      "hint": "",
+      "items": [
+        {
+          "label": "Python",
+          "ref": "python/notes/01-python"
+        },
+        {
+          "label": "SQL and data modelling",
+          "ref": "database/notes/01-sql-and-data-modelling"
+        },
+        {
+          "label": "Linux",
+          "ref": "devops-cloud/notes/01-linux"
+        },
+        {
+          "label": "Git",
+          "ref": "git-collaboration/notes/01-git"
+        }
+      ]
+    },
+    {
+      "title": "Databases",
+      "hint": "",
+      "items": [
+        {
+          "label": "PostgreSQL architecture",
+          "ref": "postgresql/notes/01-postgresql-architecture-and-mvcc"
+        },
+        {
+          "label": "Scaling and NoSQL",
+          "ref": "database/notes/04-scaling-nosql-and-caching"
+        }
+      ]
+    },
+    {
+      "title": "Modelling and storage",
+      "hint": "",
+      "items": [
+        {
+          "label": "Warehouses, lakehouses and dimensional modelling",
+          "ref": "data-engineering/notes/01-data-modelling-warehouses-and-lakehouses"
+        }
+      ]
+    },
+    {
+      "title": "Pipelines",
+      "hint": "",
+      "items": [
+        {
+          "label": "Ingestion, dbt and orchestration",
+          "ref": "data-engineering/notes/02-pipelines-dbt-and-orchestration"
+        }
+      ]
+    },
+    {
+      "title": "Big data and streaming",
+      "hint": "",
+      "items": [
+        {
+          "label": "Distributed processing with Spark",
+          "ref": "data-engineering/notes/03-distributed-processing-with-spark"
+        },
+        {
+          "label": "Streaming, quality and governance",
+          "ref": "data-engineering/notes/04-streaming-data-quality-and-governance"
+        }
+      ]
+    },
+    {
+      "title": "Infrastructure",
+      "hint": "",
+      "items": [
+        {
+          "label": "Docker",
+          "ref": "devops-cloud/notes/03-docker"
+        },
+        {
+          "label": "Kubernetes",
+          "ref": "devops-cloud/notes/04-kubernetes"
+        },
+        {
+          "label": "Terraform",
+          "ref": "devops-cloud/notes/07-terraform"
+        },
+        {
+          "label": "AWS essentials",
+          "ref": "devops-cloud/notes/15-aws-cloud-essentials"
+        }
+      ]
+    }
+  ]
+}

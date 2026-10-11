@@ -1,0 +1,83 @@
+{
+  "slug": "data-analyst",
+  "title": "Data Analyst",
+  "emoji": "\ud83d\udcca",
+  "accent": "#0891B2",
+  "order": 8,
+  "blurb": "Questions to decisions: spreadsheets, SQL, statistics, Python, visualisation and storytelling.",
+  "source": "https://roadmap.sh/data-analyst",
+  "stages": [
+    {
+      "title": "Workflow and spreadsheets",
+      "hint": "",
+      "items": [
+        {
+          "label": "The analyst workflow and data cleaning",
+          "ref": "data-analysis/notes/01-the-analyst-workflow-and-data-cleaning"
+        }
+      ]
+    },
+    {
+      "title": "SQL",
+      "hint": "Your main tool",
+      "items": [
+        {
+          "label": "SQL and data modelling",
+          "ref": "database/notes/01-sql-and-data-modelling"
+        },
+        {
+          "label": "Advanced SQL",
+          "ref": "database/notes/05-advanced-sql-and-nosql-deep-dive"
+        }
+      ]
+    },
+    {
+      "title": "Statistics",
+      "hint": "Signal vs noise",
+      "items": [
+        {
+          "label": "Statistics for analysts",
+          "ref": "data-analysis/notes/02-statistics-for-analysts"
+        }
+      ]
+    },
+    {
+      "title": "Python and visualisation",
+      "hint": "pandas, charts and BI",
+      "items": [
+        {
+          "label": "Python",
+          "ref": "python/notes/01-python"
+        },
+        {
+          "label": "Python for analysis, visualisation and storytelling",
+          "ref": "data-analysis/notes/03-python-for-analysis-visualisation-and-storytelling"
+        }
+      ]
+    },
+    {
+      "title": "Data platforms",
+      "hint": "Where the data comes from",
+      "items": [
+        {
+          "label": "Warehouses and lakehouses",
+          "ref": "data-engineering/notes/01-data-modelling-warehouses-and-lakehouses"
+        },
+        {
+          "label": "dbt and pipelines",
+          "ref": "data-engineering/notes/02-pipelines-dbt-and-orchestration"
+        }
+      ]
+    },
+    {
+      "title": "Going further",
+      "hint": "Into prediction",
+      "items": [
+        {
+          "label": "Machine learning fundamentals",
+          "ref": "machine-learning/notes/01-supervised-learning-fundamentals"
+        }
+      ]
+    }
+  ]
+}

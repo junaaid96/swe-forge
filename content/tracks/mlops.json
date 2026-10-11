@@ -1,0 +1,93 @@
+{
+  "slug": "mlops",
+  "title": "MLOps",
+  "emoji": "\u2699\ufe0f",
+  "accent": "#EA580C",
+  "order": 12,
+  "blurb": "Ship models and keep them healthy: pipelines, serving, monitoring and governance.",
+  "source": "https://roadmap.sh/mlops",
+  "stages": [
+    {
+      "title": "Foundations",
+      "hint": "",
+      "items": [
+        {
+          "label": "Python",
+          "ref": "python/notes/01-python"
+        },
+        {
+          "label": "Linux",
+          "ref": "devops-cloud/notes/01-linux"
+        },
+        {
+          "label": "Git",
+          "ref": "git-collaboration/notes/01-git"
+        },
+        {
+          "label": "Machine learning fundamentals",
+          "ref": "machine-learning/notes/01-supervised-learning-fundamentals"
+        }
+      ]
+    },
+    {
+      "title": "Containers and infrastructure",
+      "hint": "",
+      "items": [
+        {
+          "label": "Docker",
+          "ref": "devops-cloud/notes/03-docker"
+        },
+        {
+          "label": "Kubernetes",
+          "ref": "devops-cloud/notes/04-kubernetes"
+        },
+        {
+          "label": "Terraform",
+          "ref": "devops-cloud/notes/07-terraform"
+        },
+        {
+          "label": "CI/CD",
+          "ref": "devops-cloud/notes/06-cicd"
+        }
+      ]
+    },
+    {
+      "title": "ML lifecycle",
+      "hint": "",
+      "items": [
+        {
+          "label": "Tracking, pipelines and feature stores",
+          "ref": "mlops/notes/01-ml-lifecycle-experiment-tracking-and-pipelines"
+        },
+        {
+          "label": "Data pipelines and orchestration",
+          "ref": "data-engineering/notes/02-pipelines-dbt-and-orchestration"
+        }
+      ]
+    },
+    {
+      "title": "Serving",
+      "hint": "",
+      "items": [
+        {
+          "label": "Model serving and deployment",
+          "ref": "mlops/notes/02-model-serving-and-deployment"
+        }
+      ]
+    },
+    {
+      "title": "Monitoring and governance",
+      "hint": "",
+      "items": [
+        {
+          "label": "Drift, retraining and responsible ML",
+          "ref": "mlops/notes/03-monitoring-drift-and-responsible-ml"
+        },
+        {
+          "label": "Observability",
+          "ref": "devops-cloud/notes/09-observability"
+        }
+      ]
+    }
+  ]
+}

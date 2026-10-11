@@ -1,0 +1,202 @@
+{
+  "id": "postgresql",
+  "slug": "postgresql",
+  "title": "PostgreSQL",
+  "emoji": "🐘",
+  "order": 29,
+  "tag": "DBA",
+  "accent": "#336791",
+  "blurb": "Internals, MVCC and VACUUM, roles and backups, replication and HA, tuning and extensions.",
+  "group": "systems",
+  "relatedTopics": [
+    "database",
+    "backend",
+    "devops-cloud"
+  ],
+  "quiz": [
+    {
+      "id": "pg-q1",
+      "question": "In PostgreSQL MVCC, an UPDATE…",
+      "options": [
+        "Overwrites the row in place",
+        "Writes a new row version and marks the old one with xmax",
+        "Locks the whole table",
+        "Deletes the index entry"
+      ],
+      "correctIndex": 1,
+      "explanation": "Old versions remain for concurrent snapshots until VACUUM removes them."
+    },
+    {
+      "id": "pg-q2",
+      "question": "What most commonly prevents VACUUM from removing dead tuples?",
+      "options": [
+        "Too many indexes",
+        "A long-running or idle-in-transaction session holding back the xmin horizon",
+        "Using SSDs",
+        "Small shared_buffers"
+      ],
+      "correctIndex": 1,
+      "explanation": "Kill or time out long transactions with idle_in_transaction_session_timeout."
+    },
+    {
+      "id": "pg-q3",
+      "question": "Why is PgBouncer commonly used?",
+      "options": [
+        "To encrypt data",
+        "Each connection is a process, so pooling lets many clients share few server connections",
+        "To replicate data",
+        "To run VACUUM"
+      ],
+      "correctIndex": 1,
+      "explanation": "Transaction pooling gives the biggest multiplier."
+    },
+    {
+      "id": "pg-q4",
+      "question": "Which backup approach allows restoring to a specific second?",
+      "options": [
+        "pg_dump nightly",
+        "Base backup plus continuous WAL archiving (PITR)",
+        "Copying the data directory while running",
+        "Logical replication only"
+      ],
+      "correctIndex": 1,
+      "explanation": "Replay archived WAL up to a target time."
+    },
+    {
+      "id": "pg-q5",
+      "question": "ALTER DEFAULT PRIVILEGES is needed because…",
+      "options": [
+        "GRANT ON ALL TABLES does not cover tables created later",
+        "It enables SSL",
+        "It creates roles",
+        "It speeds up queries"
+      ],
+      "correctIndex": 0,
+      "explanation": "Without it, new tables are invisible to the app role."
+    },
+    {
+      "id": "pg-q6",
+      "question": "Synchronous replication guarantees…",
+      "options": [
+        "Lower latency",
+        "No loss of committed transactions if the primary fails (for the sync standby)",
+        "Multi-master writes",
+        "No need for backups"
+      ],
+      "correctIndex": 1,
+      "explanation": "The commit waits for a standby to confirm the WAL."
+    },
+    {
+      "id": "pg-q7",
+      "question": "Split-brain in HA means…",
+      "options": [
+        "Two standbys lagging",
+        "Two nodes accepting writes as primary at once",
+        "A slow failover",
+        "Replication slot bloat"
+      ],
+      "correctIndex": 1,
+      "explanation": "Consensus-based managers like Patroni prevent it with a leader lock."
+    },
+    {
+      "id": "pg-q8",
+      "question": "Why create indexes with CONCURRENTLY in production?",
+      "options": [
+        "It builds faster",
+        "It avoids blocking writes during the build",
+        "It uses less disk",
+        "It enables HOT updates"
+      ],
+      "correctIndex": 1,
+      "explanation": "A plain CREATE INDEX blocks writes on the table."
+    },
+    {
+      "id": "pg-q9",
+      "question": "In EXPLAIN ANALYZE, estimated rows=1 vs actual rows=80000 suggests…",
+      "options": [
+        "A perfect plan",
+        "Bad statistics, so run ANALYZE or add extended statistics",
+        "Too much RAM",
+        "A missing replica"
+      ],
+      "correctIndex": 1,
+      "explanation": "Misestimates lead to bad join and scan choices."
+    },
+    {
+      "id": "pg-q10",
+      "question": "Which extension adds vector similarity search?",
+      "options": [
+        "PostGIS",
+        "pgvector",
+        "pg_trgm",
+        "pg_cron"
+      ],
+      "correctIndex": 1,
+      "explanation": "pgvector adds vector types and HNSW/IVFFlat indexes."
+    },
+    {
+      "id": "pg-q11",
+      "question": "random_page_cost on SSD storage should usually be…",
+      "options": [
+        "Raised to 10",
+        "Lowered to around 1.1",
+        "Left at 4 always",
+        "Set to 0"
+      ],
+      "correctIndex": 1,
+      "explanation": "The default of 4 assumes spinning disks and under-uses indexes."
+    }
+  ],
+  "problems": [
+    {
+      "id": "pg-p1",
+      "title": "Diagnose table bloat",
+      "difficulty": "medium",
+      "prompt": "A 5 GB table has grown to 70 GB. Walk through diagnosis and the fix.",
+      "hints": [
+        "pg_stat_user_tables",
+        "pg_stat_activity xact_start",
+        "HOT updates"
+      ],
+      "solution": "Check n_dead_tup and last_autovacuum, look for long transactions or abandoned slots blocking cleanup, check HOT update ratios and indexes on frequently updated columns, tune per-table autovacuum, set idle_in_transaction_session_timeout, lower fillfactor, then rebuild online with pg_repack.",
+      "points": 10
+    },
+    {
+      "id": "pg-p2",
+      "title": "Least-privilege roles",
+      "difficulty": "easy",
+      "prompt": "Create roles so the app can read and write data but cannot change the schema, and BI is read-only, including future tables.",
+      "hints": [
+        "group roles",
+        "default privileges"
+      ],
+      "solution": "Create shop_owner/app_rw/app_ro group roles, grant DML or SELECT on the schema, ALTER DEFAULT PRIVILEGES FOR ROLE shop_owner, create login roles IN ROLE the group roles, and run migrations as the owner.",
+      "points": 10
+    },
+    {
+      "id": "pg-p3",
+      "title": "Zero-data-loss HA",
+      "difficulty": "hard",
+      "prompt": "Design PostgreSQL HA with zero data loss for a single-zone failure and disaster recovery for a region failure.",
+      "hints": [
+        "ANY 1 sync",
+        "Patroni + etcd",
+        "async cross-region"
+      ],
+      "solution": "Run three nodes across zones with Patroni and an etcd quorum, synchronous_standby_names = ANY 1 of the two in-region standbys, an async standby plus pgBackRest WAL archiving in another region, HAProxy routing on Patroni health checks, app retries, and regular failover drills.",
+      "points": 10
+    },
+    {
+      "id": "pg-p4",
+      "title": "Speed up a dashboard query",
+      "difficulty": "medium",
+      "prompt": "A query filtering by restaurant_id and active statuses, ordered by created_at, scans 14M rows.",
+      "hints": [
+        "partial composite index",
+        "range instead of date()"
+      ],
+      "solution": "Create a partial index on (restaurant_id, created_at DESC) WHERE status IN (active ones) CONCURRENTLY, rewrite date(created_at)=X as a half-open range, add extended statistics if estimates are off, and use keyset pagination.",
+      "points": 10
+    }
+  ]
+}

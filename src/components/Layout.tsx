@@ -115,15 +115,14 @@ export function Layout() {
           </Suspense>
         </main>
         <footer className="site-foot">
-          <span>Forgeline · notes are plain Markdown in <code>content/</code> · progress stays in your browser</span>
-          <div className="site-foot-end">
-            <button type="button" className="link-btn" onClick={() => setHelp(true)}>
-              Keyboard shortcuts
-            </button>
-            <a href="https://roadmap.sh" target="_blank" rel="noopener noreferrer" className="credit-roadmap" aria-label="Roadmap topics inspired by roadmap.sh (opens in a new tab)">
-              Roadmap topics inspired by <strong>roadmap.sh</strong>
-              <IconArrowUpRight width={12} height={12} />
-            </a>
+          <button type="button" className="link-btn site-foot-left" onClick={() => setHelp(true)}>
+            Keyboard shortcuts
+          </button>
+          <a href="https://roadmap.sh/" target="_blank" rel="noopener noreferrer" className="credit-roadmap site-foot-center" aria-label="Roadmap topics inspired by roadmap.sh (opens in a new tab)">
+            Roadmap topics inspired by <strong>roadmap.sh</strong>
+            <IconArrowUpRight width={12} height={12} />
+          </a>
+          <div className="site-foot-right">
             <a
               href="https://junaidul.pro.bd/codejborg"
               target="_blank"

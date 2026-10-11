@@ -134,6 +134,78 @@
       ],
       "correctIndex": 0,
       "explanation": "Noisy low-level alerts cause pager fatigue; alert on SLO burn."
+    },
+    {
+      "id": "gitops-q1",
+      "question": "In GitOps, what does Argo CD selfHeal do?",
+      "options": [
+        "Restarts crashed pods",
+        "Reverts manual cluster changes back to the state in Git",
+        "Heals corrupted images",
+        "Scales nodes"
+      ],
+      "correctIndex": 1,
+      "explanation": "Drift correction: the live state is reconciled to the desired state in Git."
+    },
+    {
+      "id": "gitops-q2",
+      "question": "A key security benefit of pull-based GitOps is…",
+      "options": [
+        "No YAML",
+        "CI pipelines no longer need cluster credentials",
+        "No need for RBAC",
+        "Faster builds"
+      ],
+      "correctIndex": 1,
+      "explanation": "The in-cluster agent pulls changes, so credentials stay inside the cluster."
+    },
+    {
+      "id": "ansible-q1",
+      "question": "What does an Ansible handler do?",
+      "options": [
+        "Runs every task twice",
+        "Runs once at the end of a play, only if a notifying task changed something",
+        "Handles SSH keys",
+        "Encrypts variables"
+      ],
+      "correctIndex": 1,
+      "explanation": "For example, Nginx reloads only when its config actually changed."
+    },
+    {
+      "id": "ansible-q2",
+      "question": "Terraform vs Ansible, in one line?",
+      "options": [
+        "Same tool",
+        "Terraform provisions infrastructure with state; Ansible configures machines over SSH",
+        "Ansible only works on Windows",
+        "Terraform only configures packages"
+      ],
+      "correctIndex": 1,
+      "explanation": "They are complementary and often used together."
+    },
+    {
+      "id": "mesh-q1",
+      "question": "In a service mesh, mTLS identities are typically based on…",
+      "options": [
+        "Pod IP addresses",
+        "Kubernetes service accounts",
+        "DNS names only",
+        "Node names"
+      ],
+      "correctIndex": 1,
+      "explanation": "Identity follows the workload, not its IP."
+    },
+    {
+      "id": "mesh-q2",
+      "question": "Why can retries at every layer be dangerous?",
+      "options": [
+        "They disable TLS",
+        "They multiply load into retry storms during an outage",
+        "They break DNS",
+        "They are not supported by HTTP"
+      ],
+      "correctIndex": 1,
+      "explanation": "Use bounded retries on idempotent calls, timeouts and circuit breaking."
     }
   ],
   "problems": [
@@ -182,6 +254,19 @@
       ],
       "solution": "Sample slow traces; inspect critical path spans; look for N+1, lock waits, remote timeouts; confirm with DB EXPLAIN and pool metrics; fix and verify p99.",
       "points": 20
+    },
+    {
+      "id": "gitops-p1",
+      "title": "Design a promotion flow",
+      "difficulty": "medium",
+      "prompt": "Design how a new image moves from staging to production with Argo CD, including migrations and rollback.",
+      "hints": [
+        "config repo overlays",
+        "PR to bump tag",
+        "PreSync hook"
+      ],
+      "solution": "CI builds and pushes image:sha, then opens a PR bumping the tag in overlays/staging. Argo syncs staging and a PostSync smoke test runs. Promotion is a reviewed PR copying the tag to overlays/prod, where a PreSync Job runs migrations. Rollback is git revert, or Argo Rollouts aborts the canary automatically on bad metrics.",
+      "points": 10
     }
   ]
 }

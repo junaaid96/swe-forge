@@ -12,6 +12,10 @@
       "hint": "How the web works and a language to build with",
       "items": [
         {
+          "label": "How the internet and HTTP work",
+          "ref": "backend/notes/03-how-the-internet-and-http-work"
+        },
+        {
           "label": "Networking, DNS and HTTP",
           "ref": "devops-cloud/notes/02-networking"
         },
@@ -118,6 +122,10 @@
         {
           "label": "Optimisation patterns",
           "ref": "backend/notes/02-backend-optimization-patterns"
+        },
+        {
+          "label": "Search engines and full-text search",
+          "ref": "backend/notes/05-search-engines-and-full-text-search"
         }
       ]
     },
@@ -128,6 +136,10 @@
         {
           "label": "Testing strategy",
           "ref": "testing-quality/notes/01-testing-strategy"
+        },
+        {
+          "label": "Web servers and reverse proxies",
+          "ref": "backend/notes/04-web-servers-and-reverse-proxies"
         },
         {
           "label": "Docker and containers",

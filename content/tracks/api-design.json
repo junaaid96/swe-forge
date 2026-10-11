@@ -32,6 +32,10 @@
         {
           "label": "REST in Spring",
           "ref": "spring-boot/notes/03-web-and-apis"
+        },
+        {
+          "label": "OpenAPI, docs and contracts",
+          "ref": "api-design/notes/01-openapi-documentation-and-contracts"
         }
       ]
     },
@@ -72,7 +76,11 @@
           "ref": "backend/deep/performance"
         },
         {
-          "label": "Rate limiting",
+          "label": "Pagination, rate limiting and versioning",
+          "ref": "api-design/notes/02-pagination-rate-limiting-and-versioning"
+        },
+        {
+          "label": "Rate limiting at scale",
           "ref": "system-design/notes/01-system-design-fundamentals#14-rate-limiting-a-very-common-deep-dive"
         }
       ]
@@ -82,7 +90,11 @@
       "hint": "",
       "items": [
         {
-          "label": "Messaging and webhooks",
+          "label": "Webhooks and async APIs",
+          "ref": "api-design/notes/03-webhooks-and-asynchronous-apis"
+        },
+        {
+          "label": "Messaging Q&A",
           "ref": "backend/interview/medium"
         }
       ]

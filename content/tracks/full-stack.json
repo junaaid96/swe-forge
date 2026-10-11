@@ -112,7 +112,11 @@
           "ref": "system-design/notes/01-system-design-fundamentals"
         },
         {
-          "label": "Capstone project",
+          "label": "Full-stack capstone",
+          "ref": "software-engineering/notes/03-full-stack-capstone-project"
+        },
+        {
+          "label": "Ops capstone",
           "ref": "devops-cloud/notes/14-capstone-project"
         }
       ]

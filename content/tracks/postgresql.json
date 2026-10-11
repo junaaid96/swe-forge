@@ -4,7 +4,7 @@
   "emoji": "\ud83d\udc18",
   "accent": "#336791",
   "order": 13,
-  "blurb": "SQL to internals: indexing, MVCC, transactions, replication and tuning.",
+  "blurb": "SQL to internals: MVCC, VACUUM, roles, backups, replication, HA and tuning.",
   "source": "https://roadmap.sh/postgresql-dba",
   "stages": [
     {
@@ -22,37 +22,55 @@
       ]
     },
     {
+      "title": "Internals",
+      "hint": "",
+      "items": [
+        {
+          "label": "Architecture, MVCC and VACUUM",
+          "ref": "postgresql/notes/01-postgresql-architecture-and-mvcc"
+        },
+        {
+          "label": "Transactions and isolation",
+          "ref": "database/notes/03-transactions-and-concurrency"
+        }
+      ]
+    },
+    {
+      "title": "Administration",
+      "hint": "",
+      "items": [
+        {
+          "label": "Roles, security, backups and recovery",
+          "ref": "postgresql/notes/02-administration-security-and-backups"
+        }
+      ]
+    },
+    {
       "title": "Performance",
       "hint": "",
       "items": [
         {
           "label": "Indexing and EXPLAIN",
           "ref": "database/notes/02-indexing-and-query-performance"
+        },
+        {
+          "label": "Tuning and extensions",
+          "ref": "postgresql/notes/04-performance-tuning-and-extensions"
         }
       ]
     },
     {
-      "title": "Concurrency",
+      "title": "High availability",
       "hint": "",
       "items": [
         {
-          "label": "Transactions and MVCC",
-          "ref": "database/notes/03-transactions-and-concurrency"
+          "label": "Replication, HA and scaling",
+          "ref": "postgresql/notes/03-replication-high-availability-and-scaling"
         }
       ]
     },
     {
-      "title": "Scaling",
-      "hint": "",
-      "items": [
-        {
-          "label": "Replication and partitioning",
-          "ref": "database/notes/04-scaling-nosql-and-caching"
-        }
-      ]
-    },
-    {
-      "title": "Running it in an app",
+      "title": "In an application",
       "hint": "",
       "items": [
         {

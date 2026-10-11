@@ -437,7 +437,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 ### Browser & Web Platform (NEW)
 
 **Performance APIs**
-- **Performance Observer**: Monitoring metrics. LCP, FID, CLS observation. Real user monitoring (RUM).
+- **Performance Observer**: Monitoring metrics. LCP, INP, CLS observation (via the `web-vitals` library). Real user monitoring (RUM).
 - **Intersection Observer**: Lazy loading images. Infinite scroll. Tracking visibility. Performance over scroll listeners.
 - **ResizeObserver**: Responsive behavior without window resize. Container queries alternative.
 - **MutationObserver**: DOM change monitoring. Dynamic content handling. Use sparingly (performance).
@@ -858,7 +858,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 
 **Token Expiry & Refresh Flow**: Access tokens short-lived (15min). Refresh tokens long-lived (7 days). When access expires, use refresh to get new access token. Balances security and UX.
 
-**OWASP Top 10 (Backend View)**: Top security risks: Injection, Broken Auth, Sensitive Data Exposure, XXE, Broken Access Control, Security Misconfiguration, XSS, Insecure Deserialization, Logging, SSRF.
+**OWASP Top 10 (Backend View)**: The 2025 list: Broken Access Control (incl. SSRF), Security Misconfiguration, Software Supply Chain Failures, Cryptographic Failures, Injection (incl. XSS), Insecure Design, Authentication Failures, Software or Data Integrity Failures, Security Logging & Alerting Failures, Mishandling of Exceptional Conditions.
 
 **SQL Injection Prevention**: Malicious SQL in user input. Example: `' OR '1'='1`. Prevention: use parameterized queries (prepared statements), never concatenate user input into SQL.
 
@@ -1117,7 +1117,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 
 **Bundle Optimization**: Tree shaking (remove unused code), minification, compression. Use production build. Analyze bundle with webpack-bundle-analyzer.
 
-**Web Vitals**: Core metrics: LCP (Largest Contentful Paint), FID (First Input Delay), CLS (Cumulative Layout Shift). Measure user experience. Optimize for < 2.5s LCP, < 100ms FID, < 0.1 CLS.
+**Web Vitals**: Core metrics: LCP (Largest Contentful Paint), INP (Interaction to Next Paint, which replaced FID in March 2024), CLS (Cumulative Layout Shift). Measured at the 75th percentile of real users. Aim for ≤ 2.5 s LCP, ≤ 200 ms INP, ≤ 0.1 CLS.
 
 **Re-render Optimization**: Prevent unnecessary re-renders with `React.memo`, `useMemo`, `useCallback`. Move expensive calculations outside render. Use key prop correctly. Profile with React DevTools.
 

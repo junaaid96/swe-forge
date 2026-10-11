@@ -85,7 +85,7 @@ ENTRYPOINT ["java","-jar","app.jar"]
 #   build:
 #     runs-on: ubuntu-latest
 #     steps:
-#       - uses: actions/checkout@v4
+#       - uses: actions/checkout@v6
 #       - run: ./mvnw test
 #       - run: docker build -t ghcr.io/org/api:$GITHUB_SHA .
 #       - run: helm upgrade --install api ./chart --set image.tag=$GITHUB_SHA

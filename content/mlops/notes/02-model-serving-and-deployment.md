@@ -76,7 +76,7 @@ Essentials shown here: **validate inputs** with a schema, **load the model once*
 - **LLM serving** has its own specialised engines (vLLM, TGI, SGLang) with continuous batching and paged KV-cache, so many concurrent generations share a GPU efficiently.
 
 ```dockerfile
-FROM python:3.13-slim
+FROM python:3.14-slim
 WORKDIR /app
 COPY requirements.lock .
 RUN pip install --no-cache-dir -r requirements.lock      # exact versions used in training

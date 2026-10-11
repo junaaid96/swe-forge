@@ -54,14 +54,14 @@ Benefits either way: version-controlled infrastructure, code review for changes,
 - **Dockerfile best practices:** multi-stage builds (build tools stay out of the runtime image), order instructions for layer caching (copy lockfiles and install deps before copying source), small base images (distroless, slim, Alpine with care), `.dockerignore`, non-root user, pinned versions, one process per container, `HEALTHCHECK`.
 
 ```dockerfile
-FROM node:22-slim AS build
+FROM node:24-slim AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM node:22-slim
+FROM node:24-slim
 WORKDIR /app
 ENV NODE_ENV=production
 COPY --from=build /app/dist ./dist

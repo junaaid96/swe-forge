@@ -1,0 +1,73 @@
+{
+  "slug": "machine-learning",
+  "title": "Machine Learning",
+  "emoji": "\ud83e\udde0",
+  "accent": "#DB2777",
+  "order": 11,
+  "blurb": "From the maths to supervised, unsupervised and deep learning, with honest evaluation.",
+  "source": "https://roadmap.sh/machine-learning",
+  "stages": [
+    {
+      "title": "Prerequisites",
+      "hint": "",
+      "items": [
+        {
+          "label": "Python",
+          "ref": "python/notes/01-python"
+        },
+        {
+          "label": "Mathematics for ML",
+          "ref": "data-science/notes/01-math-foundations-for-data-science"
+        },
+        {
+          "label": "Statistics",
+          "ref": "data-analysis/notes/02-statistics-for-analysts"
+        }
+      ]
+    },
+    {
+      "title": "Supervised learning",
+      "hint": "",
+      "items": [
+        {
+          "label": "Fundamentals and algorithms",
+          "ref": "machine-learning/notes/01-supervised-learning-fundamentals"
+        }
+      ]
+    },
+    {
+      "title": "Unsupervised learning and evaluation",
+      "hint": "",
+      "items": [
+        {
+          "label": "Clustering, metrics and features",
+          "ref": "machine-learning/notes/02-unsupervised-learning-evaluation-and-features"
+        }
+      ]
+    },
+    {
+      "title": "Deep learning",
+      "hint": "",
+      "items": [
+        {
+          "label": "PyTorch, CNNs and transformers",
+          "ref": "machine-learning/notes/03-deep-learning-with-pytorch"
+        }
+      ]
+    },
+    {
+      "title": "Production",
+      "hint": "",
+      "items": [
+        {
+          "label": "MLOps lifecycle",
+          "ref": "mlops/notes/01-ml-lifecycle-experiment-tracking-and-pipelines"
+        },
+        {
+          "label": "Serving",
+          "ref": "mlops/notes/02-model-serving-and-deployment"
+        }
+      ]
+    }
+  ]
+}

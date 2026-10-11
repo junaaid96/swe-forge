@@ -1,0 +1,120 @@
+{
+  "id": "mlops",
+  "slug": "mlops",
+  "title": "MLOps",
+  "emoji": "⚙️",
+  "order": 34,
+  "tag": "MLOps",
+  "accent": "#EA580C",
+  "blurb": "Take models to production and keep them healthy: tracking, pipelines, feature stores, serving, safe rollouts, drift monitoring and governance.",
+  "group": "ai",
+  "relatedTopics": [
+    "machine-learning",
+    "devops-cloud",
+    "data-engineering"
+  ],
+  "quiz": [
+    {
+      "id": "mo-q1",
+      "question": "What is training/serving skew?",
+      "options": [
+        "Slow training",
+        "Features computed differently in training and production, so the model sees different inputs live",
+        "GPU vs CPU differences only",
+        "Different random seeds"
+      ],
+      "correctIndex": 1,
+      "explanation": "Prevent it with shared feature definitions (feature store) and monitoring served feature distributions."
+    },
+    {
+      "id": "mo-q2",
+      "question": "What should a model registry alias such as \"champion\" enable?",
+      "options": [
+        "Faster training",
+        "Promotion and rollback as metadata changes with an audit trail",
+        "Automatic labelling",
+        "Data versioning"
+      ],
+      "correctIndex": 1,
+      "explanation": "Serving loads models by alias, so switching versions does not require code changes."
+    },
+    {
+      "id": "mo-q3",
+      "question": "In a shadow deployment, the new model…",
+      "options": [
+        "Serves 5% of users",
+        "Scores real traffic but its predictions are not used",
+        "Replaces the old model",
+        "Only runs offline"
+      ],
+      "correctIndex": 1,
+      "explanation": "Shadow mode compares behaviour and latency with zero user risk."
+    },
+    {
+      "id": "mo-q4",
+      "question": "A PSI of 0.32 on a key feature indicates…",
+      "options": [
+        "No change",
+        "Significant distribution drift worth investigating",
+        "The model is accurate",
+        "Labels are missing"
+      ],
+      "correctIndex": 1,
+      "explanation": "Rule of thumb: <0.1 stable, 0.1–0.25 moderate, >0.25 significant."
+    },
+    {
+      "id": "mo-q5",
+      "question": "Which drift can only be fully confirmed once ground-truth labels arrive?",
+      "options": [
+        "Data drift",
+        "Concept drift (P(y|X) changes)",
+        "Schema drift",
+        "Prediction drift"
+      ],
+      "correctIndex": 1,
+      "explanation": "Input distributions can look unchanged while the relationship to the target shifts."
+    },
+    {
+      "id": "mo-q6",
+      "question": "Why pin library versions in the serving image to match training?",
+      "options": [
+        "Smaller image",
+        "Different versions can change predictions or fail to load the model",
+        "Faster builds only",
+        "Required by Kubernetes"
+      ],
+      "correctIndex": 1,
+      "explanation": "Serialisation formats and numerical behaviour can differ across versions."
+    }
+  ],
+  "problems": [
+    {
+      "id": "mo-p1",
+      "title": "Notebook to production",
+      "difficulty": "hard",
+      "prompt": "Take a notebook churn model to production.",
+      "hints": [
+        "pipeline",
+        "evaluation gate",
+        "serving pattern",
+        "monitoring"
+      ],
+      "solution": "Refactor into a pipeline (extract, validate, features, train, evaluate with slice gates, register), choose batch weekly scoring with idempotent partition writes and model version per row, sync to CRM, monitor drift, score distribution and realised churn, and retrain through the same gated pipeline.",
+      "points": 10
+    },
+    {
+      "id": "mo-p2",
+      "title": "Safe model rollout",
+      "difficulty": "medium",
+      "prompt": "Roll out a new fraud model with minimal risk.",
+      "hints": [
+        "shadow",
+        "canary",
+        "A/B",
+        "rollback"
+      ],
+      "solution": "Pass offline gates, run shadow on live traffic comparing predictions and latency, canary 5% with automated rollback on error/latency/distribution alerts, A/B the business metric, then full rollout keeping the previous version warm.",
+      "points": 10
+    }
+  ]
+}

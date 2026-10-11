@@ -1,0 +1,89 @@
+{
+  "slug": "ai-engineer",
+  "title": "AI Engineer",
+  "emoji": "\ud83e\udd16",
+  "accent": "#7C3AED",
+  "order": 7,
+  "blurb": "Build reliable products on LLMs: APIs, prompting, RAG, agents, evaluation and operations.",
+  "source": "https://roadmap.sh/ai-engineer",
+  "stages": [
+    {
+      "title": "Foundations",
+      "hint": "A language and the basics of how models work",
+      "items": [
+        {
+          "label": "Python",
+          "ref": "python/notes/01-python"
+        },
+        {
+          "label": "TypeScript",
+          "ref": "javascript/notes/02-typescript"
+        },
+        {
+          "label": "How LLMs and transformers work",
+          "ref": "machine-learning/notes/03-deep-learning-with-pytorch#5-sequences-and-transformers"
+        }
+      ]
+    },
+    {
+      "title": "Using LLM APIs",
+      "hint": "Calls, prompts and structured output",
+      "items": [
+        {
+          "label": "LLM APIs, prompting and structured output",
+          "ref": "ai-engineering/notes/01-llm-apis-prompting-and-structured-output"
+        },
+        {
+          "label": "AI systems theory",
+          "ref": "ai-ml/deep/theory"
+        }
+      ]
+    },
+    {
+      "title": "Retrieval-augmented generation",
+      "hint": "Ground answers in your data",
+      "items": [
+        {
+          "label": "Embeddings, vector search and RAG",
+          "ref": "ai-engineering/notes/02-embeddings-vector-search-and-rag"
+        },
+        {
+          "label": "pgvector and PostgreSQL extensions",
+          "ref": "postgresql/notes/04-performance-tuning-and-extensions"
+        }
+      ]
+    },
+    {
+      "title": "Agents",
+      "hint": "Tools, memory and guardrails",
+      "items": [
+        {
+          "label": "AI agents and tool use",
+          "ref": "ai-engineering/notes/03-ai-agents-and-tool-use"
+        },
+        {
+          "label": "Application security (OWASP)",
+          "ref": "security/notes/01-owasp-top-10-2025"
+        }
+      ]
+    },
+    {
+      "title": "Ship and operate",
+      "hint": "Evaluate, monitor and serve",
+      "items": [
+        {
+          "label": "Evaluating and operating LLM apps",
+          "ref": "ai-engineering/notes/04-evaluating-and-operating-llm-apps"
+        },
+        {
+          "label": "Model serving and deployment",
+          "ref": "mlops/notes/02-model-serving-and-deployment"
+        },
+        {
+          "label": "Observability",
+          "ref": "devops-cloud/notes/09-observability"
+        }
+      ]
+    }
+  ]
+}

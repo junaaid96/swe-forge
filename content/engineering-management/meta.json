@@ -1,0 +1,130 @@
+{
+  "id": "engineering-management",
+  "slug": "engineering-management",
+  "title": "Engineering Management",
+  "emoji": "🧑‍💼",
+  "order": 42,
+  "tag": "EM",
+  "accent": "#4D7C0F",
+  "blurb": "1:1s, feedback, growth and performance, hiring, team health, planning, DORA metrics, incidents and org design.",
+  "group": "leadership",
+  "relatedTopics": [
+    "behavioral",
+    "product-management",
+    "software-architecture"
+  ],
+  "quiz": [
+    {
+      "id": "em-q1",
+      "question": "Whose meeting is a 1:1?",
+      "options": [
+        "The manager's status update",
+        "The report's, focused on their topics",
+        "HR's",
+        "The product manager's"
+      ],
+      "correctIndex": 1,
+      "explanation": "Report-led 1:1s build trust and surface issues early."
+    },
+    {
+      "id": "em-q2",
+      "question": "The SBI feedback model stands for…",
+      "options": [
+        "Skill, Behaviour, Intent",
+        "Situation, Behaviour, Impact",
+        "Speed, Balance, Improvement",
+        "Strengths, Blockers, Ideas"
+      ],
+      "correctIndex": 1,
+      "explanation": "It keeps feedback specific and about observable behaviour."
+    },
+    {
+      "id": "em-q3",
+      "question": "Which practice predicts interview performance better and reduces bias?",
+      "options": [
+        "Unstructured chats",
+        "Structured interviews with consistent questions and rubrics",
+        "Puzzle questions",
+        "Gut feel"
+      ],
+      "correctIndex": 1,
+      "explanation": "Structure and rubrics improve validity and fairness."
+    },
+    {
+      "id": "em-q4",
+      "question": "Which set are the core DORA delivery metrics?",
+      "options": [
+        "Lines of code, commits, story points, bugs",
+        "Deployment frequency, lead time for changes, change failure rate, failed deployment recovery time",
+        "Velocity, burndown, WIP, cycle time only",
+        "Uptime, CPU, memory, cost"
+      ],
+      "correctIndex": 1,
+      "explanation": "They measure throughput and stability together."
+    },
+    {
+      "id": "em-q5",
+      "question": "How should engineering metrics be used?",
+      "options": [
+        "To rank individual engineers",
+        "For team and system learning, never individual performance ranking",
+        "To set bonuses per commit",
+        "Not at all"
+      ],
+      "correctIndex": 1,
+      "explanation": "Individual metrics get gamed and damage collaboration."
+    },
+    {
+      "id": "em-q6",
+      "question": "A team has 72 theoretical engineer-weeks in a quarter. What should you commit?",
+      "options": [
+        "All 72",
+        "Realistic capacity after leave, on-call and overhead, with allocations for tech health and buffer",
+        "Double, to stretch",
+        "Half, always"
+      ],
+      "correctIndex": 1,
+      "explanation": "Overcommitting guarantees misses and burnout."
+    },
+    {
+      "id": "em-q7",
+      "question": "What makes a post-incident review blameless?",
+      "options": [
+        "Nobody attends",
+        "It focuses on systemic contributing factors and improvements, not individual fault",
+        "It skips action items",
+        "It is private to managers"
+      ],
+      "correctIndex": 1,
+      "explanation": "People share openly when not blamed, which reveals real causes."
+    },
+    {
+      "id": "em-q8",
+      "question": "In Team Topologies, which team type provides self-service internal products?",
+      "options": [
+        "Stream-aligned",
+        "Platform",
+        "Enabling",
+        "Complicated subsystem"
+      ],
+      "correctIndex": 1,
+      "explanation": "Platform teams reduce cognitive load for stream-aligned teams."
+    }
+  ],
+  "problems": [
+    {
+      "id": "em-p1",
+      "title": "Missed deadlines",
+      "difficulty": "hard",
+      "prompt": "Your team missed its last three commitments. What do you do?",
+      "hints": [
+        "diagnose",
+        "capacity",
+        "batch size",
+        "communication"
+      ],
+      "solution": "Diagnose with data and conversations (estimation, scope churn, interrupts, dependencies, debt, CI friction), plan with realistic capacity and buffers, smaller batches and WIP limits, throughput-based forecasts with ranges, early risk communication, explicit stakeholder trade-offs, retros with owned actions.",
+      "points": 10
+    }
+  ]
+}

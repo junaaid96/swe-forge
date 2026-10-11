@@ -101,6 +101,17 @@
         "mlops",
         "data-engineering"
       ]
+    },
+    {
+      "id": "leadership",
+      "label": "Architecture, product & leadership",
+      "hint": "Architect · UX · product · engineering management",
+      "topics": [
+        "software-architecture",
+        "ux-design",
+        "product-management",
+        "engineering-management"
+      ]
     }
   ],
   "topics": [
@@ -445,6 +456,42 @@
       "order": 38,
       "tag": "Network",
       "accent": "#0284C7"
+    },
+    {
+      "id": "software-architecture",
+      "slug": "software-architecture",
+      "title": "Software Architecture",
+      "emoji": "🏛️",
+      "order": 39,
+      "tag": "Architect",
+      "accent": "#7C2D12"
+    },
+    {
+      "id": "ux-design",
+      "slug": "ux-design",
+      "title": "UX Design",
+      "emoji": "🧭",
+      "order": 40,
+      "tag": "UX",
+      "accent": "#C026D3"
+    },
+    {
+      "id": "product-management",
+      "slug": "product-management",
+      "title": "Product Management",
+      "emoji": "🎯",
+      "order": 41,
+      "tag": "PM",
+      "accent": "#CA8A04"
+    },
+    {
+      "id": "engineering-management",
+      "slug": "engineering-management",
+      "title": "Engineering Management",
+      "emoji": "🧑‍💼",
+      "order": 42,
+      "tag": "EM",
+      "accent": "#4D7C0F"
     }
   ]
 }

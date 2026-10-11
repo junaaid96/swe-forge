@@ -1,0 +1,73 @@
+{
+  "slug": "ux-design",
+  "title": "UX Design",
+  "emoji": "\ud83e\udded",
+  "accent": "#C026D3",
+  "order": 18,
+  "blurb": "Research users, define problems, design interactions, prototype, test and scale with design systems.",
+  "source": "https://roadmap.sh/ux-design",
+  "stages": [
+    {
+      "title": "Human-centred design and research",
+      "hint": "",
+      "items": [
+        {
+          "label": "User research and human-centred design",
+          "ref": "ux-design/notes/01-user-research-and-human-centred-design"
+        }
+      ]
+    },
+    {
+      "title": "Interaction design and prototyping",
+      "hint": "",
+      "items": [
+        {
+          "label": "IA, interaction design, prototyping and testing",
+          "ref": "ux-design/notes/02-interaction-design-prototyping-and-usability-testing"
+        }
+      ]
+    },
+    {
+      "title": "UI essentials and accessibility",
+      "hint": "",
+      "items": [
+        {
+          "label": "UI/UX essentials for engineers",
+          "ref": "ui-ux/notes/01-ui-ux-essentials-for-engineers"
+        },
+        {
+          "label": "Semantic HTML, forms and accessibility",
+          "ref": "frontend/notes/03-semantic-html-and-forms"
+        }
+      ]
+    },
+    {
+      "title": "Measuring experience",
+      "hint": "",
+      "items": [
+        {
+          "label": "Statistics and A/B tests",
+          "ref": "data-analysis/notes/02-statistics-for-analysts"
+        },
+        {
+          "label": "Product analytics",
+          "ref": "product-management/notes/02-product-delivery-metrics-and-stakeholders#3-product-analytics"
+        }
+      ]
+    },
+    {
+      "title": "Working with product and engineering",
+      "hint": "",
+      "items": [
+        {
+          "label": "Product discovery",
+          "ref": "product-management/notes/01-product-discovery-and-strategy"
+        },
+        {
+          "label": "Modern CSS and design tokens",
+          "ref": "frontend/notes/04-modern-css-layout-and-architecture"
+        }
+      ]
+    }
+  ]
+}

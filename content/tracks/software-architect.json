@@ -1,0 +1,103 @@
+{
+  "slug": "software-architect",
+  "title": "Software Architect",
+  "emoji": "\ud83c\udfdb\ufe0f",
+  "accent": "#7C2D12",
+  "order": 17,
+  "blurb": "Quality attributes, styles, decisions, distributed systems, evolution and technical leadership.",
+  "source": "https://roadmap.sh/software-architect",
+  "stages": [
+    {
+      "title": "Foundations",
+      "hint": "",
+      "items": [
+        {
+          "label": "OOP, SOLID and design patterns",
+          "ref": "low-level-design/notes/01-oop-solid-and-design-patterns"
+        },
+        {
+          "label": "Clean code and refactoring",
+          "ref": "software-engineering/notes/01-clean-code-and-refactoring"
+        }
+      ]
+    },
+    {
+      "title": "Architecture fundamentals",
+      "hint": "",
+      "items": [
+        {
+          "label": "Quality attributes, styles and decisions",
+          "ref": "software-architecture/notes/01-quality-attributes-styles-and-decisions"
+        },
+        {
+          "label": "Monoliths, microservices and boundaries",
+          "ref": "system-design/notes/02-monolith-microservices-and-boundaries"
+        }
+      ]
+    },
+    {
+      "title": "Distributed systems",
+      "hint": "",
+      "items": [
+        {
+          "label": "System design fundamentals",
+          "ref": "system-design/notes/01-system-design-fundamentals"
+        },
+        {
+          "label": "Distributed systems and consistency",
+          "ref": "system-design/notes/03-distributed-systems-and-consistency"
+        },
+        {
+          "label": "Event-driven architecture",
+          "ref": "system-design/notes/04-event-driven-and-messaging"
+        }
+      ]
+    },
+    {
+      "title": "APIs, data and security",
+      "hint": "",
+      "items": [
+        {
+          "label": "API design",
+          "ref": "api-design/deep/theory"
+        },
+        {
+          "label": "Databases at scale",
+          "ref": "database/notes/04-scaling-nosql-and-caching"
+        },
+        {
+          "label": "Security",
+          "ref": "security/notes/01-owasp-top-10-2025"
+        }
+      ]
+    },
+    {
+      "title": "Cloud and operations",
+      "hint": "",
+      "items": [
+        {
+          "label": "Kubernetes",
+          "ref": "devops-cloud/notes/04-kubernetes"
+        },
+        {
+          "label": "Observability",
+          "ref": "devops-cloud/notes/09-observability"
+        }
+      ]
+    },
+    {
+      "title": "Evolution and leadership",
+      "hint": "",
+      "items": [
+        {
+          "label": "Evolutionary architecture and the architect role",
+          "ref": "software-architecture/notes/02-evolutionary-architecture-and-the-architect-role"
+        },
+        {
+          "label": "Technical communication",
+          "ref": "behavioral/notes/01-behavioral-and-technical-communication"
+        }
+      ]
+    }
+  ]
+}

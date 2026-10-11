@@ -1,0 +1,97 @@
+{
+  "slug": "devsecops",
+  "title": "DevSecOps",
+  "emoji": "\ud83d\udee1\ufe0f",
+  "accent": "#B91C1C",
+  "order": 13,
+  "blurb": "Security woven into delivery: pipelines, supply chain, policy as code, runtime and compliance.",
+  "source": "https://roadmap.sh/devsecops",
+  "stages": [
+    {
+      "title": "Foundations",
+      "hint": "",
+      "items": [
+        {
+          "label": "Linux",
+          "ref": "devops-cloud/notes/01-linux"
+        },
+        {
+          "label": "Networking",
+          "ref": "devops-cloud/notes/02-networking"
+        },
+        {
+          "label": "Security fundamentals",
+          "ref": "cyber-security/notes/01-security-fundamentals-and-the-threat-landscape"
+        },
+        {
+          "label": "OWASP Top 10",
+          "ref": "security/notes/01-owasp-top-10-2025"
+        }
+      ]
+    },
+    {
+      "title": "Delivery platform",
+      "hint": "",
+      "items": [
+        {
+          "label": "Docker",
+          "ref": "devops-cloud/notes/03-docker"
+        },
+        {
+          "label": "Kubernetes",
+          "ref": "devops-cloud/notes/04-kubernetes"
+        },
+        {
+          "label": "CI/CD",
+          "ref": "devops-cloud/notes/06-cicd"
+        },
+        {
+          "label": "Terraform",
+          "ref": "devops-cloud/notes/07-terraform"
+        }
+      ]
+    },
+    {
+      "title": "Shift left",
+      "hint": "",
+      "items": [
+        {
+          "label": "Security in CI/CD",
+          "ref": "devsecops/notes/01-shift-left-security-in-ci-cd"
+        },
+        {
+          "label": "Supply chain and AppSec",
+          "ref": "security/notes/03-appsec-network-and-supply-chain"
+        }
+      ]
+    },
+    {
+      "title": "Secrets and identity",
+      "hint": "",
+      "items": [
+        {
+          "label": "Cloud security and secrets",
+          "ref": "devops-cloud/notes/10-security"
+        },
+        {
+          "label": "Authentication and authorization",
+          "ref": "security/notes/02-authentication-and-authorization"
+        }
+      ]
+    },
+    {
+      "title": "Runtime and compliance",
+      "hint": "",
+      "items": [
+        {
+          "label": "Policy as code, runtime security, compliance",
+          "ref": "devsecops/notes/02-policy-as-code-runtime-security-and-compliance"
+        },
+        {
+          "label": "Detection and incident response",
+          "ref": "cyber-security/notes/02-security-operations-detection-and-incident-response"
+        }
+      ]
+    }
+  ]
+}

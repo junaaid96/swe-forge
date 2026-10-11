@@ -1,0 +1,130 @@
+{
+  "id": "cyber-security",
+  "slug": "cyber-security",
+  "title": "Cyber Security",
+  "emoji": "🔐",
+  "order": 37,
+  "tag": "Security",
+  "accent": "#9F1239",
+  "blurb": "Threats, frameworks, security operations, detection engineering, incident response and practical cryptography.",
+  "group": "ops",
+  "relatedTopics": [
+    "security",
+    "devsecops",
+    "networking"
+  ],
+  "quiz": [
+    {
+      "id": "cy-q1",
+      "question": "Which is the best defence against phishing that proxies the real login page to steal session cookies?",
+      "options": [
+        "SMS one-time codes",
+        "Phishing-resistant MFA (FIDO2 security keys or passkeys)",
+        "Longer passwords",
+        "Security questions"
+      ],
+      "correctIndex": 1,
+      "explanation": "FIDO2 binds authentication to the real origin, defeating adversary-in-the-middle kits."
+    },
+    {
+      "id": "cy-q2",
+      "question": "Which function did NIST CSF 2.0 add?",
+      "options": [
+        "Detect",
+        "Govern",
+        "Recover",
+        "Identify"
+      ],
+      "correctIndex": 1,
+      "explanation": "Govern covers strategy, roles, policy and risk management across the other functions."
+    },
+    {
+      "id": "cy-q3",
+      "question": "What is MITRE ATT&CK primarily used for?",
+      "options": [
+        "Encrypting traffic",
+        "A catalogue of real adversary tactics and techniques for detection coverage and incident description",
+        "Scoring CVEs",
+        "Firewall configuration"
+      ],
+      "correctIndex": 1,
+      "explanation": "It provides a common language for attacker behaviour."
+    },
+    {
+      "id": "cy-q4",
+      "question": "In a compromised cloud email account, which containment step is often missed?",
+      "options": [
+        "Resetting the password",
+        "Revoking sessions/refresh tokens and removing malicious inbox rules and OAuth apps",
+        "Notifying IT",
+        "Running antivirus"
+      ],
+      "correctIndex": 1,
+      "explanation": "Stolen sessions and persistence survive a password reset."
+    },
+    {
+      "id": "cy-q5",
+      "question": "Which algorithm should be used to store passwords?",
+      "options": [
+        "SHA-256",
+        "AES-256",
+        "Argon2id (or scrypt/bcrypt)",
+        "MD5 with salt"
+      ],
+      "correctIndex": 2,
+      "explanation": "Slow, salted, memory-hard hashing resists offline cracking."
+    },
+    {
+      "id": "cy-q6",
+      "question": "What happens if an AES-GCM nonce is reused with the same key?",
+      "options": [
+        "Nothing",
+        "It can expose plaintext relationships and allow forgeries",
+        "Decryption is slower",
+        "The key rotates"
+      ],
+      "correctIndex": 1,
+      "explanation": "Nonce reuse breaks GCM's confidentiality and authenticity guarantees."
+    },
+    {
+      "id": "cy-q7",
+      "question": "Why is hybrid X25519 + ML-KEM key exchange being deployed now?",
+      "options": [
+        "It is faster",
+        "To protect against \"harvest now, decrypt later\" by future quantum computers",
+        "Required for HTTP/2",
+        "To replace certificates"
+      ],
+      "correctIndex": 1,
+      "explanation": "Recorded traffic today could be decrypted later if only classical key exchange is used."
+    },
+    {
+      "id": "cy-q8",
+      "question": "A detection rule produces 200 alerts a day, 1 of them real. What should you do?",
+      "options": [
+        "Disable alerting",
+        "Tune it (context, thresholds, suppressions) and measure precision",
+        "Hire more analysts only",
+        "Ignore it"
+      ],
+      "correctIndex": 1,
+      "explanation": "Alert fatigue causes real attacks to be missed; detection engineering includes tuning."
+    }
+  ],
+  "problems": [
+    {
+      "id": "cy-p1",
+      "title": "Ransomware tabletop",
+      "difficulty": "hard",
+      "prompt": "Walk through your response to EDR detecting shadow-copy deletion on a file server at 2 a.m.",
+      "hints": [
+        "scope",
+        "contain",
+        "preserve evidence",
+        "recover from immutable backups"
+      ],
+      "solution": "Triage and correlate (VPN logins, lateral movement, credential tools), contain (disable accounts, kill sessions, isolate hosts, block IOCs), preserve evidence, eradicate persistence, restore from immutable tested backups, communicate (incident commander, legal, regulators), post-incident fixes such as MFA on VPN and auto-isolation.",
+      "points": 10
+    }
+  ]
+}

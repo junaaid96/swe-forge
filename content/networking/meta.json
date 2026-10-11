@@ -1,0 +1,144 @@
+{
+  "id": "networking",
+  "slug": "networking",
+  "title": "Network Engineering",
+  "emoji": "🌐",
+  "order": 38,
+  "tag": "Network",
+  "accent": "#0284C7",
+  "blurb": "Switching, routing, VLANs, OSPF and BGP, network services and security, VPNs, zero trust, troubleshooting and automation.",
+  "group": "ops",
+  "relatedTopics": [
+    "devops-cloud",
+    "cyber-security",
+    "cs-fundamentals"
+  ],
+  "quiz": [
+    {
+      "id": "ne-q1",
+      "question": "How does a switch learn which port a device is on?",
+      "options": [
+        "From the destination MAC",
+        "From the source MAC of incoming frames",
+        "From DHCP",
+        "From DNS"
+      ],
+      "correctIndex": 1,
+      "explanation": "It records source MAC → port in its MAC address table."
+    },
+    {
+      "id": "ne-q2",
+      "question": "A router has routes 0.0.0.0/0 and 10.1.0.0/16. Which is used for 10.1.4.7?",
+      "options": [
+        "0.0.0.0/0",
+        "10.1.0.0/16 (longest prefix match)",
+        "Both equally",
+        "Neither"
+      ],
+      "correctIndex": 1,
+      "explanation": "The most specific matching prefix wins."
+    },
+    {
+      "id": "ne-q3",
+      "question": "What does an 802.1Q trunk port do?",
+      "options": [
+        "Carries one untagged VLAN",
+        "Carries multiple VLANs using tags",
+        "Blocks broadcast",
+        "Routes between subnets"
+      ],
+      "correctIndex": 1,
+      "explanation": "Trunks tag frames with VLAN IDs between switches and routers."
+    },
+    {
+      "id": "ne-q4",
+      "question": "Which protocol prevents Layer 2 loops?",
+      "options": [
+        "OSPF",
+        "Spanning Tree Protocol (RSTP/MSTP)",
+        "BGP",
+        "ARP"
+      ],
+      "correctIndex": 1,
+      "explanation": "STP blocks redundant paths and unblocks them on failure."
+    },
+    {
+      "id": "ne-q5",
+      "question": "OSPF is best described as…",
+      "options": [
+        "A path-vector EGP",
+        "A link-state interior gateway protocol",
+        "A distance-vector EGP",
+        "A Layer 2 protocol"
+      ],
+      "correctIndex": 1,
+      "explanation": "Routers flood link states and compute shortest paths with Dijkstra."
+    },
+    {
+      "id": "ne-q6",
+      "question": "Small requests work over a VPN but large transfers hang. Most likely cause?",
+      "options": [
+        "DNS",
+        "MTU / path MTU discovery problem",
+        "ARP",
+        "DHCP lease"
+      ],
+      "correctIndex": 1,
+      "explanation": "Tunnel overhead plus blocked ICMP fragmentation-needed; fix with MSS clamping."
+    },
+    {
+      "id": "ne-q7",
+      "question": "In a packet capture, repeated SYNs with no reply suggest…",
+      "options": [
+        "The service is listening",
+        "Packets are being silently dropped (firewall, security group or return route)",
+        "The server sent RST",
+        "TLS failure"
+      ],
+      "correctIndex": 1,
+      "explanation": "A RST would mean reachable but refused; silence means drops."
+    },
+    {
+      "id": "ne-q8",
+      "question": "How does ZTNA differ from a traditional remote-access VPN?",
+      "options": [
+        "It is faster",
+        "It grants per-application access after identity and device checks, not network-level access",
+        "It uses no encryption",
+        "It only works on-premises"
+      ],
+      "correctIndex": 1,
+      "explanation": "Users never join the network, limiting lateral movement."
+    }
+  ],
+  "problems": [
+    {
+      "id": "ne-p1",
+      "title": "Segment a flat network",
+      "difficulty": "hard",
+      "prompt": "A hospital runs everything on one /16. Design segmentation.",
+      "hints": [
+        "zones",
+        "default deny",
+        "802.1X",
+        "flows table"
+      ],
+      "solution": "Define zones (clinical devices, staff, servers, management, guests, DMZ), VLANs and subnets per zone, default-deny firewall policy with a documented allowed-flows table, medical devices restricted to their servers, 802.1X with quarantine VLAN, ZTNA for remote access, flow and DNS logs to SIEM with alerts on workstation-to-workstation SMB.",
+      "points": 10
+    },
+    {
+      "id": "ne-p2",
+      "title": "Troubleshoot an unreachable app",
+      "difficulty": "medium",
+      "prompt": "Users at one branch cannot reach an internal web app.",
+      "hints": [
+        "what changed",
+        "layers",
+        "return route",
+        "pcap"
+      ],
+      "solution": "Scope and check changes, verify link/VLAN/IP/gateway, DNS, route there and back, TCP port reachability through firewalls, TLS and app health; confirm with tcpdump on both ends; fix and document.",
+      "points": 10
+    }
+  ]
+}

@@ -134,6 +134,78 @@
       ],
       "correctIndex": 1,
       "explanation": "Structure every test."
+    },
+    {
+      "id": "tq-qa1",
+      "question": "For a quantity field valid from 1 to 20, which values does boundary value analysis select?",
+      "options": [
+        "5, 10, 15",
+        "0, 1, 2, 19, 20, 21",
+        "1 and 20 only",
+        "Random values"
+      ],
+      "correctIndex": 1,
+      "explanation": "Test on and either side of each boundary."
+    },
+    {
+      "id": "tq-qa2",
+      "question": "What technique covers every pair of parameter values with far fewer tests than all combinations?",
+      "options": [
+        "Equivalence partitioning",
+        "Pairwise (combinatorial) testing",
+        "Smoke testing",
+        "Soak testing"
+      ],
+      "correctIndex": 1,
+      "explanation": "Most defects involve interactions of at most two parameters."
+    },
+    {
+      "id": "tq-qa3",
+      "question": "A crash in a rarely used admin report is…",
+      "options": [
+        "High severity, possibly low priority",
+        "Low severity, high priority",
+        "Always P1",
+        "Not a bug"
+      ],
+      "correctIndex": 0,
+      "explanation": "Severity is technical impact; priority is business urgency."
+    },
+    {
+      "id": "tq-qa4",
+      "question": "Which load test shape models a sudden iftar rush?",
+      "options": [
+        "Soak test",
+        "Spike test",
+        "Unit test",
+        "Smoke test"
+      ],
+      "correctIndex": 1,
+      "explanation": "Spike tests jump abruptly to high load to test autoscaling and pools."
+    },
+    {
+      "id": "tq-qa5",
+      "question": "What does consumer-driven contract testing (Pact) verify?",
+      "options": [
+        "UI layout",
+        "That a provider still satisfies the interactions its consumers depend on",
+        "Database indexes",
+        "Load capacity"
+      ],
+      "correctIndex": 1,
+      "explanation": "Providers verify published consumer contracts in CI before deploying."
+    },
+    {
+      "id": "tq-qa6",
+      "question": "How should a known flaky test be handled?",
+      "options": [
+        "Retry until green forever",
+        "Quarantine with an owner and ticket, then fix the root cause",
+        "Delete it silently",
+        "Ignore failures"
+      ],
+      "correctIndex": 1,
+      "explanation": "Flakiness erodes trust and can hide real concurrency bugs."
     }
   ],
   "problems": [
@@ -182,6 +254,20 @@
       ],
       "solution": "Mock/fake PaymentGateway interface — do not call Stripe in unit tests; keep an integration test separate.",
       "points": 15
+    },
+    {
+      "id": "tq-qa-p1",
+      "title": "Test a coupon feature",
+      "difficulty": "medium",
+      "prompt": "Design tests for \"20% off up to ৳120 on orders ≥ ৳500\".",
+      "hints": [
+        "partitions",
+        "boundaries",
+        "state changes",
+        "decision table"
+      ],
+      "solution": "Partitions and boundaries for order total (499.99/500/500.01) and the cap, decision table for login/first order/validity, state transitions (cart modified after apply re-validates), stacking, expiry, concurrency/double submit, API authorisation, plus exploratory session.",
+      "points": 10
     }
   ]
 }

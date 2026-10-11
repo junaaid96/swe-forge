@@ -1,0 +1,81 @@
+{
+  "slug": "network-engineer",
+  "title": "Network Engineer",
+  "emoji": "\ud83c\udf10",
+  "accent": "#0284C7",
+  "order": 15,
+  "blurb": "From cables and VLANs to routing protocols, security, cloud networks and automation.",
+  "source": "https://roadmap.sh/network-engineer",
+  "stages": [
+    {
+      "title": "Foundations",
+      "hint": "",
+      "items": [
+        {
+          "label": "Networking basics, CIDR and DNS",
+          "ref": "devops-cloud/notes/02-networking"
+        },
+        {
+          "label": "Linux",
+          "ref": "devops-cloud/notes/01-linux"
+        }
+      ]
+    },
+    {
+      "title": "Switching and routing",
+      "hint": "",
+      "items": [
+        {
+          "label": "Switching, routing and VLANs",
+          "ref": "networking/notes/01-switching-routing-and-vlans"
+        }
+      ]
+    },
+    {
+      "title": "Services and security",
+      "hint": "",
+      "items": [
+        {
+          "label": "DHCP, firewalls, VPNs and zero trust",
+          "ref": "networking/notes/02-network-services-security-and-vpns"
+        },
+        {
+          "label": "Cryptography and TLS",
+          "ref": "cyber-security/notes/03-cryptography-and-pki-in-practice"
+        }
+      ]
+    },
+    {
+      "title": "Cloud networking",
+      "hint": "",
+      "items": [
+        {
+          "label": "AWS essentials",
+          "ref": "devops-cloud/notes/15-aws-cloud-essentials"
+        },
+        {
+          "label": "Azure",
+          "ref": "devops-cloud/notes/08-azure"
+        }
+      ]
+    },
+    {
+      "title": "Operate and automate",
+      "hint": "",
+      "items": [
+        {
+          "label": "Troubleshooting and automation",
+          "ref": "networking/notes/03-network-troubleshooting-and-automation"
+        },
+        {
+          "label": "Ansible",
+          "ref": "devops-cloud/notes/17-configuration-management-with-ansible"
+        },
+        {
+          "label": "Observability",
+          "ref": "devops-cloud/notes/09-observability"
+        }
+      ]
+    }
+  ]
+}

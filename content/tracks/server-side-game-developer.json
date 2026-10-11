@@ -1,0 +1,75 @@
+{
+  "slug": "server-side-game-developer",
+  "title": "Server Side Game Developer",
+  "emoji": "\ud83d\udd79\ufe0f",
+  "accent": "#6D28D9",
+  "order": 23,
+  "blurb": "Netcode, authoritative servers, matchmaking, fleets, economies and scaling for launch day.",
+  "source": "https://roadmap.sh/server-side-game-developer",
+  "stages": [
+    {
+      "title": "Foundations",
+      "hint": "",
+      "items": [
+        {
+          "label": "Networking",
+          "ref": "devops-cloud/notes/02-networking"
+        },
+        {
+          "label": "Linux",
+          "ref": "devops-cloud/notes/01-linux"
+        },
+        {
+          "label": "C++",
+          "ref": "c-cpp/notes/02-cpp"
+        }
+      ]
+    },
+    {
+      "title": "Netcode",
+      "hint": "",
+      "items": [
+        {
+          "label": "Authoritative servers, prediction, lag compensation",
+          "ref": "game-server/notes/01-multiplayer-networking-models"
+        }
+      ]
+    },
+    {
+      "title": "Backend services",
+      "hint": "",
+      "items": [
+        {
+          "label": "Matchmaking, fleets, economy, scaling",
+          "ref": "game-server/notes/02-game-backend-services-and-scaling"
+        },
+        {
+          "label": "Databases and caching",
+          "ref": "database/notes/04-scaling-nosql-and-caching"
+        },
+        {
+          "label": "Messaging and events",
+          "ref": "system-design/notes/04-event-driven-and-messaging"
+        }
+      ]
+    },
+    {
+      "title": "Operations",
+      "hint": "",
+      "items": [
+        {
+          "label": "Docker",
+          "ref": "devops-cloud/notes/03-docker"
+        },
+        {
+          "label": "Kubernetes",
+          "ref": "devops-cloud/notes/04-kubernetes"
+        },
+        {
+          "label": "Observability",
+          "ref": "devops-cloud/notes/09-observability"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "slug": "game-developer",
+  "title": "Game Developer",
+  "emoji": "\ud83c\udfae",
+  "accent": "#9333EA",
+  "order": 22,
+  "blurb": "Engines, math, rendering, physics, AI, design and performance for shipping games.",
+  "source": "https://roadmap.sh/game-developer",
+  "stages": [
+    {
+      "title": "Programming foundations",
+      "hint": "",
+      "items": [
+        {
+          "label": "C++",
+          "ref": "c-cpp/notes/02-cpp"
+        },
+        {
+          "label": "Data structures and algorithms",
+          "ref": "dsa"
+        }
+      ]
+    },
+    {
+      "title": "Engine and math",
+      "hint": "",
+      "items": [
+        {
+          "label": "Game loop, math and rendering",
+          "ref": "game-development/notes/01-game-loop-math-and-rendering"
+        },
+        {
+          "label": "Linear algebra",
+          "ref": "data-science/notes/01-math-foundations-for-data-science#1-linear-algebra-data-is-matrices"
+        }
+      ]
+    },
+    {
+      "title": "Gameplay",
+      "hint": "",
+      "items": [
+        {
+          "label": "Physics, AI, design and optimisation",
+          "ref": "game-development/notes/02-gameplay-systems-physics-ai-and-optimisation"
+        },
+        {
+          "label": "Design patterns",
+          "ref": "low-level-design/notes/01-oop-solid-and-design-patterns"
+        }
+      ]
+    },
+    {
+      "title": "Multiplayer",
+      "hint": "",
+      "items": [
+        {
+          "label": "Multiplayer networking models",
+          "ref": "game-server/notes/01-multiplayer-networking-models"
+        }
+      ]
+    }
+  ]
+}

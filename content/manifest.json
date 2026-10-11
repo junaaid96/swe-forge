@@ -112,6 +112,17 @@
         "product-management",
         "engineering-management"
       ]
+    },
+    {
+      "id": "mobile-games",
+      "label": "Mobile, games & growth",
+      "hint": "Android · game dev · game servers · SEO",
+      "topics": [
+        "android",
+        "game-development",
+        "game-server",
+        "seo"
+      ]
     }
   ],
   "topics": [
@@ -492,6 +503,42 @@
       "order": 42,
       "tag": "EM",
       "accent": "#4D7C0F"
+    },
+    {
+      "id": "android",
+      "slug": "android",
+      "title": "Android",
+      "emoji": "🤖",
+      "order": 43,
+      "tag": "Mobile",
+      "accent": "#3DDC84"
+    },
+    {
+      "id": "game-development",
+      "slug": "game-development",
+      "title": "Game Development",
+      "emoji": "🎮",
+      "order": 44,
+      "tag": "Games",
+      "accent": "#9333EA"
+    },
+    {
+      "id": "game-server",
+      "slug": "game-server",
+      "title": "Server-Side Game Development",
+      "emoji": "🕹️",
+      "order": 45,
+      "tag": "Game servers",
+      "accent": "#6D28D9"
+    },
+    {
+      "id": "seo",
+      "slug": "seo",
+      "title": "SEO",
+      "emoji": "🔎",
+      "order": 46,
+      "tag": "SEO",
+      "accent": "#16A34A"
     }
   ]
 }

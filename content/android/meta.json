@@ -1,0 +1,130 @@
+{
+  "id": "android",
+  "slug": "android",
+  "title": "Android",
+  "emoji": "🤖",
+  "order": 43,
+  "tag": "Mobile",
+  "accent": "#3DDC84",
+  "blurb": "Kotlin, Jetpack Compose, lifecycle, MVVM and offline-first data, WorkManager, testing, performance, security and Play publishing.",
+  "group": "mobile-games",
+  "relatedTopics": [
+    "javascript",
+    "testing-quality",
+    "ui-ux"
+  ],
+  "quiz": [
+    {
+      "id": "an-q1",
+      "question": "Which survives configuration changes but NOT process death?",
+      "options": [
+        "Room database",
+        "ViewModel",
+        "DataStore",
+        "SavedStateHandle"
+      ],
+      "correctIndex": 1,
+      "explanation": "Persist important data in Room/DataStore; keep small UI state in SavedStateHandle."
+    },
+    {
+      "id": "an-q2",
+      "question": "What does a sealed interface give you in Kotlin when modelling UI state?",
+      "options": [
+        "Faster code",
+        "Exhaustive when expressions checked by the compiler",
+        "Automatic networking",
+        "Thread safety"
+      ],
+      "correctIndex": 1,
+      "explanation": "The compiler ensures every state is handled."
+    },
+    {
+      "id": "an-q3",
+      "question": "Why provide a key in LazyColumn items?",
+      "options": [
+        "Required by Material 3",
+        "Stable identity so Compose can update, move and preserve item state efficiently",
+        "Accessibility",
+        "To sort items"
+      ],
+      "correctIndex": 1,
+      "explanation": "Keys avoid unnecessary recomposition and state mix-ups."
+    },
+    {
+      "id": "an-q4",
+      "question": "In an offline-first architecture, what does the UI observe?",
+      "options": [
+        "The network API directly",
+        "The local database as the single source of truth",
+        "SharedPreferences",
+        "A singleton list"
+      ],
+      "correctIndex": 1,
+      "explanation": "The repository writes network data into Room; UI observes Room Flows."
+    },
+    {
+      "id": "an-q5",
+      "question": "Which API is right for a guaranteed, deferrable photo upload that must survive app restarts?",
+      "options": [
+        "viewModelScope.launch",
+        "WorkManager",
+        "Thread.sleep",
+        "A static variable"
+      ],
+      "correctIndex": 1,
+      "explanation": "WorkManager persists work with constraints and retries."
+    },
+    {
+      "id": "an-q6",
+      "question": "What do Baseline Profiles improve?",
+      "options": [
+        "APK signing",
+        "Startup and runtime performance via ahead-of-time compilation of critical paths",
+        "Push notifications",
+        "Accessibility"
+      ],
+      "correctIndex": 1,
+      "explanation": "They precompile critical user journeys."
+    },
+    {
+      "id": "an-q7",
+      "question": "Where should a privileged backend API secret live?",
+      "options": [
+        "In BuildConfig",
+        "In strings.xml",
+        "On the server, never in the app",
+        "In an obfuscated constant"
+      ],
+      "correctIndex": 2,
+      "explanation": "Anything in the APK can be extracted."
+    },
+    {
+      "id": "an-q8",
+      "question": "What does a staged rollout let you do?",
+      "options": [
+        "Skip review",
+        "Release to a small percentage, monitor crash-free users and ANRs, and halt if needed",
+        "Avoid versioning",
+        "Bypass target API rules"
+      ],
+      "correctIndex": 1,
+      "explanation": "It limits blast radius of regressions."
+    }
+  ],
+  "problems": [
+    {
+      "id": "an-p1",
+      "title": "Offline-first menu screen",
+      "difficulty": "medium",
+      "prompt": "Design an Android menu screen that works on patchy networks.",
+      "hints": [
+        "Room as source of truth",
+        "repository refresh",
+        "StateFlow UiState",
+        "WorkManager sync"
+      ],
+      "solution": "Room DAO Flow observed via repository; refresh writes network data into Room; ViewModel combines flows into StateFlow UiState with refresh/error flags; show cached data with offline banner; queue writes via WorkManager with constraints; test with fakes and process-death scenarios.",
+      "points": 10
+    }
+  ]
+}

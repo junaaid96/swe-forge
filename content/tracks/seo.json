@@ -1,0 +1,67 @@
+{
+  "slug": "seo",
+  "title": "SEO",
+  "emoji": "\ud83d\udd0e",
+  "accent": "#16A34A",
+  "order": 24,
+  "blurb": "Technical foundations, content and intent, local SEO, links, AI search and measurement.",
+  "source": "https://roadmap.sh/seo",
+  "stages": [
+    {
+      "title": "Web foundations",
+      "hint": "",
+      "items": [
+        {
+          "label": "How the internet and HTTP work",
+          "ref": "backend/notes/03-how-the-internet-and-http-work"
+        },
+        {
+          "label": "Semantic HTML",
+          "ref": "frontend/notes/03-semantic-html-and-forms"
+        }
+      ]
+    },
+    {
+      "title": "Technical SEO",
+      "hint": "",
+      "items": [
+        {
+          "label": "Crawling, indexing, rendering and performance",
+          "ref": "seo/notes/01-technical-seo"
+        },
+        {
+          "label": "Web performance and Core Web Vitals",
+          "ref": "frontend/notes/06-web-performance-and-pwas"
+        },
+        {
+          "label": "Next.js rendering",
+          "ref": "nextjs/notes/01-nextjs-essentials"
+        }
+      ]
+    },
+    {
+      "title": "Content and authority",
+      "hint": "",
+      "items": [
+        {
+          "label": "Content, on-page, local, links and AI search",
+          "ref": "seo/notes/02-content-on-page-local-seo-and-measurement"
+        }
+      ]
+    },
+    {
+      "title": "Measurement",
+      "hint": "",
+      "items": [
+        {
+          "label": "Analytics and storytelling",
+          "ref": "data-analysis/notes/03-python-for-analysis-visualisation-and-storytelling"
+        },
+        {
+          "label": "A/B testing",
+          "ref": "data-analysis/notes/02-statistics-for-analysts"
+        }
+      ]
+    }
+  ]
+}

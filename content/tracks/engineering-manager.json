@@ -1,0 +1,75 @@
+{
+  "slug": "engineering-manager",
+  "title": "Engineering Manager",
+  "emoji": "\ud83e\uddd1\u200d\ud83d\udcbc",
+  "accent": "#4D7C0F",
+  "order": 20,
+  "blurb": "Lead people, deliver reliably, measure what matters and design the organisation.",
+  "source": "https://roadmap.sh/engineering-manager",
+  "stages": [
+    {
+      "title": "People leadership",
+      "hint": "",
+      "items": [
+        {
+          "label": "1:1s, feedback, growth and hiring",
+          "ref": "engineering-management/notes/01-leading-people-one-on-ones-feedback-and-growth"
+        },
+        {
+          "label": "Communication",
+          "ref": "behavioral/notes/01-behavioral-and-technical-communication"
+        }
+      ]
+    },
+    {
+      "title": "Execution and delivery",
+      "hint": "",
+      "items": [
+        {
+          "label": "Planning, DORA, incidents and org design",
+          "ref": "engineering-management/notes/02-execution-delivery-metrics-and-organisation"
+        },
+        {
+          "label": "CI/CD",
+          "ref": "devops-cloud/notes/06-cicd"
+        },
+        {
+          "label": "Testing strategy",
+          "ref": "testing-quality/notes/01-testing-strategy"
+        }
+      ]
+    },
+    {
+      "title": "Technical leadership",
+      "hint": "",
+      "items": [
+        {
+          "label": "Architecture decisions",
+          "ref": "software-architecture/notes/01-quality-attributes-styles-and-decisions"
+        },
+        {
+          "label": "Evolutionary architecture",
+          "ref": "software-architecture/notes/02-evolutionary-architecture-and-the-architect-role"
+        },
+        {
+          "label": "Observability and incidents",
+          "ref": "devops-cloud/notes/09-observability"
+        }
+      ]
+    },
+    {
+      "title": "Product partnership",
+      "hint": "",
+      "items": [
+        {
+          "label": "Product discovery",
+          "ref": "product-management/notes/01-product-discovery-and-strategy"
+        },
+        {
+          "label": "Roadmaps and stakeholders",
+          "ref": "product-management/notes/02-product-delivery-metrics-and-stakeholders"
+        }
+      ]
+    }
+  ]
+}

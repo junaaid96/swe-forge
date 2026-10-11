@@ -1,0 +1,130 @@
+{
+  "id": "ux-design",
+  "slug": "ux-design",
+  "title": "UX Design",
+  "emoji": "🧭",
+  "order": 40,
+  "tag": "UX",
+  "accent": "#C026D3",
+  "blurb": "User research, personas and journeys, interaction design, prototyping, usability testing and design systems.",
+  "group": "leadership",
+  "relatedTopics": [
+    "ui-ux",
+    "frontend",
+    "product-management"
+  ],
+  "quiz": [
+    {
+      "id": "ux-q1",
+      "question": "Which interview question gives the most reliable insight?",
+      "options": [
+        "Would you use a feature that does X?",
+        "Tell me about the last time you ordered dinner online",
+        "Do you like our app?",
+        "How much would you pay?"
+      ],
+      "correctIndex": 1,
+      "explanation": "Ask about specific past behaviour, not hypothetical future intent."
+    },
+    {
+      "id": "ux-q2",
+      "question": "Which method best reveals users' mental models for organising content?",
+      "options": [
+        "A/B testing",
+        "Card sorting",
+        "Heatmaps",
+        "Load testing"
+      ],
+      "correctIndex": 1,
+      "explanation": "Participants group and label content themselves."
+    },
+    {
+      "id": "ux-q3",
+      "question": "About how many users per segment typically reveal most major usability problems in a flow?",
+      "options": [
+        "1",
+        "5",
+        "50",
+        "500"
+      ],
+      "correctIndex": 1,
+      "explanation": "Test iteratively with about 5 users per distinct group."
+    },
+    {
+      "id": "ux-q4",
+      "question": "In a moderated usability test, a participant asks \"What does this button do?\" What do you say?",
+      "options": [
+        "Explain it",
+        "\"What do you think it does?\"",
+        "Skip the task",
+        "End the session"
+      ],
+      "correctIndex": 1,
+      "explanation": "Avoid leading; observe their understanding."
+    },
+    {
+      "id": "ux-q5",
+      "question": "What is the WCAG AA minimum contrast for normal body text?",
+      "options": [
+        "2:1",
+        "3:1",
+        "4.5:1",
+        "7:1"
+      ],
+      "correctIndex": 2,
+      "explanation": "4.5:1 for normal text, 3:1 for large text."
+    },
+    {
+      "id": "ux-q6",
+      "question": "What do design tokens provide?",
+      "options": [
+        "User analytics",
+        "A single source of truth for design decisions (colour, spacing, type) shared across design and code",
+        "Server rendering",
+        "Test coverage"
+      ],
+      "correctIndex": 1,
+      "explanation": "Change a token once and it propagates to all platforms."
+    },
+    {
+      "id": "ux-q7",
+      "question": "Fitts's law implies that on mobile, primary actions should be…",
+      "options": [
+        "Small and at the top",
+        "Large and within easy thumb reach",
+        "Hidden in menus",
+        "Text-only links"
+      ],
+      "correctIndex": 1,
+      "explanation": "Time to hit a target depends on its size and distance."
+    },
+    {
+      "id": "ux-q8",
+      "question": "Which tool shows the end-to-end experience with emotions and pain points across stages?",
+      "options": [
+        "Sitemap",
+        "Customer journey map",
+        "Wireframe",
+        "Style guide"
+      ],
+      "correctIndex": 1,
+      "explanation": "Journey maps align teams around the whole experience."
+    }
+  ],
+  "problems": [
+    {
+      "id": "ux-p1",
+      "title": "Fix a hidden feature",
+      "difficulty": "medium",
+      "prompt": "Only 2% of orders use \"schedule for later\" despite strong demand in interviews. Plan your approach.",
+      "hints": [
+        "analytics",
+        "usability test",
+        "redesign",
+        "measure"
+      ],
+      "solution": "Check the funnel and discoverability in analytics, run a 5-user usability test with realistic tasks, identify issues (findability, wording), redesign with the control in the cart and plain language, retest, then ship behind a flag and measure adoption.",
+      "points": 10
+    }
+  ]
+}

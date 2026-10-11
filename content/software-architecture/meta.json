@@ -1,0 +1,130 @@
+{
+  "id": "software-architecture",
+  "slug": "software-architecture",
+  "title": "Software Architecture",
+  "emoji": "🏛️",
+  "order": 39,
+  "tag": "Architect",
+  "accent": "#7C2D12",
+  "blurb": "Quality attributes, architecture styles, decisions and ADRs, C4, fitness functions, DDD boundaries, migrations and governance.",
+  "group": "leadership",
+  "relatedTopics": [
+    "system-design",
+    "low-level-design",
+    "engineering-management"
+  ],
+  "quiz": [
+    {
+      "id": "sa-q1",
+      "question": "Which is a well-formed quality-attribute requirement?",
+      "options": [
+        "The system should be fast",
+        "p95 menu load under 300 ms at 2,000 requests per second",
+        "Use microservices",
+        "Be scalable"
+      ],
+      "correctIndex": 1,
+      "explanation": "Measurable scenarios can guide design and be tested."
+    },
+    {
+      "id": "sa-q2",
+      "question": "For most new products with a small team, which starting style is usually recommended?",
+      "options": [
+        "Many microservices",
+        "A modular monolith with clear domain boundaries",
+        "Serverless only",
+        "Space-based architecture"
+      ],
+      "correctIndex": 1,
+      "explanation": "Simple operations and fast change; extract services when there is a concrete driver."
+    },
+    {
+      "id": "sa-q3",
+      "question": "What problem does the transactional outbox solve?",
+      "options": [
+        "Slow queries",
+        "Lost or inconsistent events when a DB write and message publish are not atomic",
+        "Authentication",
+        "Caching"
+      ],
+      "correctIndex": 1,
+      "explanation": "The event is written in the same transaction and relayed afterwards."
+    },
+    {
+      "id": "sa-q4",
+      "question": "What is an Architecture Decision Record?",
+      "options": [
+        "A UML diagram",
+        "A short document recording a decision's context, choice, consequences and alternatives",
+        "A test report",
+        "A deployment log"
+      ],
+      "correctIndex": 1,
+      "explanation": "ADRs explain why the system is the way it is."
+    },
+    {
+      "id": "sa-q5",
+      "question": "What is a fitness function?",
+      "options": [
+        "A load balancer",
+        "An automated check that an architectural characteristic still holds",
+        "A type of microservice",
+        "A sprint metric"
+      ],
+      "correctIndex": 1,
+      "explanation": "Examples: architecture tests, performance thresholds, breaking-change checks."
+    },
+    {
+      "id": "sa-q6",
+      "question": "Which pattern incrementally replaces a legacy system behind a routing layer?",
+      "options": [
+        "Big-bang rewrite",
+        "Strangler fig",
+        "Shared database",
+        "Golden hammer"
+      ],
+      "correctIndex": 1,
+      "explanation": "Functionality moves piece by piece until the legacy system can be removed."
+    },
+    {
+      "id": "sa-q7",
+      "question": "Conway's law states that…",
+      "options": [
+        "Code doubles every 18 months",
+        "Systems mirror the communication structure of the organisation that builds them",
+        "Latency adds up",
+        "Caches are hard"
+      ],
+      "correctIndex": 1,
+      "explanation": "Architects use the inverse Conway manoeuvre to shape teams around desired boundaries."
+    },
+    {
+      "id": "sa-q8",
+      "question": "Which C4 level shows deployable units such as web app, API, database and broker?",
+      "options": [
+        "Context",
+        "Containers",
+        "Components",
+        "Code"
+      ],
+      "correctIndex": 1,
+      "explanation": "Container diagrams are aimed at developers and operations."
+    }
+  ],
+  "problems": [
+    {
+      "id": "sa-p1",
+      "title": "Monolith or microservices?",
+      "difficulty": "hard",
+      "prompt": "A 12-engineer startup wants to split its app into 10 services. Advise them.",
+      "hints": [
+        "quality attributes",
+        "team size",
+        "operational maturity",
+        "modular monolith"
+      ],
+      "solution": "Elicit quality-attribute drivers (speed of change, cost, scaling hotspots), note team size and DevOps maturity, recommend a modular monolith with enforced boundaries and ADRs, extract only components with distinct scaling/compliance/team needs, add fitness functions, revisit as the org grows.",
+      "points": 10
+    }
+  ]
+}

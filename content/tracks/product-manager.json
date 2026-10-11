@@ -1,0 +1,81 @@
+{
+  "slug": "product-manager",
+  "title": "Product Manager",
+  "emoji": "\ud83c\udfaf",
+  "accent": "#CA8A04",
+  "order": 19,
+  "blurb": "Strategy, discovery, prioritisation, delivery, analytics and leading through influence.",
+  "source": "https://roadmap.sh/product-manager",
+  "stages": [
+    {
+      "title": "Strategy and outcomes",
+      "hint": "",
+      "items": [
+        {
+          "label": "Product discovery and strategy",
+          "ref": "product-management/notes/01-product-discovery-and-strategy"
+        }
+      ]
+    },
+    {
+      "title": "Understanding users",
+      "hint": "",
+      "items": [
+        {
+          "label": "User research",
+          "ref": "ux-design/notes/01-user-research-and-human-centred-design"
+        },
+        {
+          "label": "Usability testing",
+          "ref": "ux-design/notes/02-interaction-design-prototyping-and-usability-testing#4-usability-testing"
+        }
+      ]
+    },
+    {
+      "title": "Delivery and analytics",
+      "hint": "",
+      "items": [
+        {
+          "label": "Delivery, metrics, roadmaps and stakeholders",
+          "ref": "product-management/notes/02-product-delivery-metrics-and-stakeholders"
+        },
+        {
+          "label": "Statistics and A/B tests",
+          "ref": "data-analysis/notes/02-statistics-for-analysts"
+        },
+        {
+          "label": "SQL for PMs",
+          "ref": "database/notes/01-sql-and-data-modelling"
+        }
+      ]
+    },
+    {
+      "title": "Technical fluency",
+      "hint": "",
+      "items": [
+        {
+          "label": "System design fundamentals",
+          "ref": "system-design/notes/01-system-design-fundamentals"
+        },
+        {
+          "label": "API design",
+          "ref": "api-design/deep/theory"
+        }
+      ]
+    },
+    {
+      "title": "Leadership",
+      "hint": "",
+      "items": [
+        {
+          "label": "Communication",
+          "ref": "behavioral/notes/01-behavioral-and-technical-communication"
+        },
+        {
+          "label": "Working with engineering",
+          "ref": "engineering-management/notes/02-execution-delivery-metrics-and-organisation"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "id": "product-management",
+  "slug": "product-management",
+  "title": "Product Management",
+  "emoji": "🎯",
+  "order": 41,
+  "tag": "PM",
+  "accent": "#CA8A04",
+  "blurb": "Strategy, outcomes and OKRs, continuous discovery, assumption testing, prioritisation, delivery, analytics, roadmaps and stakeholders.",
+  "group": "leadership",
+  "relatedTopics": [
+    "ux-design",
+    "engineering-management",
+    "data-analysis"
+  ],
+  "quiz": [
+    {
+      "id": "pm-q1",
+      "question": "Which is an outcome rather than an output?",
+      "options": [
+        "Ship live tracking",
+        "Increase 30-day repeat rate from 38% to 45%",
+        "Write a PRD",
+        "Redesign the home page"
+      ],
+      "correctIndex": 1,
+      "explanation": "Outcomes describe measurable change in customer or business behaviour."
+    },
+    {
+      "id": "pm-q2",
+      "question": "What are the four product risks?",
+      "options": [
+        "Cost, time, scope, quality",
+        "Value, usability, feasibility, viability",
+        "Speed, scale, safety, style",
+        "Legal, sales, marketing, support"
+      ],
+      "correctIndex": 1,
+      "explanation": "The product trio reduces these before building."
+    },
+    {
+      "id": "pm-q3",
+      "question": "RICE score is calculated as…",
+      "options": [
+        "Reach + Impact + Confidence + Effort",
+        "(Reach × Impact × Confidence) ÷ Effort",
+        "Revenue ÷ Cost",
+        "Impact × Effort"
+      ],
+      "correctIndex": 1,
+      "explanation": "Higher reach, impact and confidence and lower effort raise priority."
+    },
+    {
+      "id": "pm-q4",
+      "question": "What is a concierge test?",
+      "options": [
+        "A load test",
+        "Delivering the value manually to a few customers before building automation",
+        "A survey",
+        "A code review"
+      ],
+      "correctIndex": 1,
+      "explanation": "It validates value cheaply."
+    },
+    {
+      "id": "pm-q5",
+      "question": "Why define success criteria before running an experiment?",
+      "options": [
+        "It is required by law",
+        "To avoid post-hoc rationalisation where every result looks like success",
+        "To speed up tests",
+        "To reduce traffic"
+      ],
+      "correctIndex": 1,
+      "explanation": "Pre-registration keeps decisions honest."
+    },
+    {
+      "id": "pm-q6",
+      "question": "What does an opportunity solution tree connect?",
+      "options": [
+        "Teams to managers",
+        "A desired outcome to customer opportunities, solutions and experiments",
+        "Code to tests",
+        "Bugs to releases"
+      ],
+      "correctIndex": 1,
+      "explanation": "It keeps solutions tied to real needs and outcomes."
+    },
+    {
+      "id": "pm-q7",
+      "question": "What do feature flags enable?",
+      "options": [
+        "Faster CPUs",
+        "Separating deploy from release for staged rollouts and instant rollback",
+        "Better SEO",
+        "Automatic pricing"
+      ],
+      "correctIndex": 1,
+      "explanation": "Code can ship dark and be enabled gradually."
+    },
+    {
+      "id": "pm-q8",
+      "question": "Which roadmap format communicates uncertainty most honestly?",
+      "options": [
+        "Gantt chart with fixed dates for every feature",
+        "Outcome-based Now / Next / Later",
+        "A list of 30 features",
+        "None"
+      ],
+      "correctIndex": 1,
+      "explanation": "It shows direction and confidence without false precision."
+    }
+  ],
+  "problems": [
+    {
+      "id": "pm-p1",
+      "title": "Improve repeat orders",
+      "difficulty": "hard",
+      "prompt": "Repeat orders in one city are falling. Plan discovery through launch.",
+      "hints": [
+        "outcome",
+        "opportunities",
+        "assumption tests",
+        "rollout + metrics"
+      ],
+      "solution": "Set the outcome metric, analyse funnels and cohorts, interview churned and active customers, build an opportunity solution tree, compare solutions, test riskiest assumptions cheaply with success criteria, prioritise with RICE and strategy, ship behind flags with A/B test and guardrails, review at 2 and 6 weeks.",
+      "points": 10
+    }
+  ]
+}

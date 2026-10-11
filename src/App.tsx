@@ -8,6 +8,8 @@ const ReaderPage = lazy(() => import('./pages/ReaderPage'));
 const FlashcardsPage = lazy(() => import('./pages/FlashcardsPage'));
 const MockPage = lazy(() => import('./pages/MockPage'));
 const SkillMapPage = lazy(() => import('./pages/SkillMapPage'));
+const RoadmapsPage = lazy(() => import('./pages/RoadmapsPage'));
+const TrackPage = lazy(() => import('./pages/TrackPage'));
 const BookmarksPage = lazy(() => import('./pages/BookmarksPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
@@ -26,6 +28,8 @@ export default function App() {
           <Route path="prep-map" element={<ReaderPage prepMap />} />
           <Route path="topics/:slug" element={<TopicPage />} />
           <Route path="topics/:slug/:kind/:id" element={<ReaderPage />} />
+          <Route path="roadmaps" element={<RoadmapsPage />} />
+          <Route path="roadmaps/:slug" element={<TrackPage />} />
           <Route path="flashcards" element={<FlashcardsPage />} />
           <Route path="mock" element={<MockPage />} />
           <Route path="skills" element={<SkillMapPage />} />

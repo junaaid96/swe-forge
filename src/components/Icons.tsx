@@ -10,6 +10,7 @@ export const IconSun = (p: P) => (<svg {...base} {...p}><circle cx="12" cy="12" 
 export const IconMoon = (p: P) => (<svg {...base} {...p}><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>);
 export const IconHome = (p: P) => (<svg {...base} {...p}><path d="M3 11l9-8 9 8" /><path d="M5 10v10h14V10" /></svg>);
 export const IconMap = (p: P) => (<svg {...base} {...p}><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2z" /><path d="M9 4v14M15 6v14" /></svg>);
+export const IconRoute = (p: P) => (<svg {...base} {...p}><circle cx="6" cy="19" r="2.5" /><circle cx="18" cy="5" r="2.5" /><path d="M8.5 19H17a3.5 3.5 0 0 0 0-7H7a3.5 3.5 0 0 1 0-7h8.5" /></svg>);
 export const IconCards = (p: P) => (<svg {...base} {...p}><rect x="3" y="6" width="14" height="14" rx="2" /><path d="M7 3h12a2 2 0 0 1 2 2v12" /></svg>);
 export const IconTimer = (p: P) => (<svg {...base} {...p}><circle cx="12" cy="13" r="8" /><path d="M12 9v4l2 2M9 2h6" /></svg>);
 export const IconRadar = (p: P) => (<svg {...base} {...p}><path d="M12 2 21 8.5 17.5 20h-11L3 8.5z" /><path d="M12 7l4.5 3.3-1.7 5.2H9.2L7.5 10.3z" /></svg>);

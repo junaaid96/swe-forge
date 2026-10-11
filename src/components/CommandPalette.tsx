@@ -87,6 +87,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
     const actions: Result[] = [
       { id: 'a-flash', url: '/flashcards', title: 'Review flashcards', sub: 'Spaced repetition', kind: 'action' },
       { id: 'a-mock', url: '/mock', title: 'Start a mock interview', sub: 'Timed, mixed questions', kind: 'action' },
+      { id: 'a-roadmaps', url: '/roadmaps', title: 'Browse roadmaps', sub: '24 role-based learning tracks', kind: 'action' },
       { id: 'a-skills', url: '/skills', title: 'Open skill map', sub: 'Progress & what to study next', kind: 'action' },
       { id: 'a-prep', url: '/prep-map', title: 'Topic-wise prep map', sub: 'Guide', kind: 'action' },
       { id: 'a-theme', url: '', title: 'Toggle light / dark theme', sub: 'Shortcut: T', kind: 'action', run: toggleTheme },
@@ -96,6 +97,9 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
     const out: Result[] = [];
     const matchAll = (hay: string) => toks.every((t) => hay.includes(t));
     for (const a of actions) if (matchAll(a.title.toLowerCase())) out.push(a);
+    for (const tr of catalog?.tracks ?? []) {
+      if (matchAll(`${tr.title} roadmap ${tr.slug} ${tr.blurb}`.toLowerCase())) out.push({ id: `r-${tr.slug}`, url: `/roadmaps/${tr.slug}`, title: `${tr.emoji} ${tr.title} roadmap`, sub: `Roadmap · ${tr.stages.length} stages`, kind: 'topic' });
+    }
     for (const t of catalog?.topics ?? []) {
       if (matchAll(`${t.title} ${t.tag} ${t.slug} ${t.blurb}`.toLowerCase())) out.push({ id: `t-${t.slug}`, url: `/topics/${t.slug}`, title: `${t.emoji} ${t.title}`, sub: `Topic · ${t.pages.length} pages`, kind: 'topic' });
       for (const p of t.pages) if (matchAll(p.title.toLowerCase())) out.push({ id: `p-${p.key}`, url: p.url, title: p.title, sub: `${t.title} · page`, kind: 'page' });

@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { formatMinutes, useCatalog } from '../lib/content';
 import { useProgress } from '../lib/progress';
-import { allStats, dueCount, overall, suggestions } from '../lib/stats';
+import { allStats, dueCount, overall, suggestions, trackStats } from '../lib/stats';
 import { Bar, Ring } from '../components/Ring';
 import { IconArrowRight, IconCards, IconFlame, IconMap, IconRadar, IconTimer } from '../components/Icons';
 import { PageFallback } from '../components/Layout';
@@ -120,6 +120,29 @@ export function HomePage() {
           <span>The checklist of concepts to know for each area, linked to the full notes.</span>
         </Link>
       </section>
+
+      {catalog.tracks?.length ? (
+        <section className="group" aria-labelledby="g-roadmaps">
+          <div className="group-head">
+            <h2 id="g-roadmaps">Pick a roadmap</h2>
+            <Link to="/roadmaps" className="small">
+              All {catalog.tracks.length} roadmaps →
+            </Link>
+          </div>
+          <div className="track-strip">
+            {catalog.tracks.map((tr) => {
+              const ts = trackStats(tr, state);
+              return (
+                <Link key={tr.slug} to={`/roadmaps/${tr.slug}`} className="track-chip" style={{ ['--topic' as string]: tr.accent }}>
+                  <span aria-hidden>{tr.emoji}</span>
+                  <span>{tr.title}</span>
+                  {ts.pct ? <small>{ts.pct}%</small> : null}
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
 
       {catalog.groups.map((g) => (
         <section key={g.id} className="group" aria-labelledby={`g-${g.id}`}>

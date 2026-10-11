@@ -334,6 +334,53 @@ if (fs.existsSync(PREP_MAP)) {
   totalPages += 1;
 }
 
+// ---------------------------------------------------------------------------
+// Roadmap tracks: content/tracks/<slug>.json group existing pages into stages.
+// Items reference pages ("topic/kind/id[#anchor]") or a whole topic ("topic").
+const TRACKS = path.join(CONTENT, 'tracks');
+const tracks = [];
+if (fs.existsSync(TRACKS)) {
+  const pageIndex = new Map();
+  for (const t of topics) for (const p of t.pages) pageIndex.set(p.key, { ...p, topic: t });
+  const anchorsOf = (key) => {
+    const [slug, kind, id] = key.split('/');
+    const f = path.join(OUT, 'pages', slug, kind, `${id}.json`);
+    return new Set(readJson(f).headings.map((h) => h.id));
+  };
+  const errors = [];
+  for (const f of fs.readdirSync(TRACKS).filter((x) => x.endsWith('.json')).sort(natural)) {
+    const tr = readJson(path.join(TRACKS, f));
+    const used = new Set();
+    let minutes = 0;
+    const stages = tr.stages.map((st) => ({
+      title: st.title,
+      hint: st.hint ?? '',
+      items: st.items.map((it) => {
+        const [ref, anchor] = it.ref.split('#');
+        if (!ref.includes('/')) {
+          const t = topics.find((x) => x.slug === ref);
+          if (!t) { errors.push(`${f}: unknown topic "${ref}"`); return null; }
+          used.add(t.slug);
+          minutes += t.minutes;
+          return { label: it.label, url: `/topics/${t.slug}`, keys: t.pages.map((p) => p.key), minutes: t.minutes, topic: t.slug };
+        }
+        const p = pageIndex.get(ref);
+        if (!p) { errors.push(`${f}: unknown page "${ref}"`); return null; }
+        if (anchor && !anchorsOf(ref).has(anchor)) errors.push(`${f}: missing anchor "${it.ref}"`);
+        used.add(p.topic.slug);
+        minutes += p.minutes;
+        return { label: it.label, url: p.url + (anchor ? `#${anchor}` : ''), keys: [p.key], minutes: p.minutes, topic: p.topic.slug };
+      }).filter(Boolean),
+    }));
+    tracks.push({ slug: tr.slug, title: tr.title, emoji: tr.emoji, accent: tr.accent, blurb: tr.blurb, order: tr.order ?? 99, source: tr.source, stages, topics: [...used], minutes });
+  }
+  if (errors.length) {
+    console.error(`[content] track errors:\n  ${errors.join('\n  ')}`);
+    process.exit(1);
+  }
+  tracks.sort((a, b) => a.order - b.order);
+}
+
 // De-duplicate cards by id (identical headings in one page).
 const seen = new Set();
 const uniqueCards = cards.filter((c) => (seen.has(c.id) ? false : (seen.add(c.id), true)));
@@ -344,9 +391,10 @@ for (const t of topics) t.cardCount = cardCount[t.slug] ?? 0;
 writeJson(path.join(OUT, 'catalog.json'), {
   site: { name: 'Forgeline', tagline: 'Learn, practise and track software engineering — topic by topic.' },
   generatedAt: new Date().toISOString(),
-  totals: { topics: topics.length, pages: totalPages, words: totalWords, minutes: totalMinutes, cards: uniqueCards.length, mcq: uniqueCards.filter((c) => c.src === 'mcq').length },
+  totals: { topics: topics.length, pages: totalPages, words: totalWords, minutes: totalMinutes, tracks: tracks.length, cards: uniqueCards.length, mcq: uniqueCards.filter((c) => c.src === 'mcq').length },
   groups: groups.map((g) => ({ id: g.id, label: g.label, hint: g.hint, topics: g.topics.filter((s) => topics.some((t) => t.slug === s)) })),
   topics,
+  tracks,
   prepMap,
 });
 writeJson(path.join(OUT, 'search.json'), search);

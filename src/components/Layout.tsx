@@ -88,6 +88,9 @@ export function Layout() {
             <kbd>⌘K</kbd>
           </button>
           <nav className="topbar-nav" aria-label="Practice">
+            <NavLink to="/roadmaps" className={({ isActive }) => `top-link ${isActive ? 'active' : ''}`}>
+              Roadmaps
+            </NavLink>
             <NavLink to="/flashcards" className={({ isActive }) => `top-link ${isActive ? 'active' : ''}`}>
               Flashcards{due ? <span className="badge">{due}</span> : null}
             </NavLink>
@@ -117,6 +120,10 @@ export function Layout() {
             <button type="button" className="link-btn" onClick={() => setHelp(true)}>
               Keyboard shortcuts
             </button>
+            <a href="https://roadmap.sh" target="_blank" rel="noopener noreferrer" className="credit-roadmap" aria-label="Roadmap topics inspired by roadmap.sh (opens in a new tab)">
+              Roadmap topics inspired by <strong>roadmap.sh</strong>
+              <IconArrowUpRight width={12} height={12} />
+            </a>
             <a
               href="https://junaidul.pro.bd/codejborg"
               target="_blank"

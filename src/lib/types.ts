@@ -39,9 +39,10 @@ export interface Group {
 export interface Catalog {
   site: { name: string; tagline: string };
   generatedAt: string;
-  totals: { topics: number; pages: number; words: number; minutes: number; cards: number; mcq: number };
+  totals: { topics: number; tracks?: number; pages: number; words: number; minutes: number; cards: number; mcq: number };
   groups: Group[];
   topics: Topic[];
+  tracks?: Track[];
   prepMap: { key: string; title: string; url: string; minutes: number } | null;
 }
 
@@ -133,3 +134,30 @@ export const SOURCE_LABEL: Record<CardSource, string> = {
   prep: 'Prep map',
   mcq: 'MCQ',
 };
+
+export interface TrackItem {
+  label: string;
+  url: string;
+  keys: string[];
+  minutes: number;
+  topic: string;
+}
+
+export interface TrackStage {
+  title: string;
+  hint: string;
+  items: TrackItem[];
+}
+
+export interface Track {
+  slug: string;
+  title: string;
+  emoji: string;
+  accent: string;
+  blurb: string;
+  order: number;
+  source: string;
+  stages: TrackStage[];
+  topics: string[];
+  minutes: number;
+}

@@ -1,0 +1,75 @@
+{
+  "slug": "android",
+  "title": "Android",
+  "emoji": "\ud83e\udd16",
+  "accent": "#3DDC84",
+  "order": 21,
+  "blurb": "Kotlin and Compose to offline-first architecture, background work, testing, performance and Play releases.",
+  "source": "https://roadmap.sh/android",
+  "stages": [
+    {
+      "title": "Kotlin and fundamentals",
+      "hint": "",
+      "items": [
+        {
+          "label": "Kotlin and Android fundamentals",
+          "ref": "android/notes/01-kotlin-and-android-fundamentals"
+        },
+        {
+          "label": "Git",
+          "ref": "git-collaboration/notes/01-git"
+        }
+      ]
+    },
+    {
+      "title": "Architecture and data",
+      "hint": "",
+      "items": [
+        {
+          "label": "MVVM, Room, Retrofit, Hilt, WorkManager",
+          "ref": "android/notes/02-app-architecture-data-and-background-work"
+        },
+        {
+          "label": "API design",
+          "ref": "api-design/deep/theory"
+        },
+        {
+          "label": "Webhooks and async APIs",
+          "ref": "api-design/notes/03-webhooks-and-asynchronous-apis"
+        }
+      ]
+    },
+    {
+      "title": "UI and UX",
+      "hint": "",
+      "items": [
+        {
+          "label": "UI/UX essentials",
+          "ref": "ui-ux/notes/01-ui-ux-essentials-for-engineers"
+        },
+        {
+          "label": "Usability testing",
+          "ref": "ux-design/notes/02-interaction-design-prototyping-and-usability-testing"
+        }
+      ]
+    },
+    {
+      "title": "Quality and release",
+      "hint": "",
+      "items": [
+        {
+          "label": "Testing, performance, security and publishing",
+          "ref": "android/notes/03-testing-performance-security-and-publishing"
+        },
+        {
+          "label": "CI/CD",
+          "ref": "devops-cloud/notes/06-cicd"
+        },
+        {
+          "label": "Authentication",
+          "ref": "security/notes/02-authentication-and-authorization"
+        }
+      ]
+    }
+  ]
+}

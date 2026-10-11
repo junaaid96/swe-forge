@@ -1,0 +1,130 @@
+{
+  "id": "seo",
+  "slug": "seo",
+  "title": "SEO",
+  "emoji": "🔎",
+  "order": 46,
+  "tag": "SEO",
+  "accent": "#16A34A",
+  "blurb": "Crawling, indexing, rendering, site architecture, structured data, Core Web Vitals, intent and content, local SEO, links, AI search and measurement.",
+  "group": "mobile-games",
+  "relatedTopics": [
+    "frontend",
+    "nextjs",
+    "data-analysis"
+  ],
+  "quiz": [
+    {
+      "id": "seo-q1",
+      "question": "Which removes a page from the index?",
+      "options": [
+        "Disallow in robots.txt",
+        "A noindex meta tag or X-Robots-Tag header on a crawlable page",
+        "Deleting it from the sitemap only",
+        "A nofollow link"
+      ],
+      "correctIndex": 1,
+      "explanation": "Disallow blocks crawling, so Google cannot see a noindex."
+    },
+    {
+      "id": "seo-q2",
+      "question": "What does rel=\"canonical\" indicate?",
+      "options": [
+        "The page language",
+        "The preferred URL among duplicates",
+        "A paid link",
+        "A redirect"
+      ],
+      "correctIndex": 1,
+      "explanation": "It consolidates duplicate signals."
+    },
+    {
+      "id": "seo-q3",
+      "question": "Which rendering approach is safest for SEO?",
+      "options": [
+        "Client-side rendering only",
+        "Server-side rendering or static generation",
+        "iframes",
+        "Rendering in canvas"
+      ],
+      "correctIndex": 1,
+      "explanation": "HTML content is available without executing JavaScript."
+    },
+    {
+      "id": "seo-q4",
+      "question": "Which Core Web Vital measures responsiveness and replaced FID?",
+      "options": [
+        "LCP",
+        "CLS",
+        "INP",
+        "TTFB"
+      ],
+      "correctIndex": 2,
+      "explanation": "Interaction to Next Paint; good is ≤ 200 ms."
+    },
+    {
+      "id": "seo-q5",
+      "question": "Two near-identical pages target \"best biryani dhaka\" and \"top biryani dhaka\". The problem?",
+      "options": [
+        "None",
+        "Keyword cannibalisation",
+        "Duplicate sitemap",
+        "Crawl budget only"
+      ],
+      "correctIndex": 1,
+      "explanation": "Consolidate into one strong page per intent."
+    },
+    {
+      "id": "seo-q6",
+      "question": "Which permanent redirect consolidates ranking signals?",
+      "options": [
+        "302",
+        "301 (or 308)",
+        "404",
+        "503"
+      ],
+      "correctIndex": 1,
+      "explanation": "Use 301/308 for permanent moves."
+    },
+    {
+      "id": "seo-q7",
+      "question": "What is the most important element of E-E-A-T?",
+      "options": [
+        "Expertise",
+        "Trust",
+        "Authority",
+        "Experience"
+      ],
+      "correctIndex": 1,
+      "explanation": "Trust is central; the others support it."
+    },
+    {
+      "id": "seo-q8",
+      "question": "What does NAP mean in local SEO?",
+      "options": [
+        "Network Access Point",
+        "Name, Address, Phone (consistent everywhere)",
+        "New Article Policy",
+        "Navigation And Pagination"
+      ],
+      "correctIndex": 1,
+      "explanation": "Consistency across listings supports local rankings."
+    }
+  ],
+  "problems": [
+    {
+      "id": "seo-p1",
+      "title": "Rescue organic traffic after an SPA rebuild",
+      "difficulty": "hard",
+      "prompt": "Organic traffic fell 60% after moving to a client-rendered SPA. Plan the fix.",
+      "hints": [
+        "URL Inspection",
+        "SSR/SSG",
+        "metadata + canonicals",
+        "links + status codes"
+      ],
+      "solution": "Diagnose with URL Inspection/rendered HTML; move public pages to SSR/SSG (e.g., Next.js); unique titles, descriptions, canonicals; real <a href> links; proper 404s; sitemap; structured data; monitor coverage and traffic by page type.",
+      "points": 10
+    }
+  ]
+}

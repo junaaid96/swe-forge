@@ -1,0 +1,130 @@
+{
+  "id": "game-server",
+  "slug": "game-server",
+  "title": "Server-Side Game Development",
+  "emoji": "🕹️",
+  "order": 45,
+  "tag": "Game servers",
+  "accent": "#6D28D9",
+  "blurb": "Multiplayer netcode (authoritative servers, prediction, interpolation, lag compensation) and game backends (matchmaking, fleets, economy, scaling).",
+  "group": "mobile-games",
+  "relatedTopics": [
+    "game-development",
+    "system-design",
+    "devops-cloud"
+  ],
+  "quiz": [
+    {
+      "id": "gs-q1",
+      "question": "In an authoritative server model, what should clients send?",
+      "options": [
+        "Their final positions and hits",
+        "Inputs; the server simulates and decides results",
+        "Nothing",
+        "Encrypted scores"
+      ],
+      "correctIndex": 1,
+      "explanation": "Never trust the client for outcomes."
+    },
+    {
+      "id": "gs-q2",
+      "question": "Why do real-time games prefer UDP?",
+      "options": [
+        "It is encrypted",
+        "Avoids TCP head-of-line blocking; newest state matters more than late old state",
+        "It guarantees order",
+        "Browsers require it"
+      ],
+      "correctIndex": 1,
+      "explanation": "Games add selective reliability on top of UDP."
+    },
+    {
+      "id": "gs-q3",
+      "question": "What does client-side prediction with reconciliation do?",
+      "options": [
+        "Hides other players",
+        "Applies local inputs immediately, then corrects from server state by replaying unacknowledged inputs",
+        "Reduces bandwidth",
+        "Encrypts packets"
+      ],
+      "correctIndex": 1,
+      "explanation": "Responsive yet authoritative."
+    },
+    {
+      "id": "gs-q4",
+      "question": "Why render remote players ~100 ms in the past?",
+      "options": [
+        "To cheat",
+        "To interpolate smoothly between received snapshots despite jitter and loss",
+        "To save CPU",
+        "It is required by Agones"
+      ],
+      "correctIndex": 1,
+      "explanation": "Entity interpolation smooths motion."
+    },
+    {
+      "id": "gs-q5",
+      "question": "What does lag compensation do for hitscan weapons?",
+      "options": [
+        "Slows bullets",
+        "Rewinds target hitboxes to what the shooter saw before testing hits",
+        "Disables high-ping players",
+        "Increases tick rate"
+      ],
+      "correctIndex": 1,
+      "explanation": "Bounded rewind windows limit abuse."
+    },
+    {
+      "id": "gs-q6",
+      "question": "How should matchmaking balance quality and wait time?",
+      "options": [
+        "Never relax constraints",
+        "Start with tight skill/latency windows and widen them as tickets wait",
+        "Match randomly",
+        "Match by username"
+      ],
+      "correctIndex": 1,
+      "explanation": "Constraint relaxation keeps queues moving."
+    },
+    {
+      "id": "gs-q7",
+      "question": "What prevents duplicated items when a client retries a purchase?",
+      "options": [
+        "Faster servers",
+        "Idempotency keys with an atomic transaction for spend + grant + ledger",
+        "Client-side checks",
+        "Caching"
+      ],
+      "correctIndex": 1,
+      "explanation": "Retries must not re-apply effects."
+    },
+    {
+      "id": "gs-q8",
+      "question": "Which data structure is classic for leaderboards?",
+      "options": [
+        "Linked list",
+        "Redis sorted set",
+        "Bloom filter",
+        "Queue"
+      ],
+      "correctIndex": 1,
+      "explanation": "O(log n) updates and rank queries."
+    }
+  ],
+  "problems": [
+    {
+      "id": "gs-p1",
+      "title": "Design 5v5 matchmaking",
+      "difficulty": "hard",
+      "prompt": "Design matchmaking and server allocation for a 5v5 competitive game.",
+      "hints": [
+        "tickets",
+        "rating system",
+        "region pings",
+        "orchestrator"
+      ],
+      "solution": "Tickets with party, MMR+uncertainty and region pings; per-mode/region queues; match function every 1–2 s balancing teams, widening windows with wait; allocate via Agones/managed fleet in best region with buffer autoscaling; match tokens; monitor wait time and match quality; Glicko-2/TrueSkill updates from server-reported results.",
+      "points": 10
+    }
+  ]
+}

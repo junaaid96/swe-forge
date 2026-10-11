@@ -1,0 +1,130 @@
+{
+  "id": "game-development",
+  "slug": "game-development",
+  "title": "Game Development",
+  "emoji": "🎮",
+  "order": 44,
+  "tag": "Games",
+  "accent": "#9333EA",
+  "blurb": "Engines, the game loop, vectors and transforms, rendering, physics, game AI, gameplay architecture, design and optimisation.",
+  "group": "mobile-games",
+  "relatedTopics": [
+    "game-server",
+    "c-cpp",
+    "dsa"
+  ],
+  "quiz": [
+    {
+      "id": "gd-q1",
+      "question": "Why multiply movement by delta time?",
+      "options": [
+        "To slow the game",
+        "So speed is consistent regardless of frame rate",
+        "To sync audio",
+        "It is required by GPUs"
+      ],
+      "correctIndex": 1,
+      "explanation": "Per-frame movement would vary with FPS."
+    },
+    {
+      "id": "gd-q2",
+      "question": "How can you test whether an enemy is in front of the player?",
+      "options": [
+        "Cross product length",
+        "Dot product of forward and direction to enemy > 0 (or > cos(half FOV))",
+        "Matrix inverse",
+        "Random check"
+      ],
+      "correctIndex": 1,
+      "explanation": "Dot product measures alignment of directions."
+    },
+    {
+      "id": "gd-q3",
+      "question": "Why do engines store rotations as quaternions?",
+      "options": [
+        "Smaller files",
+        "Avoid gimbal lock and interpolate smoothly",
+        "Required by physics",
+        "Faster rendering of textures"
+      ],
+      "correctIndex": 1,
+      "explanation": "Euler angles suffer gimbal lock and poor interpolation."
+    },
+    {
+      "id": "gd-q4",
+      "question": "A mobile game has 900 draw calls. What usually helps most?",
+      "options": [
+        "More lights",
+        "Batching via sprite/texture atlases and fewer materials",
+        "Higher resolution textures",
+        "More scripts"
+      ],
+      "correctIndex": 1,
+      "explanation": "Draw call overhead is a common CPU bottleneck."
+    },
+    {
+      "id": "gd-q5",
+      "question": "What is coyote time?",
+      "options": [
+        "A cheat code",
+        "A short grace period to jump after leaving a ledge",
+        "A physics engine",
+        "A rendering mode"
+      ],
+      "correctIndex": 1,
+      "explanation": "Small tolerances make controls feel fair."
+    },
+    {
+      "id": "gd-q6",
+      "question": "Which algorithm is standard for pathfinding on a graph or navmesh?",
+      "options": [
+        "Bubble sort",
+        "A* (A-star)",
+        "Dijkstra only on trees",
+        "Binary search"
+      ],
+      "correctIndex": 1,
+      "explanation": "A* uses cost-so-far plus a heuristic."
+    },
+    {
+      "id": "gd-q7",
+      "question": "Why use object pooling for bullets?",
+      "options": [
+        "Better graphics",
+        "Avoid allocation and garbage-collection spikes from frequent create/destroy",
+        "Required by Unity",
+        "For networking"
+      ],
+      "correctIndex": 1,
+      "explanation": "Reuse objects instead of instantiating each frame."
+    },
+    {
+      "id": "gd-q8",
+      "question": "Where should you profile a mobile game?",
+      "options": [
+        "Only in the editor",
+        "On target devices",
+        "On the fastest PC",
+        "Nowhere; guess"
+      ],
+      "correctIndex": 1,
+      "explanation": "Editor and desktop performance are misleading."
+    }
+  ],
+  "problems": [
+    {
+      "id": "gd-p1",
+      "title": "Fix a stuttering mobile game",
+      "difficulty": "medium",
+      "prompt": "A mobile game hitches every few seconds. Diagnose and fix.",
+      "hints": [
+        "profile on device",
+        "GC spikes",
+        "pooling",
+        "async loading"
+      ],
+      "solution": "Profile on device to find periodic spikes; check GC allocations (strings, LINQ, instantiation), asset loading on main thread, expensive periodic logic; fix with pooling, allocation-free hot paths, async loading, time-slicing; verify with profiler against budgets.",
+      "points": 10
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "slug": "qa",
+  "title": "QA Engineer",
+  "emoji": "\ud83e\uddea",
+  "accent": "#65A30D",
+  "order": 16,
+  "blurb": "Test design, exploratory testing, automation, API, performance and CI quality gates.",
+  "source": "https://roadmap.sh/qa",
+  "stages": [
+    {
+      "title": "QA fundamentals",
+      "hint": "",
+      "items": [
+        {
+          "label": "Test design and exploratory testing",
+          "ref": "testing-quality/notes/03-qa-engineering-test-design-and-exploratory-testing"
+        },
+        {
+          "label": "Testing strategy",
+          "ref": "testing-quality/notes/01-testing-strategy"
+        }
+      ]
+    },
+    {
+      "title": "Web and UI automation",
+      "hint": "",
+      "items": [
+        {
+          "label": "Frontend and E2E testing",
+          "ref": "testing-quality/notes/02-frontend-and-e2e-testing"
+        },
+        {
+          "label": "JavaScript",
+          "ref": "javascript/notes/01-javascript"
+        }
+      ]
+    },
+    {
+      "title": "API, contract and performance",
+      "hint": "",
+      "items": [
+        {
+          "label": "API, performance and CI automation",
+          "ref": "testing-quality/notes/04-api-performance-and-test-automation-in-ci"
+        },
+        {
+          "label": "API design",
+          "ref": "api-design/deep/theory"
+        }
+      ]
+    },
+    {
+      "title": "Delivery",
+      "hint": "",
+      "items": [
+        {
+          "label": "Git",
+          "ref": "git-collaboration/notes/01-git"
+        },
+        {
+          "label": "CI/CD",
+          "ref": "devops-cloud/notes/06-cicd"
+        },
+        {
+          "label": "Docker",
+          "ref": "devops-cloud/notes/03-docker"
+        }
+      ]
+    },
+    {
+      "title": "Security testing",
+      "hint": "",
+      "items": [
+        {
+          "label": "OWASP Top 10",
+          "ref": "security/notes/01-owasp-top-10-2025"
+        },
+        {
+          "label": "DAST and API security",
+          "ref": "devsecops/notes/01-shift-left-security-in-ci-cd#6-dast-and-api-security-testing"
+        }
+      ]
+    }
+  ]
+}

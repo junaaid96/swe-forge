@@ -1,0 +1,95 @@
+{
+  "slug": "cyber-security",
+  "title": "Cyber Security",
+  "emoji": "\ud83d\udd10",
+  "accent": "#9F1239",
+  "order": 14,
+  "blurb": "Fundamentals, networks, attacks, security operations, incident response and cryptography.",
+  "source": "https://roadmap.sh/cyber-security",
+  "stages": [
+    {
+      "title": "Fundamentals",
+      "hint": "",
+      "items": [
+        {
+          "label": "Security fundamentals and threats",
+          "ref": "cyber-security/notes/01-security-fundamentals-and-the-threat-landscape"
+        },
+        {
+          "label": "Linux",
+          "ref": "devops-cloud/notes/01-linux"
+        },
+        {
+          "label": "Scripting",
+          "ref": "devops-cloud/notes/11-scripting"
+        }
+      ]
+    },
+    {
+      "title": "Networking",
+      "hint": "",
+      "items": [
+        {
+          "label": "Switching, routing and VLANs",
+          "ref": "networking/notes/01-switching-routing-and-vlans"
+        },
+        {
+          "label": "Network services, firewalls and VPNs",
+          "ref": "networking/notes/02-network-services-security-and-vpns"
+        }
+      ]
+    },
+    {
+      "title": "Application and identity security",
+      "hint": "",
+      "items": [
+        {
+          "label": "OWASP Top 10",
+          "ref": "security/notes/01-owasp-top-10-2025"
+        },
+        {
+          "label": "Authentication and authorization",
+          "ref": "security/notes/02-authentication-and-authorization"
+        }
+      ]
+    },
+    {
+      "title": "Cryptography",
+      "hint": "",
+      "items": [
+        {
+          "label": "Cryptography and PKI in practice",
+          "ref": "cyber-security/notes/03-cryptography-and-pki-in-practice"
+        }
+      ]
+    },
+    {
+      "title": "Security operations",
+      "hint": "",
+      "items": [
+        {
+          "label": "Logging, detection and incident response",
+          "ref": "cyber-security/notes/02-security-operations-detection-and-incident-response"
+        },
+        {
+          "label": "Packet analysis",
+          "ref": "networking/notes/03-network-troubleshooting-and-automation#3-packet-analysis-with-tcpdump-and-wireshark"
+        }
+      ]
+    },
+    {
+      "title": "Cloud security",
+      "hint": "",
+      "items": [
+        {
+          "label": "Cloud security and secrets",
+          "ref": "devops-cloud/notes/10-security"
+        },
+        {
+          "label": "Runtime security and compliance",
+          "ref": "devsecops/notes/02-policy-as-code-runtime-security-and-compliance"
+        }
+      ]
+    }
+  ]
+}

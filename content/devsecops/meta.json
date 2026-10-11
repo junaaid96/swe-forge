@@ -1,0 +1,130 @@
+{
+  "id": "devsecops",
+  "slug": "devsecops",
+  "title": "DevSecOps",
+  "emoji": "🛡️",
+  "order": 36,
+  "tag": "DevSecOps",
+  "accent": "#B91C1C",
+  "blurb": "Security built into delivery: pipeline scanning, secrets, supply chain, policy as code, runtime security and continuous compliance.",
+  "group": "ops",
+  "relatedTopics": [
+    "devops-cloud",
+    "security",
+    "cyber-security"
+  ],
+  "quiz": [
+    {
+      "id": "dso-q1",
+      "question": "A developer pushed an AWS key to a public repository. What is the first step?",
+      "options": [
+        "Delete the commit",
+        "Revoke and rotate the key immediately",
+        "Make the repo private",
+        "Open a ticket for next sprint"
+      ],
+      "correctIndex": 1,
+      "explanation": "Clones and caches already have it; rotation first, then investigate usage and clean history."
+    },
+    {
+      "id": "dso-q2",
+      "question": "What does SCA (software composition analysis) find?",
+      "options": [
+        "Bugs in your own code logic",
+        "Known vulnerabilities and licence issues in dependencies",
+        "Open ports",
+        "Weak passwords"
+      ],
+      "correctIndex": 1,
+      "explanation": "SCA matches dependencies against vulnerability databases."
+    },
+    {
+      "id": "dso-q3",
+      "question": "Which approach best avoids long-lived cloud keys in CI?",
+      "options": [
+        "Store keys in repository secrets",
+        "OIDC federation for short-lived, scoped credentials",
+        "Base64-encode the keys",
+        "Rotate keys yearly"
+      ],
+      "correctIndex": 1,
+      "explanation": "The CI job exchanges its OIDC token for temporary credentials scoped to the repo/branch."
+    },
+    {
+      "id": "dso-q4",
+      "question": "Why pin third-party GitHub Actions to a commit SHA?",
+      "options": [
+        "Faster builds",
+        "A moved or hijacked tag cannot inject different code",
+        "Required by GitHub",
+        "Reduces logs"
+      ],
+      "correctIndex": 1,
+      "explanation": "Tags are mutable; SHAs are not."
+    },
+    {
+      "id": "dso-q5",
+      "question": "What does an SBOM let you do when a new library CVE is published?",
+      "options": [
+        "Patch automatically",
+        "Quickly determine which artefacts contain the affected component",
+        "Block the CVE",
+        "Sign images"
+      ],
+      "correctIndex": 1,
+      "explanation": "An inventory of components per build answers \"are we affected?\" in minutes."
+    },
+    {
+      "id": "dso-q6",
+      "question": "A Kyverno policy is first deployed in Audit mode. Why?",
+      "options": [
+        "Audit is faster",
+        "To measure violations and tune before blocking deployments",
+        "Enforce is deprecated",
+        "Audit encrypts data"
+      ],
+      "correctIndex": 1,
+      "explanation": "Roll out policies safely: observe, fix, then enforce."
+    },
+    {
+      "id": "dso-q7",
+      "question": "Which control most directly limits data exfiltration from a compromised pod?",
+      "options": [
+        "CPU limits",
+        "A default-deny egress NetworkPolicy",
+        "Liveness probes",
+        "Horizontal Pod Autoscaler"
+      ],
+      "correctIndex": 1,
+      "explanation": "Restricting egress blocks command-and-control and exfiltration paths."
+    },
+    {
+      "id": "dso-q8",
+      "question": "How should vulnerability remediation be prioritised?",
+      "options": [
+        "By CVSS alone",
+        "By exploitability (KEV, EPSS), reachability, exposure and asset criticality",
+        "Alphabetically",
+        "Oldest first"
+      ],
+      "correctIndex": 1,
+      "explanation": "Context-aware prioritisation focuses effort where real risk is."
+    }
+  ],
+  "problems": [
+    {
+      "id": "dso-p1",
+      "title": "Secure a delivery pipeline",
+      "difficulty": "hard",
+      "prompt": "Design the security controls for a service's CI/CD from commit to production.",
+      "hints": [
+        "pre-commit + PR scans",
+        "OIDC",
+        "SBOM + signing",
+        "admission verification"
+      ],
+      "solution": "Pre-commit secret scanning; PR: Gitleaks, Semgrep/CodeQL, Trivy deps+IaC with SARIF, least-privilege tokens and pinned actions; build: minimal image, image scan, SBOM, Cosign keyless signing with provenance; deploy via OIDC credentials; Kyverno verifies signatures and baseline pod security; runtime Falco, NetworkPolicies, CSPM; KEV-based SLAs and dashboards.",
+      "points": 10
+    }
+  ]
+}

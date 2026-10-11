@@ -79,10 +79,13 @@
     {
       "id": "ops",
       "label": "DevOps, cloud & security",
-      "hint": "Linux → Kubernetes → cloud · AppSec",
+      "hint": "Linux → Kubernetes → cloud · DevSecOps · cyber security · networking",
       "topics": [
         "devops-cloud",
-        "security"
+        "security",
+        "devsecops",
+        "cyber-security",
+        "networking"
       ]
     },
     {
@@ -415,6 +418,33 @@
       "order": 35,
       "tag": "DE",
       "accent": "#2563EB"
+    },
+    {
+      "id": "devsecops",
+      "slug": "devsecops",
+      "title": "DevSecOps",
+      "emoji": "🛡️",
+      "order": 36,
+      "tag": "DevSecOps",
+      "accent": "#B91C1C"
+    },
+    {
+      "id": "cyber-security",
+      "slug": "cyber-security",
+      "title": "Cyber Security",
+      "emoji": "🔐",
+      "order": 37,
+      "tag": "Security",
+      "accent": "#9F1239"
+    },
+    {
+      "id": "networking",
+      "slug": "networking",
+      "title": "Network Engineering",
+      "emoji": "🌐",
+      "order": 38,
+      "tag": "Network",
+      "accent": "#0284C7"
     }
   ]
 }

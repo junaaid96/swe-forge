@@ -59,7 +59,7 @@ COPY . .
 # syntax=docker/dockerfile:1
 
 ############ Stage 1: build wheels (has compilers) ############
-FROM python:3.13-slim AS builder
+FROM python:3.14-slim AS builder
 ENV PIP_NO_CACHE_DIR=1 PIP_DISABLE_PIP_VERSION_CHECK=1
 RUN apt-get update \
  && apt-get install -y --no-install-recommends build-essential libpq-dev \
@@ -71,7 +71,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     pip wheel --wheel-dir /wheels -r requirements.txt
 
 ############ Stage 2: runtime (no compilers) ############
-FROM python:3.13-slim AS runtime
+FROM python:3.14-slim AS runtime
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     DJANGO_SETTINGS_MODULE=medilab.settings.prod

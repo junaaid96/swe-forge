@@ -4,10 +4,12 @@ A database administrator's first job is simple to state: never lose data, and ne
 
 ## 1. Installing and the important config files
 
+As of October 2026, **PostgreSQL 18** is the newest stable major version. PostgreSQL 19 is in release candidates, with GA scheduled for 29 October 2026. Each major version is supported for five years.
+
 ```bash
 # Ubuntu/Debian: official PGDG repository for current versions
 sudo apt install -y postgresql-common && sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
-sudo apt install -y postgresql-17
+sudo apt install -y postgresql-18
 
 # Or a disposable local instance
 docker run -d --name pg -e POSTGRES_PASSWORD=dev -p 5432:5432 -v pgdata:/var/lib/postgresql/data postgres:17
@@ -138,7 +140,7 @@ repo1-cipher-type=aes-256-cbc
 start-fast=y
 
 [shop]
-pg1-path=/var/lib/postgresql/17/main
+pg1-path=/var/lib/postgresql/18/main
 ```
 
 ```text

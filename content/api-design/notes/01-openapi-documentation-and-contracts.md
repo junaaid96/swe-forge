@@ -22,6 +22,8 @@ With contract-first, frontend and mobile teams can build against a mock server w
 
 ## 2. Anatomy of an OpenAPI 3.1 document
 
+OpenAPI 3.1 aligned schemas with JSON Schema 2020-12 and is what most tooling supports today. OpenAPI 3.2 (September 2025) adds things like streaming media types and a `QUERY` method, and tool support for it is catching up. Everything below is valid in both.
+
 ```yaml
 openapi: 3.1.0
 info:

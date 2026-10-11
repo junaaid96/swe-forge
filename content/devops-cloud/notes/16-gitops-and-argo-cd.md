@@ -181,7 +181,7 @@ Plain-text secrets must never go into Git. The common options:
 | **SOPS** | Encrypt values in YAML files with KMS or age keys, and decrypt at sync time with a plugin. |
 
 ```yaml
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata: { name: orders-db, namespace: orders }
 spec:

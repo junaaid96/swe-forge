@@ -25,7 +25,7 @@ SELECT pg_create_physical_replication_slot('standby1');
 
 ```bash
 # On the standby host: clone the primary and configure it to follow
-pg_basebackup -h primary.internal -U replicator -D /var/lib/postgresql/17/main \
+pg_basebackup -h primary.internal -U replicator -D /var/lib/postgresql/18/main \
   -X stream -S standby1 -R -P
 # -R writes primary_conninfo and creates standby.signal automatically
 ```

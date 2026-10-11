@@ -72,7 +72,8 @@
       "hint": "System design · databases",
       "topics": [
         "system-design",
-        "database"
+        "database",
+        "postgresql"
       ]
     },
     {
@@ -345,6 +346,15 @@
       "order": 28,
       "tag": "AI era",
       "accent": "#A21CAF"
+    },
+    {
+      "id": "postgresql",
+      "slug": "postgresql",
+      "title": "PostgreSQL",
+      "emoji": "🐘",
+      "order": 29,
+      "tag": "DBA",
+      "accent": "#336791"
     }
   ]
 }

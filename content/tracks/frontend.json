@@ -16,6 +16,14 @@
           "ref": "frontend/notes/01-web-platform-fundamentals"
         },
         {
+          "label": "Semantic HTML, forms and accessibility",
+          "ref": "frontend/notes/03-semantic-html-and-forms"
+        },
+        {
+          "label": "Modern CSS layout and architecture",
+          "ref": "frontend/notes/04-modern-css-layout-and-architecture"
+        },
+        {
           "label": "Browser APIs and rendering",
           "ref": "frontend/notes/02-browser-apis-rendering-and-security"
         },
@@ -44,12 +52,16 @@
       ]
     },
     {
-      "title": "Version control",
+      "title": "Version control and tooling",
       "hint": "",
       "items": [
         {
           "label": "Git",
           "ref": "git-collaboration/notes/01-git"
+        },
+        {
+          "label": "Build tools, linters and bundlers",
+          "ref": "frontend/notes/05-build-tools-and-the-frontend-toolchain"
         }
       ]
     },
@@ -106,6 +118,16 @@
         {
           "label": "Next.js",
           "ref": "nextjs/notes/01-nextjs-essentials"
+        }
+      ]
+    },
+    {
+      "title": "Performance and PWAs",
+      "hint": "",
+      "items": [
+        {
+          "label": "Core Web Vitals and PWAs",
+          "ref": "frontend/notes/06-web-performance-and-pwas"
         }
       ]
     }

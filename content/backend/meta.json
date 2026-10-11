@@ -195,6 +195,90 @@
       ],
       "correctIndex": 1,
       "explanation": "Ambiguous success + second execution."
+    },
+    {
+      "id": "net-q1",
+      "question": "A client gets a 504 from the load balancer. Where is the problem most likely?",
+      "options": [
+        "The browser cache",
+        "The upstream app did not respond in time",
+        "DNS resolution failed",
+        "The TLS certificate expired"
+      ],
+      "correctIndex": 1,
+      "explanation": "504 Gateway Timeout means the proxy reached the upstream, but it did not answer within the timeout."
+    },
+    {
+      "id": "net-q2",
+      "question": "You change an A record, but some users still reach the old server for an hour. Why?",
+      "options": [
+        "DNS is eventually consistent forever",
+        "Resolvers cached the old record for its TTL",
+        "HTTP/2 pins IPs",
+        "The CDN blocks DNS"
+      ],
+      "correctIndex": 1,
+      "explanation": "Resolvers cache records for their TTL. Lower the TTL before a migration."
+    },
+    {
+      "id": "net-q3",
+      "question": "Which HTTP method is NOT idempotent?",
+      "options": [
+        "PUT",
+        "DELETE",
+        "POST",
+        "GET"
+      ],
+      "correctIndex": 2,
+      "explanation": "Repeating a POST can create duplicates, so retried POSTs need idempotency keys."
+    },
+    {
+      "id": "proxy-q1",
+      "question": "Why buffer requests in Nginx in front of Gunicorn?",
+      "options": [
+        "To cache SQL",
+        "So slow clients do not tie up a limited number of app workers",
+        "To compile Python",
+        "To avoid TLS"
+      ],
+      "correctIndex": 1,
+      "explanation": "Nginx absorbs slow uploads and downloads, so workers only handle complete requests."
+    },
+    {
+      "id": "proxy-q2",
+      "question": "A WebSocket through Nginx disconnects every 60 seconds. The most likely fix is…",
+      "options": [
+        "Increase worker_processes",
+        "Set the Upgrade/Connection headers and a longer proxy_read_timeout",
+        "Enable gzip",
+        "Use HTTP/1.0"
+      ],
+      "correctIndex": 1,
+      "explanation": "WebSockets need the upgrade headers, and the default 60 s read timeout closes idle connections."
+    },
+    {
+      "id": "search-q1",
+      "question": "Why does WHERE name ILIKE '%term%' scale poorly?",
+      "options": [
+        "ILIKE is deprecated",
+        "A leading wildcard cannot use a B-tree index, so every row is scanned",
+        "It locks the table",
+        "It only works on ASCII"
+      ],
+      "correctIndex": 1,
+      "explanation": "Use full-text search (tsvector + GIN) or pg_trgm instead."
+    },
+    {
+      "id": "search-q2",
+      "question": "In BM25, inverse document frequency (IDF) means…",
+      "options": [
+        "Long documents score higher",
+        "Rare terms count more than common ones",
+        "Newer documents rank first",
+        "Titles are ignored"
+      ],
+      "correctIndex": 1,
+      "explanation": "Matching a rare term is a stronger relevance signal than matching a common one."
     }
   ],
   "problems": [
@@ -266,6 +350,32 @@
       ],
       "solution": "Store provider event_id uniquely; process only on first insert.",
       "points": 15
+    },
+    {
+      "id": "net-p1",
+      "title": "Trace a slow request",
+      "difficulty": "medium",
+      "prompt": "Users in one country report slow API calls, but your server metrics look normal. How do you find out which layer is slow?",
+      "hints": [
+        "curl -w timing phases",
+        "traceroute or mtr",
+        "CDN logs"
+      ],
+      "solution": "Use curl -w to split DNS, connect, TLS and time to first byte from that region, and mtr to find the network hop where latency jumps. If TTFB is low at the origin but high at the edge, check CDN routing. If TLS is slow, check that session resumption and TLS 1.3 are enabled. If DNS is slow, check the TTL and the resolvers.",
+      "points": 10
+    },
+    {
+      "id": "search-p1",
+      "title": "Typo-tolerant product search",
+      "difficulty": "medium",
+      "prompt": "Add search to a 200k-product PostgreSQL catalogue that tolerates typos and ranks name matches above description matches.",
+      "hints": [
+        "weighted tsvector",
+        "GIN index",
+        "pg_trgm similarity"
+      ],
+      "solution": "Add a generated, weighted tsvector column (name A, description B) with a GIN index and query it with websearch_to_tsquery ordered by ts_rank. Add a pg_trgm GIN index on name and fall back to similarity() when there are few full-text hits.",
+      "points": 10
     }
   ]
 }

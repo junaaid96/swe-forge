@@ -194,6 +194,30 @@
       ],
       "correctIndex": 0,
       "explanation": "Values and messages are ideal immutable."
+    },
+    {
+      "id": "cap-q1",
+      "question": "A user edits a task id in the URL and modifies someone else's task. What was missing?",
+      "options": [
+        "Rate limiting",
+        "Per-resource authorisation checks",
+        "HTTPS",
+        "Input trimming"
+      ],
+      "correctIndex": 1,
+      "explanation": "Broken object-level authorisation is the most common API vulnerability. Check ownership or membership on every resource."
+    },
+    {
+      "id": "cap-q2",
+      "question": "Optimistic locking with a version column returns which status on conflict?",
+      "options": [
+        "200",
+        "404",
+        "409 Conflict",
+        "500"
+      ],
+      "correctIndex": 2,
+      "explanation": "The update matches zero rows because the version changed, so the client must reload and retry."
     }
   ],
   "problems": [

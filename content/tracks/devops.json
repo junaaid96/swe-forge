@@ -46,6 +46,10 @@
         {
           "label": "Terraform",
           "ref": "devops-cloud/notes/07-terraform"
+        },
+        {
+          "label": "Configuration management: Ansible",
+          "ref": "devops-cloud/notes/17-configuration-management-with-ansible"
         }
       ]
     },
@@ -70,6 +74,14 @@
         {
           "label": "Helm",
           "ref": "devops-cloud/notes/05-helm"
+        },
+        {
+          "label": "GitOps with Argo CD",
+          "ref": "devops-cloud/notes/16-gitops-and-argo-cd"
+        },
+        {
+          "label": "Service mesh",
+          "ref": "devops-cloud/notes/18-service-mesh"
         }
       ]
     },

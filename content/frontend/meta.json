@@ -74,6 +74,102 @@
       ],
       "correctIndex": 0,
       "explanation": "Give images, video and ads explicit width/height or aspect-ratio, and avoid inserting content above existing content, so the browser can reserve space."
+    },
+    {
+      "id": "html-q1",
+      "question": "Which element should a \"Delete\" action that does not navigate use?",
+      "options": [
+        "<a href=\"#\">",
+        "<div onclick>",
+        "<button type=\"button\">",
+        "<span role=\"link\">"
+      ],
+      "correctIndex": 2,
+      "explanation": "Buttons perform actions, links navigate. A button gives keyboard support and the right semantics for free."
+    },
+    {
+      "id": "html-q2",
+      "question": "Why is a placeholder not a substitute for a <label>?",
+      "options": [
+        "Placeholders are not supported on mobile",
+        "It disappears when typing and is not reliably announced as the field name",
+        "Labels are required for CSS",
+        "Placeholders break autofill"
+      ],
+      "correctIndex": 1,
+      "explanation": "Visible labels give an accessible name and stay visible."
+    },
+    {
+      "id": "css-q1",
+      "question": "Best tool for a two-dimensional page layout with header, sidebar, main and footer?",
+      "options": [
+        "Floats",
+        "Flexbox",
+        "CSS Grid with template areas",
+        "Absolute positioning"
+      ],
+      "correctIndex": 2,
+      "explanation": "Grid controls rows and columns together. Flexbox is for one-dimensional flow."
+    },
+    {
+      "id": "css-q2",
+      "question": "What do cascade layers (@layer) mainly solve?",
+      "options": [
+        "Browser support",
+        "Specificity wars, by ordering groups of rules regardless of selector weight",
+        "Animations",
+        "Font loading"
+      ],
+      "correctIndex": 1,
+      "explanation": "Later layers win over earlier ones, whatever the specificity."
+    },
+    {
+      "id": "build-q1",
+      "question": "Why use npm ci instead of npm install in CI?",
+      "options": [
+        "It is faster to type",
+        "It installs exactly what the lockfile specifies and fails if it is out of sync",
+        "It skips devDependencies always",
+        "It updates packages"
+      ],
+      "correctIndex": 1,
+      "explanation": "Reproducible installs prevent \"works on my machine\" problems."
+    },
+    {
+      "id": "build-q2",
+      "question": "Which value is safe to expose through VITE_ environment variables?",
+      "options": [
+        "Database password",
+        "Stripe secret key",
+        "The public API base URL",
+        "JWT signing key"
+      ],
+      "correctIndex": 2,
+      "explanation": "Frontend environment variables are compiled into public JavaScript."
+    },
+    {
+      "id": "perf-q1",
+      "question": "Which change most directly reduces CLS?",
+      "options": [
+        "Minifying JavaScript",
+        "Setting width/height or aspect-ratio on images and reserving space for banners",
+        "Using HTTP/3",
+        "Adding a service worker"
+      ],
+      "correctIndex": 1,
+      "explanation": "Layout shifts come from content without reserved space."
+    },
+    {
+      "id": "perf-q2",
+      "question": "What is a good caching policy for hashed assets like app.3f9a2c.js?",
+      "options": [
+        "no-store",
+        "max-age=60",
+        "public, max-age=31536000, immutable",
+        "private, no-cache"
+      ],
+      "correctIndex": 2,
+      "explanation": "The hash changes when the content changes, so these files can be cached forever."
     }
   ],
   "problems": [
@@ -102,6 +198,32 @@
         "Semantics"
       ],
       "solution": "Use the native <dialog> element with showModal() (or role=dialog + aria-modal), label it with aria-labelledby, move focus into it on open and trap focus inside, close on Escape, make the background inert, and return focus to the triggering element on close."
+    },
+    {
+      "id": "perf-p1",
+      "title": "Fix a slow LCP",
+      "difficulty": "medium",
+      "prompt": "A marketing page has an LCP of 4.5 s on mobile. The hero is a 1.4 MB JPEG and the page is client-rendered. Plan the fixes.",
+      "hints": [
+        "server render",
+        "image format and size",
+        "fetchpriority"
+      ],
+      "solution": "Server-render or prerender the HTML, serve the hero as AVIF/WebP with srcset and explicit dimensions, set fetchpriority=high and preload it, never lazy-load it, inline the critical CSS, defer non-critical JS and third-party scripts, and cache the HTML at the CDN. Then measure again with Lighthouse and field data.",
+      "points": 10
+    },
+    {
+      "id": "html-p1",
+      "title": "Accessible checkout form",
+      "difficulty": "easy",
+      "prompt": "Rewrite a checkout form that uses placeholders, a div as its submit button and red borders for errors.",
+      "hints": [
+        "labels",
+        "button type submit",
+        "aria-describedby"
+      ],
+      "solution": "Add visible labels linked with for/id, input types and autocomplete, fieldsets for groups, a real submit button, and text errors linked with aria-describedby plus aria-invalid. Move focus to the first error on submit, and validate on the server too.",
+      "points": 10
     }
   ]
 }

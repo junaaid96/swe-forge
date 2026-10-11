@@ -557,3 +557,14 @@ a.page-row:hover, .page-row:hover { background: var(--bg-soft); }
 .diagram { margin: 1.4em 0; padding: 16px; border: 1px solid var(--line); border-radius: 12px; overflow-x: auto; text-align: center; }
 .diagram svg { max-width: 100%; height: auto; }
 .diagram-loading { color: var(--muted); font-size: 0.85rem; padding: 24px; }
+
+/* Footer: one row (left / center / right), stacked on small screens */
+.site-foot { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px 16px; }
+.site-foot-left { justify-self: start; }
+.site-foot-center { justify-self: center; text-align: center; }
+.site-foot-right { justify-self: end; display: flex; }
+@media (max-width: 760px) {
+  .site-foot { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+  .site-foot-left, .site-foot-center, .site-foot-right { justify-self: center; }
+}
+@media (max-width: 640px) { .diagram { text-align: left; } .diagram svg { max-width: none; width: 640px; } }

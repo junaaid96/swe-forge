@@ -133,6 +133,78 @@
       ],
       "correctIndex": 0,
       "explanation": "Common pragmatic split."
+    },
+    {
+      "id": "oas-q1",
+      "question": "Which change to a response is backward compatible?",
+      "options": [
+        "Renaming a field",
+        "Removing an enum value",
+        "Adding a new optional field",
+        "Changing a type from string to integer"
+      ],
+      "correctIndex": 2,
+      "explanation": "Additive changes are safe when clients ignore unknown fields."
+    },
+    {
+      "id": "oas-q2",
+      "question": "What is application/problem+json?",
+      "options": [
+        "A GraphQL format",
+        "The standard (RFC 9457) error response format",
+        "A JSON schema dialect",
+        "A webhook signature"
+      ],
+      "correctIndex": 1,
+      "explanation": "It gives a consistent type/title/status/detail error shape."
+    },
+    {
+      "id": "page-q1",
+      "question": "Why does cursor (keyset) pagination beat OFFSET on large tables?",
+      "options": [
+        "Shorter URLs",
+        "Each page is an index seek, and it is stable under inserts",
+        "It needs no index",
+        "It supports page numbers"
+      ],
+      "correctIndex": 1,
+      "explanation": "OFFSET scans and discards rows, and items shift when new rows arrive."
+    },
+    {
+      "id": "page-q2",
+      "question": "Which response tells a client how long to wait after being rate limited?",
+      "options": [
+        "301 with Location",
+        "429 with Retry-After",
+        "503 without headers",
+        "400 with ETag"
+      ],
+      "correctIndex": 1,
+      "explanation": "Clients should back off using Retry-After plus jitter."
+    },
+    {
+      "id": "hook-q1",
+      "question": "Why must webhook consumers deduplicate on the event id?",
+      "options": [
+        "Event ids are secret",
+        "Delivery is at-least-once, so duplicates happen",
+        "It improves TLS",
+        "Ids are sorted"
+      ],
+      "correctIndex": 1,
+      "explanation": "Retries after timeouts redeliver the same event."
+    },
+    {
+      "id": "hook-q2",
+      "question": "The best way to verify a webhook's authenticity is…",
+      "options": [
+        "Check the source IP only",
+        "An HMAC of timestamp + raw body with a shared secret, compared in constant time",
+        "Trust the User-Agent",
+        "Require basic auth over HTTP"
+      ],
+      "correctIndex": 1,
+      "explanation": "The signature plus a timestamp tolerance prevents tampering and replay."
     }
   ],
   "problems": [
@@ -183,6 +255,32 @@
       ],
       "solution": "AuthZ per field; max depth/complexity; persisted queries; rate limits; timeout.",
       "points": 20
+    },
+    {
+      "id": "page-p1",
+      "title": "Keyset pagination",
+      "difficulty": "medium",
+      "prompt": "Implement /orders?limit=&cursor= over (created_at DESC, id DESC) with an opaque cursor.",
+      "hints": [
+        "fetch limit+1",
+        "tuple comparison",
+        "base64 cursor"
+      ],
+      "solution": "Query WHERE (created_at,id) < (:c,:i) ORDER BY created_at DESC, id DESC LIMIT limit+1, using an index on (created_at DESC, id DESC). If limit+1 rows come back, return nextCursor = base64(json(last.created_at, last.id)), otherwise null.",
+      "points": 10
+    },
+    {
+      "id": "hook-p1",
+      "title": "Reliable webhook sender",
+      "difficulty": "hard",
+      "prompt": "Design webhook delivery that never loses events and does not hammer failing consumers.",
+      "hints": [
+        "outbox",
+        "backoff",
+        "dead letter"
+      ],
+      "solution": "Write the outbox row in the same transaction as the state change. A worker sends signed POSTs with a 10 s timeout and retries on 5xx or timeout with exponential backoff and jitter for up to 3 days. After that, mark the endpoint as failing and notify the owner. Expose GET /events for replay, and keep per-endpoint concurrency limits.",
+      "points": 10
     }
   ]
 }

@@ -1,0 +1,121 @@
+{
+  "slug": "devops",
+  "title": "DevOps",
+  "emoji": "\u267e\ufe0f",
+  "accent": "#F97316",
+  "order": 6,
+  "blurb": "Linux, networking, containers, IaC, CI/CD, Kubernetes, cloud and observability.",
+  "source": "https://roadmap.sh/devops",
+  "stages": [
+    {
+      "title": "Foundations",
+      "hint": "OS, shell and networking",
+      "items": [
+        {
+          "label": "Linux",
+          "ref": "devops-cloud/notes/01-linux"
+        },
+        {
+          "label": "Scripting: Bash and Python",
+          "ref": "devops-cloud/notes/11-scripting"
+        },
+        {
+          "label": "Networking",
+          "ref": "devops-cloud/notes/02-networking"
+        },
+        {
+          "label": "Git",
+          "ref": "git-collaboration/notes/01-git"
+        }
+      ]
+    },
+    {
+      "title": "Containers",
+      "hint": "",
+      "items": [
+        {
+          "label": "Docker",
+          "ref": "devops-cloud/notes/03-docker"
+        }
+      ]
+    },
+    {
+      "title": "Infrastructure as code",
+      "hint": "",
+      "items": [
+        {
+          "label": "Terraform",
+          "ref": "devops-cloud/notes/07-terraform"
+        }
+      ]
+    },
+    {
+      "title": "CI/CD",
+      "hint": "",
+      "items": [
+        {
+          "label": "Pipelines and GitOps",
+          "ref": "devops-cloud/notes/06-cicd"
+        }
+      ]
+    },
+    {
+      "title": "Orchestration",
+      "hint": "",
+      "items": [
+        {
+          "label": "Kubernetes",
+          "ref": "devops-cloud/notes/04-kubernetes"
+        },
+        {
+          "label": "Helm",
+          "ref": "devops-cloud/notes/05-helm"
+        }
+      ]
+    },
+    {
+      "title": "Cloud",
+      "hint": "",
+      "items": [
+        {
+          "label": "AWS essentials",
+          "ref": "devops-cloud/notes/15-aws-cloud-essentials"
+        },
+        {
+          "label": "Azure",
+          "ref": "devops-cloud/notes/08-azure"
+        },
+        {
+          "label": "Cloud theory",
+          "ref": "devops-cloud/deep/theory"
+        }
+      ]
+    },
+    {
+      "title": "Operate",
+      "hint": "Monitor, secure and fix",
+      "items": [
+        {
+          "label": "Observability and incidents",
+          "ref": "devops-cloud/notes/09-observability"
+        },
+        {
+          "label": "Security and supply chain",
+          "ref": "devops-cloud/notes/10-security"
+        },
+        {
+          "label": "Troubleshooting runbooks",
+          "ref": "devops-cloud/notes/12-troubleshooting-runbooks"
+        },
+        {
+          "label": "Capstone",
+          "ref": "devops-cloud/notes/14-capstone-project"
+        },
+        {
+          "label": "Interview bank",
+          "ref": "devops-cloud/notes/13-interview-question-bank"
+        }
+      ]
+    }
+  ]
+}

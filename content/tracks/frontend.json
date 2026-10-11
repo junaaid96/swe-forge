@@ -1,0 +1,113 @@
+{
+  "slug": "frontend",
+  "title": "Frontend",
+  "emoji": "\ud83c\udfa8",
+  "accent": "#EC4899",
+  "order": 3,
+  "blurb": "HTML, CSS and JavaScript to frameworks, testing, performance, security and SSR.",
+  "source": "https://roadmap.sh/frontend",
+  "stages": [
+    {
+      "title": "The web platform",
+      "hint": "HTML, CSS and how browsers work",
+      "items": [
+        {
+          "label": "Web platform fundamentals",
+          "ref": "frontend/notes/01-web-platform-fundamentals"
+        },
+        {
+          "label": "Browser APIs and rendering",
+          "ref": "frontend/notes/02-browser-apis-rendering-and-security"
+        },
+        {
+          "label": "Accessibility and UX",
+          "ref": "ui-ux/notes/01-ui-ux-essentials-for-engineers"
+        }
+      ]
+    },
+    {
+      "title": "JavaScript and TypeScript",
+      "hint": "The language of the web",
+      "items": [
+        {
+          "label": "JavaScript",
+          "ref": "javascript/notes/01-javascript"
+        },
+        {
+          "label": "TypeScript",
+          "ref": "javascript/notes/02-typescript"
+        },
+        {
+          "label": "Advanced TypeScript",
+          "ref": "javascript/notes/03-advanced-typescript-and-react-typing"
+        }
+      ]
+    },
+    {
+      "title": "Version control",
+      "hint": "",
+      "items": [
+        {
+          "label": "Git",
+          "ref": "git-collaboration/notes/01-git"
+        }
+      ]
+    },
+    {
+      "title": "Frameworks",
+      "hint": "Pick one and go deep",
+      "items": [
+        {
+          "label": "React core",
+          "ref": "react/notes/01-react-core"
+        },
+        {
+          "label": "React performance and patterns",
+          "ref": "react/notes/02-react-performance-and-patterns"
+        },
+        {
+          "label": "State, data fetching and tooling",
+          "ref": "react/notes/03-state-data-and-tooling"
+        },
+        {
+          "label": "Angular and RxJS",
+          "ref": "angular/notes/01-angular-and-rxjs-essentials"
+        }
+      ]
+    },
+    {
+      "title": "Testing",
+      "hint": "Confidence before shipping",
+      "items": [
+        {
+          "label": "Frontend and E2E testing",
+          "ref": "testing-quality/notes/02-frontend-and-e2e-testing"
+        }
+      ]
+    },
+    {
+      "title": "Security",
+      "hint": "Protect your users",
+      "items": [
+        {
+          "label": "OWASP Top 10",
+          "ref": "security/notes/01-owasp-top-10-2025"
+        },
+        {
+          "label": "Authentication",
+          "ref": "security/notes/02-authentication-and-authorization"
+        }
+      ]
+    },
+    {
+      "title": "Rendering strategies",
+      "hint": "SSR, SSG and the edge",
+      "items": [
+        {
+          "label": "Next.js",
+          "ref": "nextjs/notes/01-nextjs-essentials"
+        }
+      ]
+    }
+  ]
+}

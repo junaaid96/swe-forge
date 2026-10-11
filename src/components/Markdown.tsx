@@ -4,6 +4,7 @@ import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import rehypeHighlight from 'rehype-highlight';
 import { Link } from 'react-router-dom';
+import { Mermaid } from './Mermaid';
 
 interface HastLike {
   type: string;
@@ -56,7 +57,11 @@ function heading(Tag: 'h2' | 'h3' | 'h4') {
 }
 
 const components: Components = {
-  pre: ({ node: _node, ...props }) => <CodeBlock {...props} />,
+  pre: ({ node, ...props }) => {
+    const code = (node as unknown as { children?: Array<HastLike & { tagName?: string; properties?: { className?: string[] } }> })?.children?.[0];
+    if (code?.tagName === 'code' && code.properties?.className?.includes('language-mermaid')) return <Mermaid source={hastText(code).trim()} />;
+    return <CodeBlock {...props} />;
+  },
   a: ({ node: _node, href = '', children, ...props }) => {
     if (href.startsWith('/')) return <Link to={href}>{children}</Link>;
     if (href.startsWith('#')) return <a href={href} {...props}>{children}</a>;

@@ -1,4 +1,4 @@
-import type { Card, Catalog, Topic } from './types';
+import type { Card, Catalog, Topic, Track, TrackItem } from './types';
 import type { ProgressState } from './progress';
 import { dayKey, isMastered } from './srs';
 
@@ -187,4 +187,17 @@ export function suggestions(catalog: Catalog, state: ProgressState, limit = 3): 
 
   if (!state.mocks.length) push({ kind: 'mock', title: 'Take a 10-minute mock interview', reason: 'Find your weak areas quickly.', url: '/mock' });
   return out;
+}
+
+// ---------------------------------------------------------------------------
+// Roadmap tracks
+
+export const itemDone = (it: TrackItem, state: ProgressState) => it.keys.length > 0 && it.keys.every((k) => state.pages[k]?.readAt);
+
+export function trackStats(track: Track, state: ProgressState) {
+  const items = track.stages.flatMap((s) => s.items);
+  const done = items.filter((it) => itemDone(it, state)).length;
+  const next = items.find((it) => !itemDone(it, state));
+  const quiz = state.quiz[`track:${track.slug}`];
+  return { done, total: items.length, pct: items.length ? Math.round((done / items.length) * 100) : 0, next, quiz };
 }

@@ -1,0 +1,121 @@
+{
+  "slug": "full-stack",
+  "title": "Full Stack",
+  "emoji": "\ud83e\udde9",
+  "accent": "#8B5CF6",
+  "order": 2,
+  "blurb": "One person, the whole product: browser, API, database, deployment and monitoring.",
+  "source": "https://roadmap.sh/full-stack",
+  "stages": [
+    {
+      "title": "Frontend",
+      "hint": "Web platform, JavaScript and a framework",
+      "items": [
+        {
+          "label": "Web platform fundamentals",
+          "ref": "frontend/notes/01-web-platform-fundamentals"
+        },
+        {
+          "label": "JavaScript",
+          "ref": "javascript/notes/01-javascript"
+        },
+        {
+          "label": "TypeScript",
+          "ref": "javascript/notes/02-typescript"
+        },
+        {
+          "label": "React core",
+          "ref": "react/notes/01-react-core"
+        },
+        {
+          "label": "Next.js",
+          "ref": "nextjs/notes/01-nextjs-essentials"
+        }
+      ]
+    },
+    {
+      "title": "Backend",
+      "hint": "Node, APIs and PostgreSQL",
+      "items": [
+        {
+          "label": "Node.js and Express",
+          "ref": "nodejs/notes/01-nodejs-express-in-production"
+        },
+        {
+          "label": "API design",
+          "ref": "api-design/deep/theory"
+        },
+        {
+          "label": "SQL and data modelling",
+          "ref": "database/notes/01-sql-and-data-modelling"
+        },
+        {
+          "label": "Authentication",
+          "ref": "security/notes/02-authentication-and-authorization"
+        }
+      ]
+    },
+    {
+      "title": "Tooling",
+      "hint": "Git, Linux and the terminal",
+      "items": [
+        {
+          "label": "Git",
+          "ref": "git-collaboration/notes/01-git"
+        },
+        {
+          "label": "Linux",
+          "ref": "devops-cloud/notes/01-linux"
+        },
+        {
+          "label": "Scripting",
+          "ref": "devops-cloud/notes/11-scripting"
+        }
+      ]
+    },
+    {
+      "title": "Deploy and operate",
+      "hint": "Containers, cloud, CI and monitoring",
+      "items": [
+        {
+          "label": "Docker",
+          "ref": "devops-cloud/notes/03-docker"
+        },
+        {
+          "label": "AWS essentials",
+          "ref": "devops-cloud/notes/15-aws-cloud-essentials"
+        },
+        {
+          "label": "CI/CD",
+          "ref": "devops-cloud/notes/06-cicd"
+        },
+        {
+          "label": "Terraform",
+          "ref": "devops-cloud/notes/07-terraform"
+        },
+        {
+          "label": "Observability",
+          "ref": "devops-cloud/notes/09-observability"
+        }
+      ]
+    },
+    {
+      "title": "Put it together",
+      "hint": "Ship a real project",
+      "items": [
+        {
+          "label": "Frontend and E2E testing",
+          "ref": "testing-quality/notes/02-frontend-and-e2e-testing"
+        },
+        {
+          "label": "System design fundamentals",
+          "ref": "system-design/notes/01-system-design-fundamentals"
+        },
+        {
+          "label": "Capstone project",
+          "ref": "devops-cloud/notes/14-capstone-project"
+        }
+      ]
+    }
+  ]
+}

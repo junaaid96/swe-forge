@@ -1,0 +1,65 @@
+{
+  "slug": "postgresql",
+  "title": "PostgreSQL",
+  "emoji": "\ud83d\udc18",
+  "accent": "#336791",
+  "order": 13,
+  "blurb": "SQL to internals: indexing, MVCC, transactions, replication and tuning.",
+  "source": "https://roadmap.sh/postgresql-dba",
+  "stages": [
+    {
+      "title": "SQL",
+      "hint": "",
+      "items": [
+        {
+          "label": "SQL and data modelling",
+          "ref": "database/notes/01-sql-and-data-modelling"
+        },
+        {
+          "label": "Advanced SQL",
+          "ref": "database/notes/05-advanced-sql-and-nosql-deep-dive"
+        }
+      ]
+    },
+    {
+      "title": "Performance",
+      "hint": "",
+      "items": [
+        {
+          "label": "Indexing and EXPLAIN",
+          "ref": "database/notes/02-indexing-and-query-performance"
+        }
+      ]
+    },
+    {
+      "title": "Concurrency",
+      "hint": "",
+      "items": [
+        {
+          "label": "Transactions and MVCC",
+          "ref": "database/notes/03-transactions-and-concurrency"
+        }
+      ]
+    },
+    {
+      "title": "Scaling",
+      "hint": "",
+      "items": [
+        {
+          "label": "Replication and partitioning",
+          "ref": "database/notes/04-scaling-nosql-and-caching"
+        }
+      ]
+    },
+    {
+      "title": "Running it in an app",
+      "hint": "",
+      "items": [
+        {
+          "label": "PostgreSQL with Spring and HikariCP",
+          "ref": "spring-boot/notes/02-data-layer"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,169 @@
+{
+  "slug": "backend",
+  "title": "Backend",
+  "emoji": "\ud83d\udee0\ufe0f",
+  "accent": "#0EA5E9",
+  "order": 1,
+  "blurb": "From how the internet works to APIs, databases, caching, messaging and running services at scale.",
+  "source": "https://roadmap.sh/backend",
+  "stages": [
+    {
+      "title": "Foundations",
+      "hint": "How the web works and a language to build with",
+      "items": [
+        {
+          "label": "Networking, DNS and HTTP",
+          "ref": "devops-cloud/notes/02-networking"
+        },
+        {
+          "label": "Pick a language: Java",
+          "ref": "java/notes/01-java"
+        },
+        {
+          "label": "\u2026or Python",
+          "ref": "python/notes/01-python"
+        },
+        {
+          "label": "\u2026or Node.js",
+          "ref": "nodejs/notes/01-nodejs-express-in-production"
+        },
+        {
+          "label": "Git and version control",
+          "ref": "git-collaboration/notes/01-git"
+        }
+      ]
+    },
+    {
+      "title": "Databases",
+      "hint": "Relational first, then NoSQL",
+      "items": [
+        {
+          "label": "SQL and data modelling",
+          "ref": "database/notes/01-sql-and-data-modelling"
+        },
+        {
+          "label": "Indexing and query performance",
+          "ref": "database/notes/02-indexing-and-query-performance"
+        },
+        {
+          "label": "Transactions and ACID",
+          "ref": "database/notes/03-transactions-and-concurrency"
+        },
+        {
+          "label": "Scaling, replication and NoSQL",
+          "ref": "database/notes/04-scaling-nosql-and-caching"
+        }
+      ]
+    },
+    {
+      "title": "APIs",
+      "hint": "Design, document and secure them",
+      "items": [
+        {
+          "label": "API design theory",
+          "ref": "api-design/deep/theory"
+        },
+        {
+          "label": "REST, GraphQL and gRPC",
+          "ref": "api-design/deep/internals"
+        },
+        {
+          "label": "Authentication and authorization",
+          "ref": "security/notes/02-authentication-and-authorization"
+        },
+        {
+          "label": "OWASP Top 10",
+          "ref": "security/notes/01-owasp-top-10-2025"
+        }
+      ]
+    },
+    {
+      "title": "Frameworks",
+      "hint": "Build a real service",
+      "items": [
+        {
+          "label": "Spring Boot",
+          "ref": "spring-boot"
+        },
+        {
+          "label": "Django and DRF",
+          "ref": "django"
+        },
+        {
+          "label": "Node.js and Express in production",
+          "ref": "nodejs/notes/01-nodejs-express-in-production"
+        }
+      ]
+    },
+    {
+      "title": "Caching, messaging and architecture",
+      "hint": "Make it fast and decoupled",
+      "items": [
+        {
+          "label": "Caching",
+          "ref": "backend/deep/performance"
+        },
+        {
+          "label": "Message brokers and streaming",
+          "ref": "backend/deep/internals"
+        },
+        {
+          "label": "Event-driven architecture",
+          "ref": "system-design/notes/04-event-driven-and-messaging"
+        },
+        {
+          "label": "Architecture patterns",
+          "ref": "backend/notes/01-backend-architecture-patterns"
+        },
+        {
+          "label": "Optimisation patterns",
+          "ref": "backend/notes/02-backend-optimization-patterns"
+        }
+      ]
+    },
+    {
+      "title": "Testing and delivery",
+      "hint": "Ship with confidence",
+      "items": [
+        {
+          "label": "Testing strategy",
+          "ref": "testing-quality/notes/01-testing-strategy"
+        },
+        {
+          "label": "Docker and containers",
+          "ref": "devops-cloud/notes/03-docker"
+        },
+        {
+          "label": "CI/CD",
+          "ref": "devops-cloud/notes/06-cicd"
+        },
+        {
+          "label": "Observability",
+          "ref": "devops-cloud/notes/09-observability"
+        }
+      ]
+    },
+    {
+      "title": "Scaling",
+      "hint": "Design systems that survive growth",
+      "items": [
+        {
+          "label": "System design fundamentals",
+          "ref": "system-design/notes/01-system-design-fundamentals"
+        },
+        {
+          "label": "Distributed systems",
+          "ref": "system-design/notes/03-distributed-systems-and-consistency"
+        },
+        {
+          "label": "Monoliths vs microservices",
+          "ref": "system-design/notes/02-monolith-microservices-and-boundaries"
+        },
+        {
+          "label": "Backend interview Q&A",
+          "ref": "backend/interview/advanced"
+        }
+      ]
+    }
+  ]
+}

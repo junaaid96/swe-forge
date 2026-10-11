@@ -1,0 +1,91 @@
+{
+  "slug": "api-design",
+  "title": "API Design",
+  "emoji": "\ud83d\udd0c",
+  "accent": "#7C3AED",
+  "order": 15,
+  "blurb": "Resources, HTTP semantics, auth, versioning, pagination, performance and docs.",
+  "source": "https://roadmap.sh/api-design",
+  "stages": [
+    {
+      "title": "HTTP foundations",
+      "hint": "",
+      "items": [
+        {
+          "label": "HTTP and TLS",
+          "ref": "devops-cloud/notes/02-networking#5-http-and-tls"
+        }
+      ]
+    },
+    {
+      "title": "Designing APIs",
+      "hint": "",
+      "items": [
+        {
+          "label": "API design theory",
+          "ref": "api-design/deep/theory"
+        },
+        {
+          "label": "REST in Django REST Framework",
+          "ref": "django/notes/02-drf-and-api-design"
+        },
+        {
+          "label": "REST in Spring",
+          "ref": "spring-boot/notes/03-web-and-apis"
+        }
+      ]
+    },
+    {
+      "title": "Beyond REST",
+      "hint": "",
+      "items": [
+        {
+          "label": "GraphQL and gRPC",
+          "ref": "api-design/deep/internals"
+        }
+      ]
+    },
+    {
+      "title": "Security",
+      "hint": "",
+      "items": [
+        {
+          "label": "Authentication and authorization",
+          "ref": "security/notes/02-authentication-and-authorization"
+        },
+        {
+          "label": "OWASP Top 10",
+          "ref": "security/notes/01-owasp-top-10-2025"
+        }
+      ]
+    },
+    {
+      "title": "Reliability and performance",
+      "hint": "",
+      "items": [
+        {
+          "label": "Idempotency",
+          "ref": "backend/deep/best-practices"
+        },
+        {
+          "label": "Caching",
+          "ref": "backend/deep/performance"
+        },
+        {
+          "label": "Rate limiting",
+          "ref": "system-design/notes/01-system-design-fundamentals#14-rate-limiting-a-very-common-deep-dive"
+        }
+      ]
+    },
+    {
+      "title": "Async and events",
+      "hint": "",
+      "items": [
+        {
+          "label": "Messaging and webhooks",
+          "ref": "backend/interview/medium"
+        }
+      ]
+    }
+  ]
+}

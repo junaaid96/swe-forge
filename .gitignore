@@ -1,11 +1,9 @@
 # Dependencies
 node_modules/
-server/node_modules/
 
 # Build outputs
 dist/
 dist-ssr/
-server/dist/
 build/
 coverage/
 *.tsbuildinfo

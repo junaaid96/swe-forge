@@ -38,9 +38,8 @@ Requires Node 20+ (tested on Node 22).
 | Script | What it does |
 |---|---|
 | `npm run content` | compile `content/` into static JSON in `public/data/` (runs automatically via `predev` / `prebuild`) |
-| `npm run dev` | Vite dev server (frontend only, which is all the site needs) |
-| `npm run dev:full` | Vite + the optional Express API together |
-| `npm run dev:api` / `npm run start:api` | optional legacy Express API in `server/` |
+| `npm run dev` | Vite dev server |
+| `npm run preview` | Serves the production build locally |
 
 ## Content quality
 
@@ -84,17 +83,15 @@ Progress saved by the old SWE Forge app (`swe-forge-progress-v2`) is migrated au
 
 The frontend is a static Vite build deployed on **Vercel**. Vercel runs `npm run build`, which compiles the content first, and serves `dist/`. `vercel.json` rewrites client routes such as `/topics/java` to `index.html`, so deep links and refreshes work.
 
-`server/` holds the original Express API. The frontend no longer calls it, but it is kept unchanged for the separately deployed API project. It can be retired later.
-
 ## Project layout
 
 ```
 src/
-  lib/          content loading, progress store, SM-2 scheduler, stats, theme, hotkeys
-  components/   layout, sidebar, command palette, markdown renderer, charts, quiz/practice panels
-  pages/        home, topic, reader, flashcards, mock, skill map, bookmarks
-  styles/       global.css (tokens, themes, layout), prose.css (reading typography)
+  lib/          content loading, progress store, SM-2 scheduler, stats, theme, hotkeys, AI client
+  components/   layout, sidebar, command palette, markdown renderer, charts, quiz/practice panels, AI panel
+  pages/        home, topic, reader, flashcards, mock, arena, skill map, bookmarks, tools
+  styles/       global.css, prose.css, tools.css, ai.css, arena.css
+  tools/        22 client-side developer utilities
 scripts/build-content.mjs
-content/
-server/         optional Express API (legacy)
+content/        48 topics + prep map + roadmap tracks
 ```

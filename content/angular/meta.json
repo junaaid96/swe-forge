@@ -101,5 +101,6 @@
       ],
       "solution": "Long-lived observables keep the callback (and the component) alive after it's destroyed, causing leaks and duplicate work. Use the async pipe or toSignal, or pipe(takeUntilDestroyed()) (from @angular/core/rxjs-interop), which unsubscribes when the component is destroyed."
     }
-  ]
+  ],
+  "logo": "/logos/angular.svg"
 }

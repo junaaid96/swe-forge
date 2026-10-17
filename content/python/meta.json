@@ -101,5 +101,6 @@
       ],
       "solution": "Use asyncio with an async HTTP client (httpx.AsyncClient or aiohttp) and an asyncio.Semaphore (say 20) around each request, gathering results with asyncio.gather; or use a ThreadPoolExecutor(max_workers=20) with requests. Add timeouts, retries with backoff, and a shared session for connection reuse."
     }
-  ]
+  ],
+  "logo": "/logos/python.svg"
 }

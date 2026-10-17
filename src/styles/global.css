@@ -316,6 +316,16 @@ main { flex: 1; padding: 28px clamp(16px, 3vw, 40px) 56px; outline: none; }
 .topic-card-meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 0.78rem; color: var(--muted); }
 .topic-emoji { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 10px; background: color-mix(in srgb, var(--topic, var(--accent)) 14%, transparent); font-size: 1.25rem; flex: none; }
 .topic-emoji.lg { width: 64px; height: 64px; font-size: 2rem; border-radius: 16px; }
+/* Vendored brand marks (thesvg.org), transparent — theme pairs swap in dark mode. */
+.topic-emoji .topic-logo { width: 26px; height: 26px; object-fit: contain; }
+.topic-emoji.lg .topic-logo { width: 46px; height: 46px; }
+.side-topic .emoji .topic-logo { width: 18px; height: 18px; object-fit: contain; vertical-align: -4px; }
+.ai-logo { width: 40px; height: 40px; object-fit: contain; flex: none; }
+.topic-logo-dark { display: none; }
+[data-theme='dark'] .topic-logo-light.has-dark { display: none; }
+[data-theme='dark'] .topic-logo-dark { display: inline-block; }
+/* Monochrome marks: official dark-theme appearance via inversion. */
+[data-theme='dark'] img[data-logo='nextjs'] { filter: invert(1); }
 
 /* Topic */
 .topic { max-width: 980px; margin: 0 auto; display: grid; gap: 26px; }

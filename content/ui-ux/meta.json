@@ -101,5 +101,6 @@
       ],
       "solution": "Loading: a skeleton matching the table layout (avoid layout shift), announced politely to screen readers. Empty: explain why it's empty and offer the next action (\"Create your first project\"). Error: plain-language message, what happened and a retry button, keeping any data already loaded. All three use the same container so the layout stays stable."
     }
-  ]
+  ],
+  "logo": "/logos/figma.svg"
 }

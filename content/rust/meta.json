@@ -160,5 +160,6 @@
       "solution": "RwLock<HashMap> with entry API under a write lock, or dashmap for sharded locking. For single-flight (one computation per key), store shared futures (tokio::sync::OnceCell / futures::future::Shared) so concurrent getters await the same computation instead of duplicating it.",
       "points": 30
     }
-  ]
+  ],
+  "logo": "/logos/rust.svg"
 }

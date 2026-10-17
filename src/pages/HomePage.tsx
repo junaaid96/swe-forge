@@ -4,8 +4,9 @@ import { formatMinutes, useCatalog } from '../lib/content';
 import { useProgress } from '../lib/progress';
 import { allStats, dueCount, overall, suggestions, trackStats } from '../lib/stats';
 import { Bar, Ring } from '../components/Ring';
-import { IconArrowRight, IconCards, IconCode, IconFlame, IconMap, IconRadar, IconTimer } from '../components/Icons';
+import { IconArrowRight, IconBolt, IconCards, IconCode, IconFlame, IconMap, IconRadar, IconSpark, IconTimer } from '../components/Icons';
 import { PageFallback } from '../components/Layout';
+import { TopicMark } from '../components/TopicMark';
 import { dayKey } from '../lib/srs';
 
 export function HomePage() {
@@ -119,6 +120,16 @@ export function HomePage() {
           <strong>Topic-wise prep map</strong>
           <span>The checklist of concepts to know for each area, linked to the full notes.</span>
         </Link>
+        <Link to="/ai" className="feature card">
+          <IconSpark />
+          <strong>AI Coach</strong>
+          <span>Groq-powered help on any page: explain, quiz, interview and grade answers.</span>
+        </Link>
+        <Link to="/arena" className="feature card">
+          <IconBolt />
+          <strong>Quiz Arena</strong>
+          <span>Rapid-fire MCQ game against the clock — lives, streaks and bests.</span>
+        </Link>
       </section>
 
       <section className="group" aria-labelledby="g-tools">
@@ -185,7 +196,7 @@ export function HomePage() {
                 <Link key={slug} to={`/topics/${slug}`} className="topic-card card" style={{ ['--topic' as string]: t.accent }}>
                   <div className="topic-card-head">
                     <span className="topic-emoji" aria-hidden>
-                      {t.emoji}
+                      <TopicMark topic={t} />
                     </span>
                     <div>
                       <strong>{t.title}</strong>

@@ -100,5 +100,6 @@
       ],
       "solution": "Copying the object copies the pointer, so both copies free the same buffer (double free) — the rule of three/five was violated. Modern fix (rule of zero): hold the buffer in std::vector or std::unique_ptr<T[]>, delete the hand-written destructor, and let the compiler-generated operations do the right thing."
     }
-  ]
+  ],
+  "logo": "/logos/cplusplus.svg"
 }

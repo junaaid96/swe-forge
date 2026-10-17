@@ -101,5 +101,6 @@
       ],
       "solution": "Make the class and fields final, set items in the constructor with this.items = List.copyOf(items), expose only the unmodifiable list (or return a copy), and provide no setters. A record Order(List<String> items) with a compact constructor doing items = List.copyOf(items) achieves the same."
     }
-  ]
+  ],
+  "logo": "/logos/java.svg"
 }

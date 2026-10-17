@@ -101,5 +101,6 @@
       ],
       "solution": "Create 5 async workers that loop: take the next index from a shared counter, await fetch(urls[i]), store the result at results[i]. Await Promise.all(workers). Order is preserved because results are written by index; wrap each fetch in try/catch (or use allSettled semantics) so one failure doesn't stop the pool."
     }
-  ]
+  ],
+  "logo": "/logos/javascript.svg"
 }

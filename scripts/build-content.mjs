@@ -276,6 +276,10 @@ for (const t of plan) {
     slug: t.slug,
     title: meta.title,
     emoji: meta.emoji,
+    logo: meta.logo && fs.existsSync(path.join(ROOT, 'public', meta.logo.replace(/^\//, ''))) ? meta.logo : undefined,
+    logoDark: meta.logo && fs.existsSync(path.join(ROOT, 'public', meta.logo.replace(/^\//, '').replace(/\.svg$/, '-dark.svg')))
+      ? meta.logo.replace(/\.svg$/, '-dark.svg')
+      : undefined,
     tag: meta.tag,
     accent: meta.accent,
     blurb: meta.blurb ?? '',
@@ -408,7 +412,7 @@ writeJson(path.join(OUT, 'cards.json'), uniqueCards);
     const reg = fs.readFileSync(path.join(ROOT, 'src', 'tools', 'registry.ts'), 'utf8');
     toolSlugs = [...reg.matchAll(/slug:\s*'([^']+)'/g)].map((m) => m[1]);
   } catch { /* tools not present */ }
-  const urls = new Set(['/', '/prep-map', '/roadmaps', '/flashcards', '/mock', '/arena', '/skills', '/bookmarks', '/tools']);
+  const urls = new Set(['/', '/prep-map', '/roadmaps', '/flashcards', '/mock', '/arena', '/ai', '/skills', '/bookmarks', '/tools']);
   for (const t of topics) {
     urls.add(`/topics/${t.slug}`);
     for (const p of t.pages) urls.add(p.url);

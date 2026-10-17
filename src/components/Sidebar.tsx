@@ -3,8 +3,9 @@ import { useMemo, type ReactNode } from 'react';
 import { useCatalog } from '../lib/content';
 import { useProgress } from '../lib/progress';
 import { allStats, dueCount, overall } from '../lib/stats';
-import { IconBookmark, IconBolt, IconCards, IconCheck, IconHome, IconMap, IconRadar, IconRoute, IconTimer, IconFlame, IconWrench } from './Icons';
+import { IconBookmark, IconBolt, IconCards, IconCheck, IconHome, IconMap, IconRadar, IconRoute, IconSpark, IconTimer, IconFlame, IconWrench } from './Icons';
 import { Logo } from './Logo';
+import { TopicMark } from './TopicMark';
 import { Bar } from './Ring';
 
 export function Sidebar({ onNavigate }: { onNavigate: () => void }) {
@@ -35,15 +36,19 @@ export function Sidebar({ onNavigate }: { onNavigate: () => void }) {
       </NavLink>
 
       <nav aria-label="Main" className="side-section">
+        <p className="side-group-label">Learn</p>
         {link('/', 'Home', <IconHome />, undefined, true)}
-        {link('/roadmaps', 'Roadmaps', <IconRoute />)}
         {link('/prep-map', 'Prep map', <IconMap />)}
+        {link('/roadmaps', 'Roadmaps', <IconRoute />)}
+        {link('/bookmarks', 'Bookmarks', <IconBookmark />)}
+        <p className="side-group-label">Practice</p>
         {link('/flashcards', 'Flashcards', <IconCards />, due)}
         {link('/mock', 'Mock interview', <IconTimer />)}
         {link('/arena', 'Quiz Arena', <IconBolt />)}
         {link('/skills', 'Skill map', <IconRadar />)}
+        <p className="side-group-label">Assist</p>
+        {link('/ai', 'AI Coach', <IconSpark />)}
         {link('/tools', 'Dev tools', <IconWrench />)}
-        {link('/bookmarks', 'Bookmarks', <IconBookmark />)}
       </nav>
 
       <nav aria-label="Topics" className="side-topics">
@@ -67,7 +72,7 @@ export function Sidebar({ onNavigate }: { onNavigate: () => void }) {
                       aria-current={pathname === `/topics/${slug}` ? 'page' : undefined}
                     >
                       <span className="emoji" aria-hidden>
-                        {t.emoji}
+                        <TopicMark topic={t} />
                       </span>
                       <span className="side-topic-title">{t.title}</span>
                       {s && s.mastery > 0 ? <span className="side-pct">{s.mastery}%</span> : null}

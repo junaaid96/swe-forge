@@ -225,5 +225,6 @@
       "solution": "Add visible labels linked with for/id, input types and autocomplete, fieldsets for groups, a real submit button, and text errors linked with aria-describedby plus aria-invalid. Move focus to the first error on submit, and validate on the server too.",
       "points": 10
     }
-  ]
+  ],
+  "logo": "/logos/html5.svg"
 }

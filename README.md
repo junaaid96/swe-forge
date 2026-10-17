@@ -21,6 +21,7 @@
 - **Developer tools** (`/tools`): 22 client-side utilities (JSON, SQL, JWT, regex, cron, curl, diff, git, Docker, LLM tokens, mock data, subnet, QR, Unicode…) with search, favorites and recent history. No data leaves the browser.
 - **Progress tracking:** read/bookmark state, quiz scores, solved practice problems and a daily streak.
 - **Footer credit:** a "Developed by `<CodeJBorg />`" pill linking to [junaidul.pro.bd/codejborg](https://junaidul.pro.bd/codejborg).
+- **Brand marks:** language/framework logos vendored from [thesvg.org](https://thesvg.org/) under `public/logos/` (trademarks belong to their owners).
 - **UX:** light/dark theme with no flash on load, responsive layout with a mobile drawer, keyboard shortcuts (`?` lists them), a skip link, ARIA-labelled navigation and dialogs, reduced-motion support and print styles.
 
 ## Quick start

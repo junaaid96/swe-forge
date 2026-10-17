@@ -126,5 +126,6 @@
       "solution": "Room DAO Flow observed via repository; refresh writes network data into Room; ViewModel combines flows into StateFlow UiState with refresh/error flags; show cached data with offline banner; queue writes via WorkManager with constraints; test with fakes and process-death scenarios.",
       "points": 10
     }
-  ]
+  ],
+  "logo": "/logos/android.svg"
 }

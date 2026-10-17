@@ -101,5 +101,6 @@
       ],
       "solution": "Enable pagination (PageNumberPagination with a max page size, or CursorPagination for large or real-time tables), order by an indexed column, select only needed fields (only()/values()), and fix N+1 queries with select_related/prefetch_related."
     }
-  ]
+  ],
+  "logo": "/logos/django.svg"
 }

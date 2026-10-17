@@ -100,5 +100,6 @@
       "solution": "Short feature branches from main → PR → CI → squash merge. Prefer feature flags over long-lived branches.",
       "points": 10
     }
-  ]
+  ],
+  "logo": "/logos/git.svg"
 }

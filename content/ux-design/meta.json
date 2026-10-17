@@ -126,5 +126,6 @@
       "solution": "Check the funnel and discoverability in analytics, run a 5-user usability test with realistic tasks, identify issues (findability, wording), redesign with the control in the cart and plain language, retest, then ship behind a flag and measure adoption.",
       "points": 10
     }
-  ]
+  ],
+  "logo": "/logos/figma.svg"
 }

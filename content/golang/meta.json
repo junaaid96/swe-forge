@@ -160,5 +160,6 @@
       "solution": "signal.NotifyContext for SIGTERM; run server in goroutine; on ctx done, Shutdown with 30s timeout context; log forced-close and os.Exit(1) on timeout; wait for background workers via WaitGroup.",
       "points": 30
     }
-  ]
+  ],
+  "logo": "/logos/go.svg"
 }

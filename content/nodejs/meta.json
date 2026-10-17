@@ -101,5 +101,6 @@
       ],
       "solution": "Throw typed errors (e.g., NotFoundError with status 404) from handlers, then add one final app.use((err, req, res, next) => ...) that logs with a request ID and returns { error: { code, message } } with the right status; return a generic 500 message in production. Validate input at the edge; let programmer errors crash and restart under the process manager."
     }
-  ]
+  ],
+  "logo": "/logos/nodejs.svg"
 }

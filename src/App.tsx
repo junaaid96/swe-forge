@@ -14,6 +14,7 @@ const BookmarksPage = lazy(() => import('./pages/BookmarksPage'));
 const ToolsPage = lazy(() => import('./pages/ToolsPage'));
 const ToolPage = lazy(() => import('./pages/ToolPage'));
 const ArenaPage = lazy(() => import('./pages/ArenaPage'));
+const AIPage = lazy(() => import('./pages/AIPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 /** Old SWE Forge URLs keep working. */
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="tools" element={<ToolsPage />} />
           <Route path="tools/:slug" element={<ToolPage />} />
           <Route path="arena" element={<ArenaPage />} />
+          <Route path="ai" element={<AIPage />} />
           <Route path="scoreboard" element={<Navigate to="/skills" replace />} />
           <Route path="learn/:slug" element={<Legacy to={(p) => `/topics/${p.slug}`} />} />
           <Route path="interview/:slug" element={<Legacy to={(p) => `/topics/${p.slug}`} />} />

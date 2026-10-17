@@ -101,5 +101,6 @@
       ],
       "solution": "Treat it as a public endpoint: authenticate the session inside the action, verify the user owns or may delete project id (authorization), validate the input (e.g., with Zod), then revalidate affected paths/tags. Hiding the button in the UI is not access control."
     }
-  ]
+  ],
+  "logo": "/logos/nextjs.svg"
 }

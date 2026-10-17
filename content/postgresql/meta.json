@@ -198,5 +198,6 @@
       "solution": "Create a partial index on (restaurant_id, created_at DESC) WHERE status IN (active ones) CONCURRENTLY, rewrite date(created_at)=X as a half-open range, add extended statistics if estimates are off, and use keyset pagination.",
       "points": 10
     }
-  ]
+  ],
+  "logo": "/logos/postgresql.svg"
 }

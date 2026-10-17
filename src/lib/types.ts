@@ -16,6 +16,10 @@ export interface Topic {
   slug: string;
   title: string;
   emoji: string;
+  /** Vendored brand mark from thesvg.org, e.g. /logos/go.svg */
+  logo?: string;
+  /** Dark-theme variant, e.g. /logos/go-dark.svg */
+  logoDark?: string;
   tag: string;
   accent: string;
   blurb: string;

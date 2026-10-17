@@ -8,6 +8,7 @@ import { QuizPanel } from '../components/QuizPanel';
 import { PracticePanel } from '../components/PracticePanel';
 import { IconArrowRight, IconCards, IconCheck, IconTimer } from '../components/Icons';
 import { PageFallback } from '../components/Layout';
+import { TopicMark } from '../components/TopicMark';
 import { NotFoundPage } from './NotFoundPage';
 import type { PageKind, PageRef, TopicExtras } from '../lib/types';
 
@@ -67,7 +68,7 @@ export function TopicPage() {
       <header className="topic-hero card">
         <div className="topic-hero-main">
           <span className="topic-emoji lg" aria-hidden>
-            {topic.emoji}
+            <TopicMark topic={topic} />
           </span>
           <div>
             <p className="eyebrow">{topic.tag}</p>

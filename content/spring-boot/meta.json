@@ -101,5 +101,6 @@
       ],
       "solution": "Enable management.endpoint.health.probes.enabled=true (on by default when Boot detects Kubernetes) and point the readinessProbe at /actuator/health/readiness and the livenessProbe at /actuator/health/liveness. Readiness failing removes the pod from Service endpoints; only liveness failing triggers a restart. Add a startupProbe for slow starts."
     }
-  ]
+  ],
+  "logo": "/logos/spring.svg"
 }

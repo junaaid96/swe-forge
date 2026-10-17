@@ -100,5 +100,6 @@
       ],
       "solution": "Create an AbortController in the effect, pass its signal to fetch, and abort in the cleanup; ignore AbortError. Alternatively set an ignore flag in cleanup and skip setState when it's set. In real apps use a data library (TanStack Query) or framework loaders, which handle races and caching."
     }
-  ]
+  ],
+  "logo": "/logos/react.svg"
 }

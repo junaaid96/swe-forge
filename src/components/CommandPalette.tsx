@@ -89,6 +89,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
       { id: 'a-flash', url: '/flashcards', title: 'Review flashcards', sub: 'Spaced repetition', kind: 'action' },
       { id: 'a-mock', url: '/mock', title: 'Start a mock interview', sub: 'Timed, mixed questions', kind: 'action' },
       { id: 'a-arena', url: '/arena', title: 'Play Quiz Arena', sub: 'Rapid-fire MCQs, lives, combos', kind: 'action' },
+      { id: 'a-ai', url: '/ai', title: 'Open AI Coach', sub: 'Groq setup, usage, assistant', kind: 'action' },
       { id: 'a-roadmaps', url: '/roadmaps', title: 'Browse roadmaps', sub: '24 role-based learning tracks', kind: 'action' },
       { id: 'a-skills', url: '/skills', title: 'Open skill map', sub: 'Progress & what to study next', kind: 'action' },
       { id: 'a-prep', url: '/prep-map', title: 'Topic-wise prep map', sub: 'Guide', kind: 'action' },

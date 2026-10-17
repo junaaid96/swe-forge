@@ -282,5 +282,6 @@
       "solution": "Write the outbox row in the same transaction as the state change. A worker sends signed POSTs with a 10 s timeout and retries on 5xx or timeout with exponential backoff and jitter for up to 3 days. After that, mark the endpoint as failing and notify the owner. Expose GET /events for replay, and keep per-endpoint concurrency limits.",
       "points": 10
     }
-  ]
+  ],
+  "logo": "/logos/openapi.svg"
 }

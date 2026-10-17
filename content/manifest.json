@@ -30,7 +30,8 @@
         "python",
         "java",
         "c-cpp",
-        "rust"
+        "rust",
+        "golang"
       ]
     },
     {
@@ -85,7 +86,8 @@
         "security",
         "devsecops",
         "cyber-security",
-        "networking"
+        "networking",
+        "reverse-engineering"
       ]
     },
     {
@@ -539,6 +541,24 @@
       "order": 46,
       "tag": "SEO",
       "accent": "#16A34A"
+    },
+    {
+      "id": "reverse-engineering",
+      "slug": "reverse-engineering",
+      "title": "Reverse Engineering",
+      "emoji": "🔬",
+      "order": 47,
+      "tag": "RE & malware",
+      "accent": "#0E7490"
+    },
+    {
+      "id": "golang",
+      "slug": "golang",
+      "title": "Go",
+      "emoji": "🐹",
+      "order": 48,
+      "tag": "Language",
+      "accent": "#00ADD8"
     }
   ]
 }

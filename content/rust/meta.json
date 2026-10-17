@@ -10,7 +10,8 @@
   "group": "languages",
   "relatedTopics": [
     "c-cpp",
-    "cs-fundamentals"
+    "cs-fundamentals",
+    "golang"
   ],
   "quiz": [
     {
@@ -72,6 +73,42 @@
       ],
       "correctIndex": 1,
       "explanation": "Use tokio::time::sleep for delays and tokio::task::spawn_blocking for blocking or CPU-heavy work."
+    },
+    {
+      "id": "rs-q6",
+      "question": "How do Edition 2024 async closures differ from `|| async move {}`?",
+      "options": [
+        "They run on a different executor",
+        "`async || {}` captures like a normal closure and can hold borrows across .await, with AsyncFn traits",
+        "They don't need an executor",
+        "They are always Send"
+      ],
+      "correctIndex": 1,
+      "explanation": "Native async closures borrow from their environment across awaits; the old pattern moves everything into the inner future."
+    },
+    {
+      "id": "rs-q7",
+      "question": "What do let-chains (Rust 1.88) allow?",
+      "options": [
+        "Chaining iterators without collect",
+        "Combining `if let` bindings with `&&` conditions in one expression",
+        "Async blocks in match guards",
+        "Multiple return values"
+      ],
+      "correctIndex": 1,
+      "explanation": "`if let Some(x) = opt && x > 0` flattens the nested if-let pyramid."
+    },
+    {
+      "id": "rs-q8",
+      "question": "Trait upcasting (Rust 1.86) means…",
+      "options": [
+        "Any type can become any trait object",
+        "`&dyn SubTrait` coerces directly to `&dyn SuperTrait`",
+        "Traits can inherit struct fields",
+        "dyn Trait is now zero-cost"
+      ],
+      "correctIndex": 1,
+      "explanation": "Upcasting walks the supertrait chain; previously you needed manual as_super methods."
     }
   ],
   "problems": [
@@ -98,6 +135,30 @@
         "thiserror/anyhow"
       ],
       "solution": "Return Result from each function and propagate with ?. In a library, define an error enum with thiserror (Io, Parse variants with #[from]); in the binary, use anyhow::Result with .context(\"reading config\") for readable messages. Avoid unwrap() outside tests."
+    },
+    {
+      "id": "rs-p3",
+      "title": "Make it Send for spawn",
+      "difficulty": "medium",
+      "prompt": "tokio::spawn rejects your future: 'future cannot be sent between threads safely' because an Rc is held across .await. Give two fixes.",
+      "hints": [
+        "Scope the Rc",
+        "Arc instead"
+      ],
+      "solution": "Either drop/clone out the needed data so no Rc crosses the await (narrow the scope), or switch Rc to Arc (with Mutex if mutated). Prefer scoping — Arc adds atomic overhead everywhere.",
+      "points": 20
+    },
+    {
+      "id": "rs-p4",
+      "title": "Design a tiny cache API",
+      "difficulty": "hard",
+      "prompt": "Design a thread-safe generic Cache<K, V> with get-or-compute. Which sync primitive, and how do you avoid computing twice under contention?",
+      "hints": [
+        "RwLock + entry",
+        "Single-flight"
+      ],
+      "solution": "RwLock<HashMap> with entry API under a write lock, or dashmap for sharded locking. For single-flight (one computation per key), store shared futures (tokio::sync::OnceCell / futures::future::Shared) so concurrent getters await the same computation instead of duplicating it.",
+      "points": 30
     }
   ]
 }

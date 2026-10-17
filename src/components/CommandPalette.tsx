@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { getSearchIndex, useCatalog } from '../lib/content';
+import { TOOLS } from '../tools/registry';
 import type { SearchEntry } from '../lib/types';
 import { toggleTheme } from '../lib/theme';
 import { IconSearch } from './Icons';
@@ -87,9 +88,11 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
     const actions: Result[] = [
       { id: 'a-flash', url: '/flashcards', title: 'Review flashcards', sub: 'Spaced repetition', kind: 'action' },
       { id: 'a-mock', url: '/mock', title: 'Start a mock interview', sub: 'Timed, mixed questions', kind: 'action' },
+      { id: 'a-arena', url: '/arena', title: 'Play Quiz Arena', sub: 'Rapid-fire MCQs, lives, combos', kind: 'action' },
       { id: 'a-roadmaps', url: '/roadmaps', title: 'Browse roadmaps', sub: '24 role-based learning tracks', kind: 'action' },
       { id: 'a-skills', url: '/skills', title: 'Open skill map', sub: 'Progress & what to study next', kind: 'action' },
       { id: 'a-prep', url: '/prep-map', title: 'Topic-wise prep map', sub: 'Guide', kind: 'action' },
+      { id: 'a-tools', url: '/tools', title: 'Browse developer tools', sub: '22 client-side utilities', kind: 'action' },
       { id: 'a-theme', url: '', title: 'Toggle light / dark theme', sub: 'Shortcut: T', kind: 'action', run: toggleTheme },
     ];
     if (!toks.length) return actions;
@@ -97,6 +100,11 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
     const out: Result[] = [];
     const matchAll = (hay: string) => toks.every((t) => hay.includes(t));
     for (const a of actions) if (matchAll(a.title.toLowerCase())) out.push(a);
+    for (const t of TOOLS) {
+      if (matchAll(`${t.title} ${t.keywords} ${t.category}`.toLowerCase())) {
+        out.push({ id: `tool-${t.slug}`, url: `/tools/${t.slug}`, title: t.title, sub: `Dev tool · ${t.category}`, kind: 'action' });
+      }
+    }
     for (const tr of catalog?.tracks ?? []) {
       if (matchAll(`${tr.title} roadmap ${tr.slug} ${tr.blurb}`.toLowerCase())) out.push({ id: `r-${tr.slug}`, url: `/roadmaps/${tr.slug}`, title: `${tr.emoji} ${tr.title} roadmap`, sub: `Roadmap · ${tr.stages.length} stages`, kind: 'topic' });
     }

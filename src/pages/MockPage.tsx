@@ -4,8 +4,10 @@ import { useCards, useCatalog } from '../lib/content';
 import { progress, useProgress, type MockAnswer, type MockResult } from '../lib/progress';
 import { SOURCE_LABEL, type Card, type CardSource, type Catalog } from '../lib/types';
 import { PageFallback } from '../components/Layout';
+import { AIPanel } from '../components/AIPanel';
 import { Bar, Ring } from '../components/Ring';
-import { IconArrowRight, IconTimer } from '../components/Icons';
+import { IconArrowRight, IconSpark, IconTimer } from '../components/Icons';
+import { AiError, getKey, gradeAnswer, type GradeResult } from '../lib/ai';
 
 type Phase = 'setup' | 'running' | 'summary';
 const COUNTS = [5, 10, 15, 20];
@@ -164,6 +166,11 @@ export function MockPage() {
   const [choice, setChoice] = useState<number | null>(null);
   const [elapsed, setElapsed] = useState(0);
   const [result, setResult] = useState<MockResult | null>(null);
+  const [draft, setDraft] = useState('');
+  const [aiGrade, setAiGrade] = useState<GradeResult | null>(null);
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiErr, setAiErr] = useState('');
+  const [aiSetup, setAiSetup] = useState(false);
   const startRef = useRef(0);
 
   useEffect(() => {
@@ -208,6 +215,9 @@ export function MockPage() {
     setAnswers([]);
     setRevealed(false);
     setChoice(null);
+    setDraft('');
+    setAiGrade(null);
+    setAiErr('');
     setElapsed(0);
     startRef.current = Date.now();
     setPhase('running');
@@ -219,8 +229,33 @@ export function MockPage() {
     setAnswers(next);
     setRevealed(false);
     setChoice(null);
+    setDraft('');
+    setAiGrade(null);
+    setAiErr('');
     if (i + 1 >= questions.length) finish(next);
     else setI(i + 1);
+  };
+
+  const doAiGrade = async () => {
+    if (!draft.trim() || aiBusy) return;
+    if (!getKey()) {
+      setAiSetup(true);
+      return;
+    }
+    const q = questions[i];
+    setAiBusy(true);
+    setAiErr('');
+    try {
+      const g = await gradeAnswer(q.q, q.ans, draft);
+      setAiGrade(g);
+      setRevealed(true);
+    } catch (e) {
+      const msg = e instanceof AiError ? e.message : 'AI grading failed.';
+      setAiErr(msg);
+      if (e instanceof AiError && (e.kind === 'nokey' || e.kind === 'auth')) setAiSetup(true);
+    } finally {
+      setAiBusy(false);
+    }
   };
 
   if (phase === 'summary' && result) {
@@ -271,10 +306,19 @@ export function MockPage() {
             </div>
           ) : !revealed ? (
             <>
-              <p className="muted">Answer out loud or jot notes as if the interviewer just asked. Then compare with the model answer.</p>
-              <button type="button" className="btn btn-primary" onClick={() => setRevealed(true)} autoFocus>
-                Reveal model answer
-              </button>
+              <p className="muted">Type your answer for AI grading, or answer out loud and compare with the model answer.</p>
+              <div className="mock-answerbox">
+                <textarea value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="Your answer…" aria-label="Your answer" />
+              </div>
+              {aiErr ? <p className="tool-error" role="alert">{aiErr}</p> : null}
+              <div className="row">
+                <button type="button" className="btn btn-primary" onClick={() => setRevealed(true)} autoFocus={!draft}>
+                  Reveal model answer
+                </button>
+                <button type="button" className="btn btn-accent" disabled={!draft.trim() || aiBusy} onClick={doAiGrade}>
+                  <IconSpark /> {aiBusy ? 'Grading…' : 'AI grade my answer'}
+                </button>
+              </div>
             </>
           ) : null}
           {revealed ? (
@@ -282,6 +326,14 @@ export function MockPage() {
               {isMcq ? <p className={choice === q.ci ? 'good' : 'bad'}>{choice === q.ci ? 'Correct!' : 'Not quite.'}</p> : null}
               <p>{q.ans}</p>
               {q.x ? <p className="fc-takeaway">💡 {q.x}</p> : null}
+              {aiGrade ? (
+                <div className="ai-feedback" role="status">
+                  <p>
+                    <span className="ai-score">AI: {aiGrade.score === 1 ? 'Nailed it (1)' : aiGrade.score === 0.5 ? 'Partially (0.5)' : 'Missed (0)'}</span>
+                  </p>
+                  <p>{aiGrade.feedback}</p>
+                </div>
+              ) : null}
             </div>
           ) : null}
           {revealed ? (
@@ -294,6 +346,11 @@ export function MockPage() {
             ) : (
               <div className="row self-grade" role="group" aria-label="Grade your answer">
                 <span className="muted">How did you do?</span>
+                {aiGrade ? (
+                  <button type="button" className="btn btn-accent" onClick={() => answer(aiGrade.score)} autoFocus>
+                    <IconSpark /> Use AI score ({aiGrade.score})
+                  </button>
+                ) : null}
                 <button type="button" className="btn btn-bad" onClick={() => answer(0)}>
                   Missed it
                 </button>
@@ -307,6 +364,7 @@ export function MockPage() {
             )
           ) : null}
         </article>
+        <AIPanel open={aiSetup} onClose={() => setAiSetup(false)} context={{ title: q.q, body: `Question: ${q.q}\nModel answer: ${q.ans}` }} />
       </div>
     );
   }

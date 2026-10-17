@@ -2,20 +2,23 @@
 
 **Live:** [swe-forge.vercel.app](https://swe-forge.vercel.app/)
 
-**Forgeline** is a fast, static study hub for software engineering: guides, deep dives, interview Q&A, MCQ test prep, spaced-repetition flashcards, timed mock interviews and a skill map. It all runs in the browser. Progress lives in `localStorage`, and there is no account or backend to run.
+**Forgeline** is a fast, static study hub for software engineering: guides, deep dives, interview Q&A, MCQ test prep, spaced-repetition flashcards, timed mock interviews, a quiz arena, 22 developer tools, an optional AI coach and a skill map. It all runs in the browser. Progress lives in `localStorage`, and there is no account or backend to run.
 
 > Forgeline merges two earlier projects: **SWE Forge** (this repository) and **PrepShelf** (static Markdown guides plus interview MCQs). All PrepShelf content now lives under `content/`, in one taxonomy.
 
 ## Features
 
-- **28 topics in 9 groups:** Interview prep, Engineering craft, Languages, Frontend, Backend, CS foundations, Systems & data, DevOps & security, AI/ML. 115 Markdown pages in all.
-- **Quizzes and practice on every topic:** 200 MCQs and 80 practice problems across all 28 topics, defined in each topic's `meta.json`.
+- **48 topics in 11 groups:** Interview prep, Engineering craft, Languages (JS/TS, Python, Java, C/C++, Rust, Go), Frontend, Backend & frameworks, CS & algorithms, Systems & data, DevOps/cloud/security (incl. Reverse Engineering), AI & data, Architecture/product/leadership, Mobile/games/growth. 213 Markdown pages in all.
+- **Quizzes and practice on every topic:** 392 MCQs and 125 practice problems across all topics, defined in each topic's `meta.json`.
 - **Readers for every kind of page:** guides (`notes`), six deep-dive tracks, and interview Q&A in four levels. Each has a table of contents with scroll spy, syntax highlighting, copyable code blocks, heading anchors, a reading progress bar and prev/next navigation.
 - **Prep map** (`/prep-map`): a topic-wise interview checklist that links every area to where it is covered.
 - **Command palette search** (`Ctrl/⌘ K` or `/`): section-level full-text search across all content.
 - **Spaced-repetition flashcards** (`/flashcards`): cards are generated automatically from interview Q&A, guide sections, prep-map definitions and topic MCQs. A daily review queue is scheduled with SM-2 intervals (Again / Hard / Good / Easy). You can pick decks per topic and card type and set a new-cards-per-day limit. A card counts as mastered once its interval reaches 21 days.
-- **Mock interview mode** (`/mock`): a timed session of random questions across the topics you choose. You answer MCQs directly and self-grade open questions. At the end you get a score summary with per-topic results, weak areas linked to study material, a list of missed questions with "add to flashcards", and your session history.
+- **Mock interview mode** (`/mock`): a timed session of random questions across the topics you choose. You answer MCQs directly and self-grade open questions (or let the AI coach grade typed answers). At the end you get a score summary with per-topic results, weak areas linked to study material, a list of missed questions with "add to flashcards", and your session history.
+- **Quiz Arena** (`/arena`): a rapid-fire MCQ game — 15 seconds per question, 3 lives, streak combos, time bonuses and local bests, with missed questions linked back to study material.
+- **AI study coach (Groq, BYOK):** page-grounded chat (explain / summarize / quiz-me / interview-me) on every reader page, AI grading in mock interviews, and one-click explanations on flashcards. Keys live in the browser or optional `.env` (`VITE_GROQ_API_KEY`, see `.env.example`); model chain falls back automatically on rate limits with a daily token budget guard.
 - **Skill map dashboard** (`/skills`): a radar chart of every topic group plus a roadmap of all topics. Each tile shows pages read, cards mastered and quiz/mock scores, along with a ranked "what to study next" list. You can also export, import or reset your progress.
+- **Developer tools** (`/tools`): 22 client-side utilities (JSON, SQL, JWT, regex, cron, curl, diff, git, Docker, LLM tokens, mock data, subnet, QR, Unicode…) with search, favorites and recent history. No data leaves the browser.
 - **Progress tracking:** read/bookmark state, quiz scores, solved practice problems and a daily streak.
 - **Footer credit:** a "Developed by `<CodeJBorg />`" pill linking to [junaidul.pro.bd/codejborg](https://junaidul.pro.bd/codejborg).
 - **UX:** light/dark theme with no flash on load, responsive layout with a mobile drawer, keyboard shortcuts (`?` lists them), a skip link, ARIA-labelled navigation and dialogs, reduced-motion support and print styles.
@@ -71,6 +74,9 @@ Everything is stored in your browser's `localStorage`:
 |---|---|
 | `forgeline:progress:v1` | pages read, bookmarks, quiz scores, problems, SRS card state, mock history, streak |
 | `forgeline:theme` | `light` / `dark` |
+| `forgeline:tools:*` | tool favorites + recents |
+| `forgeline:arena:v1` | quiz arena bests |
+| `forgeline:groq:*` | AI key, model, daily usage, token budget (key never leaves the browser except for Groq API calls) |
 
 Progress saved by the old SWE Forge app (`swe-forge-progress-v2`) is migrated automatically on first load. Use **Skill map → Export** to back up or move progress between browsers.
 

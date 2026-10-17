@@ -1,0 +1,167 @@
+{
+  "id": "reverse-engineering",
+  "slug": "reverse-engineering",
+  "title": "Reverse Engineering",
+  "emoji": "🔬",
+  "order": 47,
+  "tag": "RE & malware",
+  "accent": "#0E7490",
+  "blurb": "Binaries, assembly, static and dynamic analysis, Ghidra workflows, unpacking and malware triage.",
+  "group": "ops",
+  "relatedTopics": [
+    "security",
+    "cyber-security",
+    "c-cpp",
+    "networking"
+  ],
+  "quiz": [
+    {
+      "id": "re-q1",
+      "question": "Static analysis means…",
+      "options": [
+        "Running the binary in a sandbox",
+        "Examining code/structure without executing it",
+        "Attaching a debugger at runtime",
+        "Fuzzing network inputs"
+      ],
+      "correctIndex": 1,
+      "explanation": "Static = no execution: headers, strings, disassembly, imports."
+    },
+    {
+      "id": "re-q2",
+      "question": "High section entropy (~7.5+) in a PE most likely indicates…",
+      "options": [
+        "Debug symbols",
+        "A packed or encrypted section",
+        "A .NET assembly",
+        "A valid signature"
+      ],
+      "correctIndex": 1,
+      "explanation": "Compressed/encrypted bytes look random; entropy near 8 bits/byte."
+    },
+    {
+      "id": "re-q3",
+      "question": "In x86-64 System V ABI, the first integer argument is passed in…",
+      "options": [
+        "RAX",
+        "RSP",
+        "RDI",
+        "RBP"
+      ],
+      "correctIndex": 2,
+      "explanation": "RDI, RSI, RDX, RCX, R8, R9 carry the first six integer args."
+    },
+    {
+      "id": "re-q4",
+      "question": "The PE Import Address Table (IAT) tells you…",
+      "options": [
+        "Which DLL functions the binary calls",
+        "The compiler version",
+        "The digital signature",
+        "Section entropy"
+      ],
+      "correctIndex": 0,
+      "explanation": "Imports reveal capabilities: networking, crypto, process APIs."
+    },
+    {
+      "id": "re-q5",
+      "question": "UPX is…",
+      "options": [
+        "A debugger",
+        "An executable packer that compresses sections",
+        "A Windows syscall",
+        "An ELF segment type"
+      ],
+      "correctIndex": 1,
+      "explanation": "UPX sections (UPX0/UPX1) unpack at runtime; `upx -d` reverses it."
+    },
+    {
+      "id": "re-q6",
+      "question": "A hardware breakpoint (DR0–DR3) is preferred over INT3 when…",
+      "options": [
+        "You need unlimited breakpoints",
+        "The code checksums itself or detects 0xCC patching",
+        "Debugging managed .NET code only",
+        "You want to patch the binary permanently"
+      ],
+      "correctIndex": 1,
+      "explanation": "HW breakpoints don't modify code bytes, defeating integrity checks."
+    },
+    {
+      "id": "re-q7",
+      "question": "An ELF file with an INTERP segment…",
+      "options": [
+        "Is statically linked",
+        "Needs the dynamic loader (e.g. ld-linux) at runtime",
+        "Cannot run on Linux",
+        "Has no entry point"
+      ],
+      "correctIndex": 1,
+      "explanation": "INTERP names the program interpreter for dynamically linked binaries."
+    },
+    {
+      "id": "re-q8",
+      "question": "The first safe triage step for an unknown suspicious binary is…",
+      "options": [
+        "Double-click it in your main OS",
+        "Hash it, check file type/strings, and only detonate in an isolated VM",
+        "Email it to colleagues",
+        "Upload secrets with it anywhere"
+      ],
+      "correctIndex": 1,
+      "explanation": "Identify first (hash, type, strings, reputation), execute only isolated."
+    }
+  ],
+  "problems": [
+    {
+      "id": "re-p1",
+      "title": "Triage an unknown binary",
+      "difficulty": "easy",
+      "prompt": "You receive suspicious.exe. List your first 6 static triage steps in order, with the tool/command for each.",
+      "hints": [
+        "hash",
+        "file type",
+        "strings"
+      ],
+      "solution": "1) sha256sum for reputation lookup 2) `file` for type/arch 3) PE headers: sections, imports (Capa/Detect It Easy) 4) `strings` for URLs, keys, paths 5) entropy check for packing 6) only then isolated dynamic run with snapshots + no network (or simulated).",
+      "points": 15
+    },
+    {
+      "id": "re-p2",
+      "title": "Read the assembly",
+      "difficulty": "medium",
+      "prompt": "What does this do? `mov eax, [rdi]; cmp eax, 0x7b; jle fail; imul eax, eax; ret`. Give the C equivalent and the input constraint.",
+      "hints": [
+        "rdi = arg1",
+        "0x7b = 123"
+      ],
+      "solution": "int f(int x){ if (x <= 123) goto fail; return x*x; } — squares inputs greater than 123.",
+      "points": 20
+    },
+    {
+      "id": "re-p3",
+      "title": "Unpack and find the payload",
+      "difficulty": "medium",
+      "prompt": "A PE has sections UPX0/UPX1 and one import (LoadLibraryA). How do you recover the real imports and strings?",
+      "hints": [
+        "upx -d",
+        "OEP",
+        "dump"
+      ],
+      "solution": "Try `upx -d` (standard UPX). If modified, run to the original entry point in a debugger, dump the process, rebuild imports (e.g. with Scylla), then re-analyze strings/imports statically.",
+      "points": 25
+    },
+    {
+      "id": "re-p4",
+      "title": "Extract the C2 config",
+      "difficulty": "hard",
+      "prompt": "Ghidra shows a loop XORing a 64-byte blob with a 4-byte key, then a call to WinHttpConnect. Outline how you extract the plaintext C2 URL without running the malware.",
+      "hints": [
+        "script it",
+        "emulate or reimplement"
+      ],
+      "solution": "Read blob + key bytes from the binary, reimplement the XOR in Python (or Ghidra script / Unicorn emulation), decode to URL. Document offset, key, algorithm as IOCs.",
+      "points": 30
+    }
+  ]
+}

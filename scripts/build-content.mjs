@@ -400,6 +400,25 @@ writeJson(path.join(OUT, 'catalog.json'), {
 writeJson(path.join(OUT, 'search.json'), search);
 writeJson(path.join(OUT, 'cards.json'), uniqueCards);
 
+// Sitemap for crawlers (content pages + app routes + tool pages).
+{
+  const SITE = 'https://swe-forge.vercel.app';
+  let toolSlugs = [];
+  try {
+    const reg = fs.readFileSync(path.join(ROOT, 'src', 'tools', 'registry.ts'), 'utf8');
+    toolSlugs = [...reg.matchAll(/slug:\s*'([^']+)'/g)].map((m) => m[1]);
+  } catch { /* tools not present */ }
+  const urls = new Set(['/', '/prep-map', '/roadmaps', '/flashcards', '/mock', '/arena', '/skills', '/bookmarks', '/tools']);
+  for (const t of topics) {
+    urls.add(`/topics/${t.slug}`);
+    for (const p of t.pages) urls.add(p.url);
+  }
+  for (const s of toolSlugs) urls.add(`/tools/${s}`);
+  for (const tr of tracks) urls.add(`/roadmaps/${tr.slug}`);
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...urls].map((u) => `  <url><loc>${SITE}${u}</loc></url>`).join('\n')}\n</urlset>\n`;
+  fs.writeFileSync(path.join(ROOT, 'public', 'sitemap.xml'), xml);
+}
+
 const kb = (f) => Math.round(fs.statSync(path.join(OUT, f)).size / 1024);
 console.log(
   `[content] ${topics.length} topics · ${totalPages} pages · ${totalWords.toLocaleString()} words · ${uniqueCards.length} cards` +

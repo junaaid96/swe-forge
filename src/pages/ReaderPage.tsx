@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Markdown } from '../components/Markdown';
 import { Toc } from '../components/Toc';
-import { IconArrowLeft, IconArrowRight, IconBookmark, IconCheck } from '../components/Icons';
+import { AIPanel } from '../components/AIPanel';
+import { IconArrowLeft, IconArrowRight, IconBookmark, IconCheck, IconSpark } from '../components/Icons';
 import { formatMinutes, readingOrder, urls, useCatalog, useResource } from '../lib/content';
 import { progress, useProgress } from '../lib/progress';
 import { useHotkeys } from '../lib/hotkeys';
@@ -85,6 +86,7 @@ export function ReaderPage({ prepMap = false }: { prepMap?: boolean }) {
   const articleRef = useRef<HTMLElement>(null);
   const pct = useReadingProgress(articleRef, page);
   const [practice, setPractice] = useState(() => localStorage.getItem('forgeline:qa-practice') === '1');
+  const [aiOpen, setAiOpen] = useState(false);
 
   const topic = catalog?.topics.find((t) => t.slug === slug);
   const key = prepMap ? 'prep-map' : `${slug}/${kind}/${id}`;
@@ -167,6 +169,9 @@ export function ReaderPage({ prepMap = false }: { prepMap?: boolean }) {
             <button type="button" className={`btn ${bookmarked ? 'btn-accent' : ''}`} onClick={() => progress.toggleBookmark(key)} aria-pressed={bookmarked} title="Shortcut: B">
               <IconBookmark /> {bookmarked ? 'Bookmarked' : 'Bookmark'}
             </button>
+            <button type="button" className="btn btn-accent" onClick={() => setAiOpen(true)} title="Ask AI about this page (needs a Groq key)">
+              <IconSpark /> Ask AI
+            </button>
             {isQA ? (
               <label className="switch">
                 <input
@@ -233,6 +238,14 @@ export function ReaderPage({ prepMap = false }: { prepMap?: boolean }) {
       <aside className="reader-aside">
         <Toc headings={tocHeadings} />
       </aside>
+      <AIPanel
+        open={aiOpen}
+        onClose={() => setAiOpen(false)}
+        context={{
+          title: page.title,
+          body: isQA ? page.items!.map((it, ix) => `Q${ix + 1}: ${it.question}\nA: ${it.answer}`).join('\n\n') : page.markdown,
+        }}
+      />
     </div>
   );
 }

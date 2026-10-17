@@ -23,3 +23,7 @@ export const IconKeyboard = (p: P) => (<svg {...base} {...p}><rect x="2" y="6" w
 export const IconFlame = (p: P) => (<svg {...base} {...p}><path d="M12 22c4 0 7-2.7 7-7 0-4-3-6-4-10-2 2-3 4-3 6-1-1-2-2-2-4-3 3-5 5.5-5 8 0 4.3 3 7 7 7z" /></svg>);
 export const IconCode = (p: P) => (<svg {...base} {...p}><path d="m18 16 4-4-4-4" /><path d="m6 8-4 4 4 4" /><path d="m14.5 4-5 16" /></svg>);
 export const IconArrowUpRight = (p: P) => (<svg {...base} {...p}><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>);
+export const IconStar = (p: P) => (<svg {...base} {...p}><path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6-5.4-3-5.4 3 1.1-6L3.2 9.4l6.1-.8z" /></svg>);
+export const IconWrench = (p: P) => (<svg {...base} {...p}><path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7z" /></svg>);
+export const IconSpark = (p: P) => (<svg {...base} {...p}><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z" /><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z" /><path d="M5 16l.7 1.8L7.5 18.5l-1.8.7L5 21l-.7-1.8L2.5 18.5l1.8-.7z" /></svg>);
+export const IconBolt = (p: P) => (<svg {...base} {...p}><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" /></svg>);

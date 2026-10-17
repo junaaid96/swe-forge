@@ -3,7 +3,7 @@ import { useMemo, type ReactNode } from 'react';
 import { useCatalog } from '../lib/content';
 import { useProgress } from '../lib/progress';
 import { allStats, dueCount, overall } from '../lib/stats';
-import { IconBookmark, IconCards, IconCheck, IconHome, IconMap, IconRadar, IconRoute, IconTimer, IconFlame } from './Icons';
+import { IconBookmark, IconBolt, IconCards, IconCheck, IconHome, IconMap, IconRadar, IconRoute, IconTimer, IconFlame, IconWrench } from './Icons';
 import { Logo } from './Logo';
 import { Bar } from './Ring';
 
@@ -40,7 +40,9 @@ export function Sidebar({ onNavigate }: { onNavigate: () => void }) {
         {link('/prep-map', 'Prep map', <IconMap />)}
         {link('/flashcards', 'Flashcards', <IconCards />, due)}
         {link('/mock', 'Mock interview', <IconTimer />)}
+        {link('/arena', 'Quiz Arena', <IconBolt />)}
         {link('/skills', 'Skill map', <IconRadar />)}
+        {link('/tools', 'Dev tools', <IconWrench />)}
         {link('/bookmarks', 'Bookmarks', <IconBookmark />)}
       </nav>
 

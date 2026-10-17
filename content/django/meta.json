@@ -37,7 +37,7 @@
         "raw()"
       ],
       "correctIndex": 1,
-      "explanation": "select_related follows ForeignKey/OneToOne with a JOIN; prefetch_related runs a second query for many-to-many and reverse relations and joins them in Python."
+      "explanation": "select_related follows forward ForeignKey/OneToOne with a SQL JOIN (1 query). Example: Appointment.objects.select_related('patient') then looping a.patient.name costs 1 query total; without it, each loop iteration fires an extra query (N+1). prefetch_related instead runs a 2nd query and joins in Python — for many-to-many and reverse relations."
     },
     {
       "id": "dj-q3",

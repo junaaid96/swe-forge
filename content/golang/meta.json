@@ -1,0 +1,164 @@
+{
+  "id": "golang",
+  "slug": "golang",
+  "title": "Go",
+  "emoji": "🐹",
+  "order": 48,
+  "tag": "Language",
+  "accent": "#00ADD8",
+  "blurb": "Goroutines, channels, generics, iterators, stdlib HTTP/JSON and production Go (1.24–1.27).",
+  "group": "languages",
+  "relatedTopics": [
+    "backend",
+    "api-design",
+    "c-cpp",
+    "system-design"
+  ],
+  "quiz": [
+    {
+      "id": "go-q1",
+      "question": "What does `go vet` plus `go fix` (1.26+) give you?",
+      "options": [
+        "A debugger and profiler",
+        "Suspicious-construct analysis plus push-button modernizers for new idioms",
+        "Dependency vendoring only",
+        "Cross-compilation"
+      ],
+      "correctIndex": 1,
+      "explanation": "vet finds bugs (printf mismatches, copying locks); go fix now hosts modernizers that rewrite code to current idioms."
+    },
+    {
+      "id": "go-q2",
+      "question": "An unbuffered channel send (`ch <- v`)…",
+      "options": [
+        "Always succeeds immediately",
+        "Blocks until a receiver takes the value",
+        "Panics without a buffer",
+        "Drops the value if nobody listens"
+      ],
+      "correctIndex": 1,
+      "explanation": "Unbuffered = synchronous handoff. Buffered (cap n) blocks only when full."
+    },
+    {
+      "id": "go-q3",
+      "question": "Which fixes a data race on a shared counter?",
+      "options": [
+        "Adding time.Sleep",
+        "sync.Mutex/atomic around access (or channel ownership)",
+        "GOMAXPROCS=1",
+        "defer"
+      ],
+      "correctIndex": 1,
+      "explanation": "Sleep/GOMAXPROCS hide races; mutexes, atomics, or 'share by communicating' fix them. Verify with -race."
+    },
+    {
+      "id": "go-q4",
+      "question": "`iter.Seq[T]` (range-over-func, Go 1.23+) lets you…",
+      "options": [
+        "Range over integers only",
+        "Write `for v := range myIterator` over a custom yield function",
+        "Replace all slices",
+        "Run loops in parallel"
+      ],
+      "correctIndex": 1,
+      "explanation": "A Seq is func(yield func(T) bool); range calls it, and yield returning false stops early."
+    },
+    {
+      "id": "go-q5",
+      "question": "`json:\"when,omitzero\"` (Go 1.24) differs from omitempty by…",
+      "options": [
+        "Omitting only nil pointers",
+        "Calling IsZero() when available, else comparing to the zero value",
+        "Being faster",
+        "Working only on strings"
+      ],
+      "correctIndex": 1,
+      "explanation": "omitzero respects IsZero (e.g. time.Time.IsZero); omitempty uses a fixed emptiness table."
+    },
+    {
+      "id": "go-q6",
+      "question": "`new(expr)` in Go 1.26…",
+      "options": [
+        "Allocates a slice",
+        "Returns a pointer to a new variable initialized with expr's value",
+        "Is the same as make()",
+        "Requires generics"
+      ],
+      "correctIndex": 1,
+      "explanation": "new(x) replaces ptr-helper functions: *T pointing at a copy of x."
+    },
+    {
+      "id": "go-q7",
+      "question": "A nil interface holding a typed nil pointer (`var e error = (*MyErr)(nil)`)…",
+      "options": [
+        "Compares == nil to true",
+        "Is non-nil (it has a type descriptor), a classic gotcha",
+        "Panics immediately",
+        "Is impossible"
+      ],
+      "correctIndex": 1,
+      "explanation": "Interfaces are (type, value); typed-nil has a type, so e != nil. Return nil explicitly."
+    },
+    {
+      "id": "go-q8",
+      "question": "Context cancellation should be used for…",
+      "options": [
+        "Passing optional params to any function",
+        "Deadlines/cancellation/scoped values across a request's call graph",
+        "Storing global config",
+        "Replacing all error returns"
+      ],
+      "correctIndex": 1,
+      "explanation": "ctx is request-scoped: cancel on client disconnect/timeout; don't store it in structs or use for optional params."
+    }
+  ],
+  "problems": [
+    {
+      "id": "go-p1",
+      "title": "Fix the goroutine leak",
+      "difficulty": "easy",
+      "prompt": "A handler starts `go poll()` per request and poll loops forever on time.Tick. What's wrong and what's the minimal fix?",
+      "hints": [
+        "leak",
+        "context"
+      ],
+      "solution": "Each request leaks a goroutine + ticker forever. Fix: pass the request context, select on ctx.Done(), and time.NewTicker with defer ticker.Stop().",
+      "points": 15
+    },
+    {
+      "id": "go-p2",
+      "title": "Bounded worker pool",
+      "difficulty": "medium",
+      "prompt": "Fetch 10k URLs with at most 32 concurrent requests, collecting errors. Sketch the design.",
+      "hints": [
+        "semaphore",
+        "errgroup"
+      ],
+      "solution": "Jobs channel + N workers, or errgroup.Group with SetLimit(32); one result slot per index; context timeout; close response bodies; aggregate errors.",
+      "points": 20
+    },
+    {
+      "id": "go-p3",
+      "title": "Generic filter with iterators",
+      "difficulty": "medium",
+      "prompt": "Write Where[T](seq iter.Seq[T], keep func(T) bool) iter.Seq[T] using range-over-func.",
+      "hints": [
+        "yield false stops"
+      ],
+      "solution": "return func(yield func(T) bool) { for v := range seq { if keep(v) && !yield(v) { return } } }",
+      "points": 20
+    },
+    {
+      "id": "go-p4",
+      "title": "Graceful shutdown",
+      "difficulty": "hard",
+      "prompt": "An HTTP server must drain in-flight requests on SIGTERM within 30s, then exit non-zero if it can't. Outline the code.",
+      "hints": [
+        "signal.NotifyContext",
+        "Shutdown"
+      ],
+      "solution": "signal.NotifyContext for SIGTERM; run server in goroutine; on ctx done, Shutdown with 30s timeout context; log forced-close and os.Exit(1) on timeout; wait for background workers via WaitGroup.",
+      "points": 30
+    }
+  ]
+}

@@ -4,7 +4,7 @@ import { formatMinutes, useCatalog } from '../lib/content';
 import { useProgress } from '../lib/progress';
 import { allStats, dueCount, overall, suggestions, trackStats } from '../lib/stats';
 import { Bar, Ring } from '../components/Ring';
-import { IconArrowRight, IconCards, IconFlame, IconMap, IconRadar, IconTimer } from '../components/Icons';
+import { IconArrowRight, IconCards, IconCode, IconFlame, IconMap, IconRadar, IconTimer } from '../components/Icons';
 import { PageFallback } from '../components/Layout';
 import { dayKey } from '../lib/srs';
 
@@ -119,6 +119,32 @@ export function HomePage() {
           <strong>Topic-wise prep map</strong>
           <span>The checklist of concepts to know for each area, linked to the full notes.</span>
         </Link>
+      </section>
+
+      <section className="group" aria-labelledby="g-tools">
+        <div className="group-head">
+          <h2 id="g-tools">Developer tools</h2>
+          <Link to="/tools" className="small">
+            All 22 tools →
+          </Link>
+        </div>
+        <div className="track-strip">
+          {[
+            ['json', 'JSON Formatter'],
+            ['jwt', 'JWT Decoder'],
+            ['regex', 'Regex Tester'],
+            ['time', 'Time & Cron'],
+            ['diff', 'Diff Checker'],
+            ['git', 'Git Helper'],
+            ['tokens', 'LLM Tokens'],
+            ['mock-data', 'Mock Data'],
+          ].map(([slug, label]) => (
+            <Link key={slug} to={`/tools/${slug}`} className="track-chip" style={{ ['--topic' as string]: 'var(--accent)' }}>
+              <IconCode width={15} height={15} />
+              <span>{label}</span>
+            </Link>
+          ))}
+        </div>
       </section>
 
       {catalog.tracks?.length ? (

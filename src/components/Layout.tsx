@@ -100,6 +100,9 @@ export function Layout() {
             <NavLink to="/skills" className={({ isActive }) => `top-link ${isActive ? 'active' : ''}`}>
               Skill map
             </NavLink>
+            <NavLink to="/tools" className={({ isActive }) => `top-link ${isActive ? 'active' : ''}`}>
+              Tools
+            </NavLink>
           </nav>
           <button type="button" className="icon-btn hide-sm" onClick={() => setHelp(true)} aria-label="Keyboard shortcuts">
             <IconKeyboard />

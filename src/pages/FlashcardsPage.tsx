@@ -7,7 +7,8 @@ import { dayKey, intervalLabel, isMastered, previewIntervals, type Grade } from 
 import { useHotkeys } from '../lib/hotkeys';
 import { SOURCE_LABEL, type Card, type CardSource } from '../lib/types';
 import { PageFallback } from '../components/Layout';
-import { IconArrowRight, IconCards } from '../components/Icons';
+import { AIPanel } from '../components/AIPanel';
+import { IconArrowRight, IconCards, IconSpark } from '../components/Icons';
 
 const GRADES: Array<{ g: Grade; label: string; key: string; cls: string }> = [
   { g: 0, label: 'Again', key: '1', cls: 'btn-bad' },
@@ -23,6 +24,7 @@ function Session({ initial, onDone }: { initial: Card[]; onDone: (n: number) => 
   const [flipped, setFlipped] = useState(false);
   const [choice, setChoice] = useState<number | null>(null);
   const [done, setDone] = useState(0);
+  const [aiOpen, setAiOpen] = useState(false);
   const card = queue[0];
   const prev = card ? state.cards[card.id] : undefined;
   const preview = card ? previewIntervals(prev, card.t) : null;
@@ -96,9 +98,14 @@ function Session({ initial, onDone }: { initial: Card[]; onDone: (n: number) => 
             {isMcq ? <p className={correct ? 'good' : 'bad'}>{correct ? 'Correct!' : 'Not quite.'}</p> : null}
             <p>{card.ans}</p>
             {card.x ? <p className="fc-takeaway">💡 {card.x}</p> : null}
-            <Link className="small" to={card.a ? `${card.u}#${card.a}` : card.u}>
-              Open source page <IconArrowRight width={12} height={12} />
-            </Link>
+            <div className="row">
+              <Link className="small" to={card.a ? `${card.u}#${card.a}` : card.u}>
+                Open source page <IconArrowRight width={12} height={12} />
+              </Link>
+              <button type="button" className="btn btn-sm btn-accent" onClick={() => setAiOpen(true)}>
+                <IconSpark /> Explain with AI
+              </button>
+            </div>
           </div>
         ) : !isMcq ? (
           <button type="button" className="btn btn-primary btn-lg fc-show" onClick={() => setFlipped(true)} autoFocus>
@@ -118,6 +125,7 @@ function Session({ initial, onDone }: { initial: Card[]; onDone: (n: number) => 
           ))}
         </div>
       ) : null}
+      <AIPanel open={aiOpen} onClose={() => setAiOpen(false)} context={{ title: card.q, body: `Question: ${card.q}\nAnswer: ${card.ans}${card.x ? `\nTakeaway: ${card.x}` : ''}` }} />
     </div>
   );
 }

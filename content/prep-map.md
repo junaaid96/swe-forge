@@ -29,7 +29,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 
 ## BACKEND ENGINEERING - Enhanced
 
-### Java & Spring Boot (NEW)
+### Java & Spring Boot
 
 **Spring Core Concepts**
 - **Dependency Injection & IoC Container**: Spring manages object creation and dependencies. @Autowired, @Component, @Service, @Repository annotations. Container creates beans and wires them together.
@@ -65,7 +65,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 - **Async Processing**: @Async for async methods. @EnableAsync. Thread pool configuration. CompletableFuture for async results.
 - **Spring Boot Actuator**: Production-ready features. /health, /metrics, /info endpoints. Custom health indicators. Monitoring integration.
 
-### Python & Django (NEW)
+### Python & Django
 
 **Django Core**
 - **MVT Architecture**: Model-View-Template (not MVC). Model = data, View = logic (like controller), Template = presentation. Understanding Django's interpretation matters.
@@ -120,7 +120,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 
 ## DATABASE - Enhanced
 
-### Advanced SQL Topics (NEW)
+### Advanced SQL Topics
 
 **Query Optimization Deep Dive**
 - **Execution Plans**: EXPLAIN ANALYZE for query analysis. Sequential scan vs Index scan vs Bitmap scan. Cost estimation. Query planner statistics.
@@ -149,7 +149,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 - **Deadlocks**: Circular dependency of locks. Prevention strategies (consistent lock order). Detection and timeout handling.
 - **MVCC (Multi-Version Concurrency Control)**: PostgreSQL implementation. Multiple versions of rows. Snapshot isolation. No read locks.
 
-### NoSQL Deep Dive (NEW)
+### NoSQL Deep Dive
 
 **MongoDB Specifics**
 - **Document Model**: BSON format. Embedded documents vs references. Schema flexibility vs validation with JSON Schema.
@@ -171,7 +171,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 - **Denormalization Mandatory**: No joins. Duplicate data across tables. Query-driven data modeling.
 - **Compaction**: SSTables and memtables. Merge and compaction process. Impact on read/write performance.
 
-### Database Scaling (NEW)
+### Database Scaling
 
 **Replication Strategies**
 - **Master-Slave Replication**: Write to master, read from slaves. Asynchronous vs synchronous replication. Lag handling.
@@ -195,7 +195,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 
 ## DSA - Enhanced
 
-### Advanced Patterns (NEW)
+### Advanced Patterns
 
 **Sliding Window Advanced**
 - **Variable Size Window**: Expand until condition met, shrink from left. Minimum window substring, longest substring with K distinct characters.
@@ -217,7 +217,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 - **Sliding Window Maximum**: Monotonic decreasing deque. Remove elements outside window and smaller elements.
 - **Largest Rectangle in Histogram**: Stack stores indices. Calculate area when popping smaller heights.
 
-### Tree Advanced (NEW)
+### Tree Advanced
 
 **Binary Tree Advanced**
 - **Morris Traversal**: O(1) space traversal using threaded binary tree. Temporary links to inorder successor/predecessor.
@@ -237,7 +237,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 - **Maximum Path Sum**: Can start and end at any node. Consider single node, left path, right path, node through root.
 - **Count Complete Tree Nodes**: O(log²n) using completeness property. Check if left and right heights same.
 
-### Graph Advanced (NEW)
+### Graph Advanced
 
 **Shortest Path Algorithms**
 - **Bellman-Ford**: Handles negative weights. O(VE) time. Detects negative cycles. Relax all edges V-1 times.
@@ -256,7 +256,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 - **Edge List**: Array of edges. Good for Kruskal's MST. Sorting by weight.
 - **Implicit Graphs**: Grid as graph. State space graphs. No explicit representation, generated on fly.
 
-### Dynamic Programming Advanced (NEW)
+### Dynamic Programming Advanced
 
 **DP Patterns Deep Dive**
 - **Knapsack Variations**: 0/1, Unbounded, Fractional (greedy), Multi-dimensional. Space optimization from 2D to 1D.
@@ -276,7 +276,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 - **State Reduction**: Identify what truly changes. Remove redundant dimensions. Example: Fibonacci needs only last two states.
 - **State Expansion**: Adding dimension for constraints. Example: K transactions in stock problem.
 
-### Advanced Algorithms (NEW)
+### Advanced Algorithms
 
 **Bit Manipulation Advanced**
 - **Brian Kernighan's Algorithm**: n & (n-1) removes rightmost set bit. Count set bits efficiently.
@@ -295,7 +295,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 - **Fast Exponentiation**: a^b in O(log b) using binary representation. Modular exponentiation for large numbers.
 - **GCD Variants**: Extended Euclidean for Bezout coefficients. LCM calculation. Coprime numbers.
 
-### Problem-Solving Meta-Skills (NEW)
+### Problem-Solving Meta-Skills
 
 **Pattern Recognition Enhanced**
 - **Keywords to Pattern Mapping**: 
@@ -378,7 +378,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 - **Custom Document & App**: _document.js for HTML structure. _app.js for layout, state. Difference in app router.
 - **Optimizations**: Bundle analyzer. Tree shaking. Dynamic imports. Font optimization with next/font.
 
-### Angular (NEW)
+### Angular
 
 **Core Concepts**
 - **Components & Modules**: @Component decorator. NgModule for organization. Standalone components (new approach).
@@ -413,7 +413,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 - **Lazy Loading**: Code splitting by route. Preloading strategies. Custom preloading.
 - **Testing**: Jasmine, Karma. TestBed configuration. Component testing. Service testing with mocks.
 
-### Advanced React Patterns (NEW)
+### Advanced React Patterns
 
 **Composition Patterns**
 - **Compound Components**: Parent-child implicit communication. Context for internal state. React.Children.map.
@@ -434,7 +434,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 - **useLayoutEffect**: Synchronous DOM mutations. Measuring DOM. Avoiding visual flicker.
 - **Custom Hook Composition**: Composing multiple hooks. Sharing stateful logic. Hook dependencies.
 
-### Browser & Web Platform (NEW)
+### Browser & Web Platform
 
 **Performance APIs**
 - **Performance Observer**: Monitoring metrics. LCP, INP, CLS observation (via the `web-vitals` library). Real user monitoring (RUM).
@@ -564,7 +564,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 
 ---
 
-## DEPLOYMENT & DEVOPS ESSENTIALS (NEW)
+## DEPLOYMENT & DEVOPS ESSENTIALS
 
 ### Containerization
 
@@ -651,7 +651,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 
 ---
 
-## Communication & Soft Skills for Interviews (NEW)
+## Communication & Soft Skills for Interviews
 
 ### Behavioral Interview Prep
 
@@ -697,7 +697,7 @@ This is a checklist of what to know in each area. Every **bold term** below also
 
 ---
 
-## Interview-Specific Topics (NEW)
+## Interview-Specific Topics
 
 ### System Design Interview Prep
 

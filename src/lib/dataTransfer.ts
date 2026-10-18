@@ -5,6 +5,7 @@ import { daily, type DailyState } from './daily';
 import { studyPlan, type StudyPlanState } from './studyPlan';
 import { noteStore, type NotesState } from './notes';
 import { customCards, type CustomCardsState } from './customCards';
+import { designStore, type DesignState } from './design';
 
 interface Envelope {
   app: 'forgeline';
@@ -15,6 +16,7 @@ interface Envelope {
   plan?: StudyPlanState;
   notes?: NotesState;
   customCards?: CustomCardsState;
+  design?: DesignState;
 }
 
 export function exportAll(): string {
@@ -28,6 +30,7 @@ export function exportAll(): string {
       plan: studyPlan.exportData(),
       notes: noteStore.exportData(),
       customCards: customCards.exportData(),
+      design: designStore.exportData(),
     } as Envelope,
     null,
     2,
@@ -46,6 +49,7 @@ export function importAll(json: string): void {
     if (env.plan) studyPlan.importData(env.plan);
     if (env.notes) noteStore.importData(env.notes);
     if (env.customCards) customCards.importData(env.customCards);
+    if (env.design) designStore.importData(env.design);
     return;
   }
   progress.importJson(json);
@@ -58,4 +62,5 @@ export function resetAll(): void {
   studyPlan.reset();
   noteStore.reset();
   customCards.reset();
+  designStore.reset();
 }

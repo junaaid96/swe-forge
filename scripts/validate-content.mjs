@@ -19,6 +19,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import matter from 'gray-matter';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT = path.join(ROOT, 'content');
@@ -334,6 +335,18 @@ function checkInterviewFile(file, lines) {
   });
 }
 
+let visualizerIds = null;
+function getVisualizerIds() {
+  if (visualizerIds) return visualizerIds;
+  try {
+    const reg = fs.readFileSync(path.join(ROOT, 'src', 'visualizers', 'registry.ts'), 'utf8');
+    visualizerIds = new Set([...reg.matchAll(/id:\s*'([\w-]+)'/g)].map((m) => m[1]));
+  } catch {
+    visualizerIds = new Set();
+  }
+  return visualizerIds;
+}
+
 function checkMarkdownFile(file, slug, { interview }) {
   const raw = fs.readFileSync(file, 'utf8');
   const lines = raw.split('\n');
@@ -341,6 +354,12 @@ function checkMarkdownFile(file, slug, { interview }) {
   if (unclosedAt >= 0) err(file, unclosedAt + 1, 'unbalanced code fence (never closed)');
   checkProseHygiene(file, lines, inFence);
   checkMdLinks(file, slug, lines, inFence);
+  lines.forEach((line, i) => {
+    if (inFence[i]) return;
+    for (const m of line.matchAll(/::visualizer\{id="([^"]*)"\}/g)) {
+      if (!getVisualizerIds().has(m[1])) err(file, i + 1, `unknown visualizer id "${m[1]}"`);
+    }
+  });
   if (interview) checkInterviewFile(file, lines);
 }
 
@@ -354,6 +373,27 @@ for (const slug of topicDirs) {
 }
 const prepMap = path.join(CONTENT, 'prep-map.md');
 if (fs.existsSync(prepMap)) checkMarkdownFile(prepMap, '', { interview: false });
+
+// ---------------------------------------------------------------------------
+// System design prompts: content/design/<slug>.md
+// ---------------------------------------------------------------------------
+
+const DESIGN_DIR = path.join(CONTENT, 'design');
+if (fs.existsSync(DESIGN_DIR)) {
+  for (const f of fs.readdirSync(DESIGN_DIR).filter((x) => x.endsWith('.md')).sort()) {
+    const file = path.join(DESIGN_DIR, f);
+    const raw = fs.readFileSync(file, 'utf8');
+    checkMarkdownFile(file, '', { interview: false });
+    const { data, content } = matter(raw);
+    if (typeof data.title !== 'string' || !data.title.trim()) err(file, 1, 'design: frontmatter "title" is required');
+    if (!/^## Brief\s*$/m.test(content)) err(file, 1, 'design: missing ## Brief section');
+    if (!/^## Model answer\s*$/m.test(content)) err(file, 1, 'design: missing ## Model answer section');
+    const rubric = data.rubric;
+    if (!Array.isArray(rubric) || !rubric.length || rubric.some((r) => !r?.dimension || !Array.isArray(r.points) || !r.points.length)) {
+      err(file, 1, 'design: frontmatter "rubric" must list dimensions with points');
+    }
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Report

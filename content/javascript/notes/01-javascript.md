@@ -8,6 +8,8 @@
 
 JavaScript is single-threaded with an event loop. Understanding the ordering rules answers a huge share of interview questions.
 
+::visualizer{id="event-loop"}
+
 ```js
 console.log("1 sync");
 

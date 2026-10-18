@@ -588,6 +588,56 @@ mark.hl-pink { background: #fbcfe8; color: #500724; }
   mark.hl { border: 1px solid #999; }
 }
 
+/* ---- Visualizers ------------------------------------------------------- */
+.viz { display: flex; flex-direction: column; gap: 14px; }
+.viz-svg { width: 100%; height: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-elev); }
+.viz-num { font-size: 13px; font-weight: 600; fill: var(--text); font-family: inherit; }
+.viz-sub { font-size: 11px; fill: var(--muted); font-family: inherit; }
+.viz-edge, .viz-node { cursor: pointer; }
+.viz-edge:focus-visible, .viz-node:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.viz-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.viz-speed { display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; color: var(--muted); }
+.viz-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+@media (max-width: 760px) { .viz-grid { grid-template-columns: 1fr; } }
+.viz-pseudo { margin: 0; }
+.viz-pseudo pre { margin: 6px 0 0; padding: 12px; background: var(--bg-soft); border-radius: 10px; overflow-x: auto; font-size: 0.85rem; }
+.viz-pseudo code { display: block; padding: 1px 8px; border-radius: 6px; }
+.viz-pseudo code.on { background: var(--accent-soft); color: var(--text); font-weight: 700; }
+.viz-counters { display: flex; flex-wrap: wrap; gap: 16px; font-size: 0.9rem; color: var(--muted); }
+.viz-counters strong { color: var(--text); font-size: 1.2rem; margin-right: 4px; }
+.viz-note { margin: 8px 0 0; }
+.el-grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 14px; }
+@media (max-width: 760px) { .el-grid { grid-template-columns: 1fr; } }
+.el-lanes { display: grid; gap: 10px; }
+.el-lane ul { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.el-chip { padding: 4px 10px; border-radius: 999px; font-size: 0.82rem; font-family: ui-monospace, monospace; }
+.tone-stack { background: var(--accent-soft); }
+.tone-micro { background: var(--good-soft); color: var(--good); }
+.tone-macro { background: var(--warn-soft); color: var(--warn); }
+.el-log { border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; background: var(--bg-soft); }
+.el-log ol { margin: 4px 0 0; padding-left: 20px; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+.viz-embed { margin: 1.4em 0; }
+@media print {
+  .viz-controls, .viz-embed { display: none !important; }
+}
+
+/* ---- System design practice ------------------------------------------------ */
+.segmented.tabs { margin: 0 0 16px; }
+.design-workspace { display: flex; flex-direction: column; gap: 14px; }
+.design-workspace textarea { width: 100%; resize: vertical; font-family: inherit; }
+.rubric-dim { margin-bottom: 12px; }
+.rubric-dim h3 { margin: 0 0 8px; }
+.rubric-points { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.rubric-points label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; }
+.rubric-points input[type='checkbox'] { width: 18px; height: 18px; flex: none; margin-top: 2px; accent-color: var(--accent); }
+
+/* ---- Mock coding round ----------------------------------------------------- */
+.mock-code-result { margin-bottom: 14px; }
+.mock-code-result:last-child { margin-bottom: 0; }
+.mock-code-block { max-height: 280px; overflow: auto; background: var(--bg-soft); border-radius: 8px; padding: 12px; font-size: 0.82rem; }
+.pre-wrap { white-space: pre-wrap; }
+.ai-feedback { margin-top: 12px; }
+
 /* ---- Roadmaps ---------------------------------------------------------- */
 .credit-roadmap { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); text-decoration: none; }
 .credit-roadmap strong { color: var(--text); font-weight: 600; }

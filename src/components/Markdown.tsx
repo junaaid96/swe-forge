@@ -5,6 +5,7 @@ import rehypeSlug from 'rehype-slug';
 import rehypeHighlight from 'rehype-highlight';
 import { Link } from 'react-router-dom';
 import { Mermaid } from './Mermaid';
+import { VisualizerEmbed } from './VisualizerEmbed';
 
 interface HastLike {
   type: string;
@@ -85,6 +86,12 @@ const components: Components = {
         {children as ReactNode}
       </blockquote>
     );
+  },
+  p: ({ node, children, ...props }) => {
+    const text = hastText(node as unknown as HastLike).trim();
+    const m = text.match(/^::visualizer\{id="([\w-]+)"\}$/);
+    if (m) return <VisualizerEmbed id={m[1]} />;
+    return <p {...props}>{children}</p>;
   },
   h2: heading('h2'),
   h3: heading('h3'),

@@ -330,6 +330,76 @@ for (const { w, h, name } of [
   });
 }
 
+for (const id of ['sorting', 'graph-traversal', 'event-loop', 'btree-index', 'hash-table']) {
+  test(`visualizer ${id} loads and steps`, async ({ page }) => {
+    await page.goto(`/visualize/${id}`);
+    await expect(page.getByTestId('viz-detail')).toBeVisible();
+    await page.getByTestId('viz-step').click();
+    await expect(page.getByText(/Step 2\//)).toBeVisible();
+  });
+}
+
+test('guides embed visualizers', async ({ page }) => {
+  await page.goto('/topics/dsa/notes/01-complexity-and-core-structures');
+  const embed = page.getByTestId('viz-embed-sorting');
+  await embed.scrollIntoViewIfNeeded();
+  await expect(embed.getByTestId('viz-step')).toBeVisible();
+});
+
+test('system design workspace saves and reveals', async ({ page }) => {
+  await page.goto('/design');
+  await expect(page.getByTestId('design-hub').locator('.topic-card')).toHaveCount(6);
+  await page.getByTestId('design-hub').locator('.topic-card').first().click();
+  await expect(page.getByTestId('design-workspace')).toBeVisible();
+  await page.getByTestId('design-tab-workspace').click();
+  await page.getByTestId('design-requirements').fill('Handle 40 writes/s and 4K reads/s.');
+  await page.getByTestId('design-tab-rubric').click();
+  await page.getByTestId('design-workspace').locator('.rubric-points input').first().check();
+  await page.reload();
+  await page.getByTestId('design-tab-workspace').click();
+  await expect(page.getByTestId('design-requirements')).toHaveValue('Handle 40 writes/s and 4K reads/s.');
+  await expect(page.locator('.diagram svg').first()).toBeVisible({ timeout: 15_000 });
+  await page.getByTestId('design-tab-model').click();
+  await page.getByTestId('design-reveal').click();
+  await expect(page.getByTestId('design-model')).toContainText('Trade-offs');
+});
+
+test('a mock interview with a coding round solves and scores', async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.goto('/mock');
+  await page.getByRole('button', { name: 'Interview Q&A' }).click();
+  await page.getByRole('button', { name: 'Prep map' }).click();
+  await page.getByRole('radio', { name: '5', exact: true }).click();
+  // Frontend has exactly one runnable challenge, so the pick is deterministic.
+  await page.getByRole('button', { name: /Frontend/ }).first().click();
+  await page.getByRole('radiogroup', { name: 'Coding challenges' }).getByRole('radio', { name: '1', exact: true }).click();
+  await page.getByTestId('mock-start').click();
+  for (let step = 0; step < 6; step++) {
+    await expect(page.getByTestId('mock-run').or(page.getByTestId('mock-summary')).or(page.getByTestId('mock-coding'))).toBeVisible();
+    if (await page.getByTestId('mock-coding').isVisible()) break;
+    if (await page.getByTestId('mock-summary').isVisible()) break;
+    await page.getByTestId('mock-options').locator('[role="radio"]').first().click();
+    await page.getByTestId('mock-next').click();
+  }
+  await expect(page.getByTestId('mock-coding')).toBeVisible();
+  // Type the reference solution into the editor, then run the full round.
+  const ch = (await page.request.get('/data/pages/frontend/practice/cx.json').then((r) => r.json())) as {
+    solution: { code: Record<string, string> };
+  };
+  const editor = page.getByTestId('mock-coding').locator('.cm-content');
+  await editor.click();
+  await page.keyboard.press(process.platform === 'darwin' ? 'Meta+a' : 'Control+a');
+  await page.keyboard.type(ch.solution.code.javascript, { delay: 0 });
+  await page.getByTestId('mock-code-run').click();
+  await expect(page.getByText(/passed/)).toBeVisible();
+  await page.getByTestId('mock-code-submit-tests').click();
+  await expect(page.getByTestId('mock-code-next')).toBeEnabled({ timeout: 30_000 });
+  await page.getByTestId('mock-code-next').click();
+  await expect(page.getByTestId('mock-summary')).toBeVisible();
+  await expect(page.getByTestId('mock-coding-results')).toContainText('100%');
+  await expect(page.getByTestId('mock-coding-results').locator('pre code')).not.toBeEmpty();
+});
+
 test('the Python practice runner executes in the browser', async ({ page }) => {
   test.setTimeout(120_000);
   // Seed the reference solution first so the single run proves execution.

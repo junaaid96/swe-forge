@@ -100,6 +100,8 @@ def num_islands(grid):
 
 > **Asked as:** Number of Islands · Rotting Oranges · Word Ladder · Clone Graph · Pacific Atlantic Water Flow · Shortest Path in Binary Matrix
 
+::visualizer{id="graph-traversal"}
+
 ---
 
 ## 3.3 Topological sort

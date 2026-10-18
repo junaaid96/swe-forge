@@ -15,6 +15,10 @@ export interface MockAnswer {
   q: string;
   url: string;
   score: number; // 0 | 0.5 | 1
+  /** set for coding-round answers so results can show the final code */
+  code?: string;
+  language?: string;
+  feedback?: string;
 }
 
 export interface MockResult {

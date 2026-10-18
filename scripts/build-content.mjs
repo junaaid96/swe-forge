@@ -758,6 +758,49 @@ if (fs.existsSync(PATHS)) {
   paths.sort((a, b) => a.order - b.order);
 }
 
+// ---------------------------------------------------------------------------
+// System design prompts: content/design/<slug>.md with frontmatter (id,
+// title, emoji, blurb, order, rubric[{dimension, points[]}]), a `## Brief`
+// section (the prompt) and a `## Model answer` section. Emits design.json
+// plus one JSON per prompt.
+const DESIGN = path.join(CONTENT, 'design');
+const designIndex = [];
+if (fs.existsSync(DESIGN)) {
+  const errors = [];
+  for (const f of fs.readdirSync(DESIGN).filter((x) => x.endsWith('.md')).sort(natural)) {
+    const file = path.join(DESIGN, f);
+    const slug = f.replace(/\.md$/, '');
+    const { data, content } = matter(fs.readFileSync(file, 'utf8'));
+    const brief = (content.split(/^## Model answer\s*$/m)[0] ?? '').replace(/^## Brief\s*$/m, '').trim();
+    const modelAnswer = (content.split(/^## Model answer\s*$/m)[1] ?? '').trim();
+    if (!data.title) errors.push(`${f}: missing title`);
+    if (!brief) errors.push(`${f}: missing ## Brief section`);
+    if (!modelAnswer) errors.push(`${f}: missing ## Model answer section`);
+    const rubric = Array.isArray(data.rubric) ? data.rubric : [];
+    if (!rubric.length || rubric.some((r) => !r.dimension || !Array.isArray(r.points) || !r.points.length)) {
+      errors.push(`${f}: rubric must list dimensions with points`);
+    }
+    const entry = {
+      slug,
+      title: data.title ?? titleCase(slug),
+      emoji: data.emoji ?? '🏛️',
+      blurb: data.blurb ?? '',
+      order: data.order ?? 99,
+      rubric: rubric.map((r) => ({ dimension: String(r.dimension), points: r.points.map(String) })),
+      brief,
+      url: `/design/${slug}`,
+    };
+    designIndex.push(entry);
+    writeJson(path.join(OUT, 'design', `${slug}.json`), { ...entry, modelAnswer });
+  }
+  if (errors.length) {
+    console.error(`[content] design errors:\n  ${errors.join('\n  ')}`);
+    process.exit(1);
+  }
+  designIndex.sort((a, b) => a.order - b.order);
+  writeJson(path.join(OUT, 'design.json'), designIndex);
+}
+
 // De-duplicate cards by id (identical headings in one page).
 const seen = new Set();
 const uniqueCards = cards.filter((c) => (seen.has(c.id) ? false : (seen.add(c.id), true)));
@@ -786,7 +829,7 @@ writeJson(path.join(OUT, 'cards.json'), uniqueCards);
     const reg = fs.readFileSync(path.join(ROOT, 'src', 'tools', 'registry.ts'), 'utf8');
     toolSlugs = [...reg.matchAll(/slug:\s*'([^']+)'/g)].map((m) => m[1]);
   } catch { /* tools not present */ }
-  const urls = new Set(['/', '/prep-map', '/roadmaps', '/paths', '/plan', '/notes', '/flashcards', '/mock', '/arena', '/ai', '/skills', '/bookmarks', '/tools', '/practice']);
+  const urls = new Set(['/', '/prep-map', '/roadmaps', '/paths', '/plan', '/notes', '/visualize', '/design', '/flashcards', '/mock', '/arena', '/ai', '/skills', '/bookmarks', '/tools', '/practice']);
   for (const t of topics) {
     urls.add(`/topics/${t.slug}`);
     for (const p of t.pages) urls.add(p.url);
@@ -795,6 +838,11 @@ writeJson(path.join(OUT, 'cards.json'), uniqueCards);
   for (const s of toolSlugs) urls.add(`/tools/${s}`);
   for (const tr of tracks) urls.add(`/roadmaps/${tr.slug}`);
   for (const p of paths) urls.add(`/paths/${p.slug}`);
+  for (const d of designIndex) urls.add(d.url);
+  try {
+    const reg = fs.readFileSync(path.join(ROOT, 'src', 'visualizers', 'registry.ts'), 'utf8');
+    for (const m of reg.matchAll(/id:\s*'([\w-]+)'/g)) urls.add(`/visualize/${m[1]}`);
+  } catch { /* visualizers not present */ }
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...urls].map((u) => `  <url><loc>${SITE}${u}</loc></url>`).join('\n')}\n</urlset>\n`;
   fs.writeFileSync(path.join(ROOT, 'public', 'sitemap.xml'), xml);
 }

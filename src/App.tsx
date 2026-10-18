@@ -22,6 +22,10 @@ const PathsPage = lazy(() => import('./pages/PathsPage'));
 const PathDetailPage = lazy(() => import('./pages/PathDetailPage'));
 const StudyPlanPage = lazy(() => import('./pages/StudyPlanPage'));
 const NotesPage = lazy(() => import('./pages/NotesPage'));
+const VisualizeHubPage = lazy(() => import('./pages/VisualizeHubPage'));
+const VisualizePage = lazy(() => import('./pages/VisualizePage'));
+const DesignHubPage = lazy(() => import('./pages/DesignHubPage'));
+const DesignWorkspacePage = lazy(() => import('./pages/DesignWorkspacePage'));
 
 /** Old SWE Forge URLs keep working. */
 function Legacy({ to }: { to: (p: Record<string, string | undefined>) => string }) {
@@ -54,6 +58,10 @@ export default function App() {
           <Route path="paths/:slug" element={<PathDetailPage />} />
           <Route path="plan" element={<StudyPlanPage />} />
           <Route path="notes" element={<NotesPage />} />
+          <Route path="visualize" element={<VisualizeHubPage />} />
+          <Route path="visualize/:id" element={<VisualizePage />} />
+          <Route path="design" element={<DesignHubPage />} />
+          <Route path="design/:slug" element={<DesignWorkspacePage />} />
           <Route path="scoreboard" element={<Navigate to="/skills" replace />} />
           <Route path="learn/:slug" element={<Legacy to={(p) => `/topics/${p.slug}`} />} />
           <Route path="interview/:slug" element={<Legacy to={(p) => `/topics/${p.slug}`} />} />

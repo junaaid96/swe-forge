@@ -16,6 +16,8 @@ A B-tree stores keys sorted, so the engine can binary-search to a range instead 
 
 The costs are real: every `INSERT`/`UPDATE`/`DELETE` maintains **every** index on the table, indexes take disk and memory, and an unused index is pure overhead. A table with 12 indexes has slow writes and a confused planner.
 
+::visualizer{id="btree-index"}
+
 ```sql
 -- Find indexes nobody uses (PostgreSQL)
 SELECT relname AS table, indexrelname AS index, idx_scan AS times_used,

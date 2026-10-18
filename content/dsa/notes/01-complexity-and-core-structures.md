@@ -100,6 +100,8 @@ def group_anagrams(words):
 
 **Keys must be immutable and have a stable hash.** Mutating a key after insertion puts it in the wrong bucket permanently.
 
+::visualizer{id="hash-table"}
+
 > **Asked as:** "How does a hash map work internally?" · "What's the worst case and when does it happen?" · "Why must keys be immutable?" · "Two Sum."
 
 ---
@@ -326,6 +328,8 @@ Real implementations are hybrids: **Timsort** (Python `sorted`, Java for objects
 **Comparison sorts cannot beat O(n log n)** — there are n! orderings and each comparison gives one bit, so you need log₂(n!) ≈ n log n comparisons.
 
 **Quickselect** finds the k-th smallest in O(n) average without fully sorting — the right answer to "top K" when k is large relative to n.
+
+::visualizer{id="sorting"}
 
 > **Asked as:** "Which sort would you use and why?" · "What makes a sort stable and when do you care?" · "Why can't comparison sorting be faster than n log n?" · "Sort a 100 GB file with 8 GB of RAM." (external merge sort: sort chunks, then k-way merge)
 

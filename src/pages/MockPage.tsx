@@ -1,16 +1,21 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { Suspense, lazy, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { useCards, useCatalog } from '../lib/content';
+import { getChallenge, urls, useCards, useCatalog, useResource } from '../lib/content';
 import { customAsCards, customCards, useCustomCards } from '../lib/customCards';
 import { progress, useProgress, type MockAnswer, type MockResult } from '../lib/progress';
-import { SOURCE_LABEL, type Card, type CardSource, type Catalog } from '../lib/types';
+import { SOURCE_LABEL, type Card, type CardSource, type Catalog, type PracticeChallenge, type PracticeIndex } from '../lib/types';
 import { PageFallback } from '../components/Layout';
 import { AIPanel } from '../components/AIPanel';
 import { Bar, Ring } from '../components/Ring';
 import { IconArrowRight, IconSpark, IconTimer } from '../components/Icons';
 import { AiError, getKey, gradeAnswer, type GradeResult } from '../lib/ai';
 
-type Phase = 'setup' | 'running' | 'summary';
+type Phase = 'setup' | 'running' | 'coding' | 'summary';
+
+const MockCoding = lazy(() => import('../components/MockCoding'));
+/** Seconds per coding challenge in a mock interview. */
+const CODE_SECONDS = 300;
+const CODE_COUNTS = [0, 1, 2, 3];
 const COUNTS = [5, 10, 15, 20];
 const TIMES = [0, 10, 20, 30, 45];
 const TYPES: CardSource[] = ['mcq', 'interview', 'prep', 'concept'];
@@ -79,7 +84,7 @@ function Summary({ result, catalog, onAgain }: { result: MockResult; catalog: Ca
                 className="btn"
                 disabled={queued}
                 onClick={() => {
-                  progress.dueToday(missed.map((m) => ({ id: m.cardId, topic: m.topic })));
+                  progress.dueToday(missed.filter((m) => !m.cardId.startsWith('code:')).map((m) => ({ id: m.cardId, topic: m.topic })));
                   setQueued(true);
                 }}
               >
@@ -133,6 +138,30 @@ function Summary({ result, catalog, onAgain }: { result: MockResult; catalog: Ca
         </section>
       ) : null}
 
+      {result.answers.some((a) => a.code !== undefined) ? (
+        <section className="card pad" data-testid="mock-coding-results">
+          <h2>Coding round</h2>
+          {result.answers
+            .filter((a) => a.code !== undefined)
+            .map((a) => (
+              <div key={a.cardId} className="mock-code-result">
+                <p>
+                  <span className={`chip ${a.score >= 1 ? 'chip-good' : a.score > 0 ? 'chip-warn' : 'chip-bad'}`}>{Math.round(a.score * 100)}%</span>{' '}
+                  <Link to={a.url}>{a.q.replace(/^Code: /, '')}</Link> <small className="muted">({a.language})</small>
+                </p>
+                <pre className="mock-code-block">
+                  <code>{a.code}</code>
+                </pre>
+                {a.feedback ? (
+                  <details>
+                    <summary>AI feedback</summary>
+                    <p className="pre-wrap">{a.feedback}</p>
+                  </details>
+                ) : null}
+              </div>
+            ))}
+        </section>
+      ) : null}
       {missed.length ? (
         <section className="card pad">
           <h2>Review these</h2>
@@ -153,6 +182,7 @@ function Summary({ result, catalog, onAgain }: { result: MockResult; catalog: Ca
 export function MockPage() {
   const { data: cards, loading } = useCards();
   const { data: catalog } = useCatalog();
+  const { data: practiceIndex } = useResource<PracticeIndex>(urls.practice);
   const state = useProgress();
   const customs = useCustomCards();
   const bank = useMemo(
@@ -165,6 +195,9 @@ export function MockPage() {
   const [types, setTypes] = useState<CardSource[]>(['mcq', 'interview', 'prep']);
   const [count, setCount] = useState(10);
   const [minutes, setMinutes] = useState(10);
+  const [codeCount, setCodeCount] = useState(0);
+  const [coding, setCoding] = useState<PracticeChallenge[]>([]);
+  const [codeIdx, setCodeIdx] = useState(0);
   const [questions, setQuestions] = useState<Card[]>([]);
   const [i, setI] = useState(0);
   const [answers, setAnswers] = useState<MockAnswer[]>([]);
@@ -185,6 +218,11 @@ export function MockPage() {
   }, []);
 
   const poolSize = useMemo(() => bank.filter((c) => (!topics.length || topics.includes(c.t)) && types.includes(c.src)).length, [bank, topics, types]);
+  const runnable = useMemo(
+    () => (practiceIndex?.challenges ?? []).filter((c) => c.runner !== 'none' && (!topics.length || topics.includes(c.topic))),
+    [practiceIndex, topics],
+  );
+  const canStart = (poolSize > 0 && types.length > 0) || (codeCount > 0 && runnable.length > 0);
 
   const finish = (final: MockAnswer[]) => {
     // The timeout watcher and the answer buttons can fire in the same tick — record once.
@@ -204,34 +242,42 @@ export function MockPage() {
   };
 
   useEffect(() => {
-    if (phase !== 'running') return;
+    if (phase !== 'running' && phase !== 'coding') return;
     const id = window.setInterval(() => setElapsed(Math.round((Date.now() - startRef.current) / 1000)), 500);
     return () => window.clearInterval(id);
   }, [phase]);
 
   const remaining = minutes ? minutes * 60 - elapsed : null;
   useEffect(() => {
-    if (phase === 'running' && remaining !== null && remaining <= 0) finish(answers);
+    if ((phase === 'running' || phase === 'coding') && remaining !== null && remaining <= 0) finish(answers);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [remaining, phase]);
 
   if (loading || !cards || !catalog) return <PageFallback />;
 
   const start = () => {
-    const qs = pickQuestions(bank, topics, types, count);
-    if (!qs.length) return;
-    setQuestions(qs);
-    setI(0);
-    setAnswers([]);
-    setRevealed(false);
-    setChoice(null);
-    setDraft('');
-    setAiGrade(null);
-    setAiErr('');
-    setElapsed(0);
-    startRef.current = Date.now();
-    finishedRef.current = false;
-    setPhase('running');
+    void (async () => {
+      const qs = types.length ? pickQuestions(bank, topics, types, count) : [];
+      const picks = shuffle(runnable).slice(0, codeCount);
+      const chs = (await Promise.all(picks.map((c) => getChallenge(c.topic, c.slug).catch(() => null)))).filter(
+        (c): c is PracticeChallenge => Boolean(c),
+      );
+      if (!qs.length && !chs.length) return;
+      setQuestions(qs);
+      setCoding(chs);
+      setCodeIdx(0);
+      setI(0);
+      setAnswers([]);
+      setRevealed(false);
+      setChoice(null);
+      setDraft('');
+      setAiGrade(null);
+      setAiErr('');
+      setElapsed(0);
+      startRef.current = Date.now();
+      finishedRef.current = false;
+      setPhase(qs.length ? 'running' : 'coding');
+    })();
   };
 
   const answer = (score: number) => {
@@ -243,8 +289,20 @@ export function MockPage() {
     setDraft('');
     setAiGrade(null);
     setAiErr('');
-    if (i + 1 >= questions.length) finish(next);
-    else setI(i + 1);
+    if (i + 1 >= questions.length) {
+      if (coding.length) {
+        setCodeIdx(0);
+        setPhase('coding');
+      } else finish(next);
+    } else setI(i + 1);
+  };
+
+  const answerCode = (ch: PracticeChallenge, r: { score: number; code: string; language: string; feedback: string }) => {
+    const record: MockAnswer = { cardId: `code:${ch.id}`, topic: ch.topic, q: `Code: ${ch.title}`, url: ch.url, score: r.score, code: r.code, language: r.language, feedback: r.feedback || undefined };
+    const next = [...answers, record];
+    setAnswers(next);
+    if (codeIdx + 1 >= coding.length) finish(next);
+    else setCodeIdx(codeIdx + 1);
   };
 
   const doAiGrade = async () => {
@@ -278,6 +336,19 @@ export function MockPage() {
         </header>
         <Summary result={result} catalog={catalog} onAgain={() => setPhase('setup')} />
       </div>
+    );
+  }
+
+  if (phase === 'coding') {
+    const ch = coding[codeIdx];
+    if (!ch) {
+      finish(answers);
+      return <PageFallback />;
+    }
+    return (
+      <Suspense fallback={<PageFallback />}>
+        <MockCoding key={ch.id} challenge={ch} seconds={CODE_SECONDS} index={codeIdx} total={coding.length} onDone={(r) => answerCode(ch, r)} />
+      </Suspense>
     );
   }
 
@@ -454,9 +525,24 @@ export function MockPage() {
               ))}
             </div>
           </div>
+          {practiceIndex ? (
+            <div className="field">
+              <span className="field-label">Coding round (5 min each)</span>
+              <div className="segmented" role="radiogroup" aria-label="Coding challenges">
+                {CODE_COUNTS.map((c) => (
+                  <button key={c} type="button" role="radio" aria-checked={codeCount === c} className={codeCount === c ? 'on' : ''} onClick={() => setCodeCount(c)}>
+                    {c ? `${c}` : 'None'}
+                  </button>
+                ))}
+              </div>
+              <small className="muted">
+                {runnable.length} runnable challenge{runnable.length === 1 ? '' : 's'} {topics.length ? 'match these topics' : '(all topics)'}.
+              </small>
+            </div>
+          ) : null}
         </div>
         <div className="row">
-          <button type="button" className="btn btn-primary btn-lg" disabled={!poolSize || !types.length} onClick={start} data-testid="mock-start">
+          <button type="button" className="btn btn-primary btn-lg" disabled={!canStart} onClick={start} data-testid="mock-start">
             <IconTimer /> Start mock interview
           </button>
           <span className="muted small">{poolSize.toLocaleString()} questions match these settings.</span>

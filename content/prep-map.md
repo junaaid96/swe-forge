@@ -4,6 +4,8 @@
 
 This is a checklist of what to know in each area. Every **bold term** below also becomes a flashcard (deck: *Prep map*) and can come up in a mock interview. Use the table to jump to the full notes for each area.
 
+Prefer to watch ideas run? Try the interactive [visualizers](/visualize): [sorting](/visualize/sorting) · [graph traversal](/visualize/graph-traversal) · [event loop](/visualize/event-loop) · [B-tree index](/visualize/btree-index) · [hash table](/visualize/hash-table).
+
 | Area | Study it in Forgeline |
 |---|---|
 | Java & Spring Boot | [Spring Boot](/topics/spring-boot) · [Java](/topics/java) |

@@ -277,3 +277,24 @@ export interface Path {
   topics: string[];
   minutes: number;
 }
+
+export interface DesignRubric {
+  dimension: string;
+  points: string[];
+}
+
+export interface DesignPrompt {
+  slug: string;
+  title: string;
+  emoji: string;
+  accent?: string;
+  blurb: string;
+  order: number;
+  rubric: DesignRubric[];
+  brief: string;
+  url: string;
+}
+
+export interface DesignDetail extends DesignPrompt {
+  modelAnswer: string;
+}

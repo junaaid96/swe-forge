@@ -27,3 +27,4 @@ export const IconStar = (p: P) => (<svg {...base} {...p}><path d="m12 3 2.7 5.6 
 export const IconWrench = (p: P) => (<svg {...base} {...p}><path d="M14.7 6.3a4.5 4.5 0 0 0-6 6L3 18l3 3 5.7-5.7a4.5 4.5 0 0 0 6-6L14 13l-3-3 3.7-3.7z" /></svg>);
 export const IconSpark = (p: P) => (<svg {...base} {...p}><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z" /><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9z" /><path d="M5 16l.7 1.8L7.5 18.5l-1.8.7L5 21l-.7-1.8L2.5 18.5l1.8-.7z" /></svg>);
 export const IconBolt = (p: P) => (<svg {...base} {...p}><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z" /></svg>);
+export const IconPlay = (p: P) => (<svg {...base} {...p}><circle cx="12" cy="12" r="9" /><path d="M10 8.5v7l6-3.5z" /></svg>);

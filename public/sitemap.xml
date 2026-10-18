@@ -6,6 +6,8 @@
   <url><loc>https://swe-forge.vercel.app/paths</loc></url>
   <url><loc>https://swe-forge.vercel.app/plan</loc></url>
   <url><loc>https://swe-forge.vercel.app/notes</loc></url>
+  <url><loc>https://swe-forge.vercel.app/visualize</loc></url>
+  <url><loc>https://swe-forge.vercel.app/design</loc></url>
   <url><loc>https://swe-forge.vercel.app/flashcards</loc></url>
   <url><loc>https://swe-forge.vercel.app/mock</loc></url>
   <url><loc>https://swe-forge.vercel.app/arena</loc></url>
@@ -474,4 +476,15 @@
   <url><loc>https://swe-forge.vercel.app/paths/frontend-engineer</loc></url>
   <url><loc>https://swe-forge.vercel.app/paths/backend-engineer</loc></url>
   <url><loc>https://swe-forge.vercel.app/paths/system-design-interview</loc></url>
+  <url><loc>https://swe-forge.vercel.app/design/url-shortener</loc></url>
+  <url><loc>https://swe-forge.vercel.app/design/rate-limiter</loc></url>
+  <url><loc>https://swe-forge.vercel.app/design/chat</loc></url>
+  <url><loc>https://swe-forge.vercel.app/design/news-feed</loc></url>
+  <url><loc>https://swe-forge.vercel.app/design/notification-service</loc></url>
+  <url><loc>https://swe-forge.vercel.app/design/file-storage</loc></url>
+  <url><loc>https://swe-forge.vercel.app/visualize/sorting</loc></url>
+  <url><loc>https://swe-forge.vercel.app/visualize/graph-traversal</loc></url>
+  <url><loc>https://swe-forge.vercel.app/visualize/event-loop</loc></url>
+  <url><loc>https://swe-forge.vercel.app/visualize/btree-index</loc></url>
+  <url><loc>https://swe-forge.vercel.app/visualize/hash-table</loc></url>
 </urlset>

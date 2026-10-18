@@ -10,6 +10,11 @@ export function Mermaid({ source }: { source: string }) {
 
   useEffect(() => {
     let live = true;
+    setSvg(null);
+    setFailed(false);
+    if (!source.trim()) return () => {
+      live = false;
+    };
     import('mermaid')
       .then(async ({ default: mermaid }) => {
         mermaid.initialize({ startOnLoad: false, securityLevel: 'strict', theme: theme === 'dark' ? 'dark' : 'default', fontFamily: 'inherit' });

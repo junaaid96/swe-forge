@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { getSearchIndex, useCatalog } from '../lib/content';
 import { useDialogFocus } from '../lib/focus';
 import { TOOLS } from '../tools/registry';
+import { VISUALIZERS } from '../visualizers/registry';
 import type { SearchEntry } from '../lib/types';
 import { toggleTheme } from '../lib/theme';
 import { IconSearch } from './Icons';
@@ -99,6 +100,8 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
       { id: 'a-paths', url: '/paths', title: 'Browse learning paths', sub: 'Curated step-by-step sequences', kind: 'action' },
       { id: 'a-plan', url: '/plan', title: 'Open study plan', sub: 'Day-by-day schedule', kind: 'action' },
       { id: 'a-notes', url: '/notes', title: 'Open notes & highlights', sub: 'Search, filter, export', kind: 'action' },
+      { id: 'a-viz', url: '/visualize', title: 'Browse visualizers', sub: 'Step-through algorithm animations', kind: 'action' },
+      { id: 'a-design', url: '/design', title: 'Practice system design', sub: 'Prompts, rubric, model answers', kind: 'action' },
       { id: 'a-skills', url: '/skills', title: 'Open skill map', sub: 'Progress & what to study next', kind: 'action' },
       { id: 'a-prep', url: '/prep-map', title: 'Topic-wise prep map', sub: 'Guide', kind: 'action' },
       { id: 'a-tools', url: '/tools', title: 'Browse developer tools', sub: `${TOOLS.length} client-side utilities`, kind: 'action' },
@@ -119,6 +122,9 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
     }
     for (const p of catalog?.paths ?? []) {
       if (matchAll(`${p.title} path ${p.slug} ${p.blurb}`.toLowerCase())) out.push({ id: `path-${p.slug}`, url: `/paths/${p.slug}`, title: `${p.emoji} ${p.title} path`, sub: `Learning path · ${p.steps.length} steps`, kind: 'topic' });
+    }
+    for (const v of VISUALIZERS) {
+      if (matchAll(`${v.title} visualizer ${v.id} ${v.blurb}`.toLowerCase())) out.push({ id: `viz-${v.id}`, url: `/visualize/${v.id}`, title: `${v.emoji} ${v.title}`, sub: 'Visualizer · interactive', kind: 'action' });
     }
     for (const t of catalog?.topics ?? []) {
       if (matchAll(`${t.title} ${t.tag} ${t.slug} ${t.blurb}`.toLowerCase())) out.push({ id: `t-${t.slug}`, url: `/topics/${t.slug}`, title: `${t.emoji} ${t.title}`, sub: `Topic · ${t.pages.length} pages`, kind: 'topic' });

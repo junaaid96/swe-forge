@@ -4,7 +4,7 @@ import { useCatalog } from '../lib/content';
 import { useProgress } from '../lib/progress';
 import { usePractice } from '../lib/practiceStore';
 import { allStats, dueCount, overall } from '../lib/stats';
-import { IconBookmark, IconBolt, IconCards, IconCheck, IconCode, IconHome, IconMap, IconRadar, IconRoute, IconSpark, IconStar, IconTimer, IconFlame, IconWrench } from './Icons';
+import { IconBookmark, IconBolt, IconCards, IconCheck, IconCode, IconHome, IconMap, IconPlay, IconRadar, IconRoute, IconSpark, IconStar, IconTimer, IconFlame, IconWrench } from './Icons';
 import { Logo } from './Logo';
 import { TopicMark } from './TopicMark';
 import { Bar } from './Ring';
@@ -50,6 +50,8 @@ export function Sidebar({ onNavigate }: { onNavigate: () => void }) {
         {link('/mock', 'Mock interview', <IconTimer />)}
         {link('/arena', 'Quiz Arena', <IconBolt />)}
         {link('/practice', 'Practice Lab', <IconCode />)}
+        {link('/visualize', 'Visualizers', <IconPlay />)}
+        {link('/design', 'System design', <IconRoute />)}
         {link('/skills', 'Skill map', <IconRadar />)}
         <p className="side-group-label">Assist</p>
         {link('/ai', 'AI Coach', <IconSpark />)}

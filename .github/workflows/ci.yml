@@ -17,6 +17,9 @@ jobs:
 
       - run: npm ci
 
+      - name: Compile content and vendor runtimes
+        run: npm run content && npm run vendor
+
       - name: Validate content
         run: npm run validate
 

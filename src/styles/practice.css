@@ -145,6 +145,11 @@
   max-height: 240px;
 }
 
+/* Coach ------------------------------------------------------------------ */
+
+.practice-coach h2 { margin: 0; font-size: 1.1rem; }
+.coach-msgs { max-height: 380px; overflow-y: auto; }
+
 @media (max-width: 1100px) {
   .practice-filters { grid-template-columns: 1fr 1fr 1fr; }
 }

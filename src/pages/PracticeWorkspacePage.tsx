@@ -7,6 +7,7 @@ import { remoteRunnerUrl, runnerFor } from '../lib/runners';
 import { formatValue } from '../lib/runner-shared';
 import type { PracticeChallenge, PracticeIndex } from '../lib/types';
 import { CodeEditor } from '../components/CodeEditor';
+import { PracticeCoach } from '../components/PracticeCoach';
 import { PracticeResults, type Submission } from '../components/PracticeResults';
 import { Markdown } from '../components/Markdown';
 import { PageFallback } from '../components/Layout';
@@ -458,6 +459,7 @@ export function PracticeWorkspacePage() {
           {runner ? (
             <>
               <PracticeResults submission={submission} running={running} />
+              <PracticeCoach challenge={challenge} code={code} language={lang} submission={submission} />
               {failedSubmit && !running ? (
                 cardQueued ? (
                   <p className="muted small">
@@ -471,11 +473,14 @@ export function PracticeWorkspacePage() {
               ) : null}
             </>
           ) : (
-            <div className="results">
-              <p className="muted small">
-                Think &amp; check mode: work in the editor (or your own IDE), compare with the reference solution, then grade yourself honestly.
-              </p>
-            </div>
+            <>
+              <div className="results">
+                <p className="muted small">
+                  Think &amp; check mode: work in the editor (or your own IDE), compare with the reference solution, then grade yourself honestly.
+                </p>
+              </div>
+              <PracticeCoach challenge={challenge} code={code} language={lang} submission={submission} />
+            </>
           )}
         </section>
       </div>

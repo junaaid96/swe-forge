@@ -1,5 +1,5 @@
 import { useSyncExternalStore } from 'react';
-import { dayKey, schedule, type CardState, type Grade } from './srs';
+import { addDays, dayKey, schedule, type CardState, type Grade } from './srs';
 
 const KEY = 'forgeline:progress:v1';
 const LEGACY_KEY = 'swe-forge-progress-v2';
@@ -209,6 +209,23 @@ export const progress = {
       s.reviews[today] = (s.reviews[today] ?? 0) + 1;
       if (isNew) s.newCards = s.newCards.day === today ? { day: today, count: s.newCards.count + 1 } : { day: today, count: 1 };
     });
+  },
+  /** Extend the daily streak without any other change (e.g. solving a challenge). */
+  touchStreak() {
+    update(() => {}, true);
+  },
+  /**
+   * Schedule cards for `days` from now, but only when the user has no state
+   * for them yet (never clobber an existing review schedule).
+   */
+  dueIn(ids: Array<{ id: string; topic: string }>, days: number) {
+    update((s) => {
+      const today = dayKey();
+      const due = addDays(today, days);
+      for (const { id, topic } of ids) {
+        if (!s.cards[id]) s.cards[id] = { t: topic, ef: 2.5, reps: 0, interval: 0, due, lapses: 0, last: today };
+      }
+    }, false);
   },
   /** Put cards back into today's queue (e.g. questions missed in a mock interview). */
   dueToday(ids: Array<{ id: string; topic: string }>) {

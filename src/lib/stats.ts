@@ -1,5 +1,6 @@
 import type { Card, Catalog, Topic, Track, TrackItem } from './types';
 import type { ProgressState } from './progress';
+import { statusOf, type PracticeState } from './practiceStore';
 import { dayKey, isMastered } from './srs';
 
 export interface TopicStats {
@@ -14,6 +15,9 @@ export interface TopicStats {
   quizPct: number | null;
   mockPct: number | null;
   mockQuestions: number;
+  practiceSolved: number;
+  practiceTotal: number;
+  practicePct: number;
   mastery: number; // 0..100
   started: boolean;
 }
@@ -30,9 +34,20 @@ export function mockByTopic(state: ProgressState) {
   return agg;
 }
 
-export function topicStats(topic: Topic, state: ProgressState, mocks = mockByTopic(state)): TopicStats {
+export function topicStats(topic: Topic, state: ProgressState, mocks = mockByTopic(state), practice?: PracticeState): TopicStats {
   const pagesTotal = topic.pages.length;
   const pagesRead = topic.pages.filter((p) => state.pages[p.key]?.readAt).length;
+  const practiceTotal = topic.practiceCount ?? 0;
+  let practiceSolved = 0;
+  let practiceTouched = false;
+  if (practice && practiceTotal) {
+    for (const [id, r] of Object.entries(practice.records)) {
+      if (!id.startsWith(`${topic.slug}/`)) continue;
+      const st = statusOf(r);
+      if (st !== 'unsolved') practiceTouched = true;
+      if (st === 'solved' || st === 'solved-hints') practiceSolved += 1;
+    }
+  }
   let cardsSeen = 0;
   let cardsMastered = 0;
   for (const c of Object.values(state.cards)) {
@@ -48,12 +63,16 @@ export function topicStats(topic: Topic, state: ProgressState, mocks = mockByTop
   const m = mocks[topic.slug];
   const mockPct = m && m.n ? m.score / m.n : null;
 
+  const practicePct = practiceTotal ? practiceSolved / practiceTotal : 0;
+  // Topics with challenges rebalance to make room for practice; others keep the classic weights.
+  const w = practiceTotal ? { read: 0.35, cards: 0.25, tests: 0.2, practice: 0.2 } : { read: 0.45, cards: 0.3, tests: 0.25, practice: 0 };
   const parts: Array<[number, number]> = [];
-  if (pagesTotal) parts.push([readPct, 0.45]);
-  if (cardDen) parts.push([cardPct, 0.3]);
+  if (pagesTotal) parts.push([readPct, w.read]);
+  if (cardDen) parts.push([cardPct, w.cards]);
   const tests = [quizPct, mockPct].filter((x): x is number => x !== null);
-  if (tests.length) parts.push([tests.reduce((a, b) => a + b, 0) / tests.length, 0.25]);
-  else if (topic.quizCount) parts.push([0, 0.25]);
+  if (tests.length) parts.push([tests.reduce((a, b) => a + b, 0) / tests.length, w.tests]);
+  else if (topic.quizCount) parts.push([0, w.tests]);
+  if (practiceTotal) parts.push([practicePct, w.practice]);
   const wsum = parts.reduce((a, [, w]) => a + w, 0);
   let mastery = wsum ? parts.reduce((a, [v, w]) => a + v * w, 0) / wsum : 0;
   if (state.completed.includes(topic.slug)) mastery = Math.max(mastery, 0.9);
@@ -70,14 +89,17 @@ export function topicStats(topic: Topic, state: ProgressState, mocks = mockByTop
     quizPct: quizPct === null ? null : Math.round(quizPct * 100),
     mockPct: mockPct === null ? null : Math.round(mockPct * 100),
     mockQuestions: m?.n ?? 0,
+    practiceSolved,
+    practiceTotal,
+    practicePct: Math.round(practicePct * 100),
     mastery: Math.round(mastery * 100),
-    started: pagesRead > 0 || cardsSeen > 0 || Boolean(q) || Boolean(m) || topic.pages.some((p) => state.pages[p.key]),
+    started: pagesRead > 0 || cardsSeen > 0 || Boolean(q) || Boolean(m) || practiceTouched || topic.pages.some((p) => state.pages[p.key]),
   };
 }
 
-export function allStats(catalog: Catalog, state: ProgressState) {
+export function allStats(catalog: Catalog, state: ProgressState, practice?: PracticeState) {
   const mocks = mockByTopic(state);
-  return new Map(catalog.topics.map((t) => [t.slug, topicStats(t, state, mocks)]));
+  return new Map(catalog.topics.map((t) => [t.slug, topicStats(t, state, mocks, practice)]));
 }
 
 export function groupMastery(catalog: Catalog, stats: Map<string, TopicStats>) {
@@ -88,8 +110,8 @@ export function groupMastery(catalog: Catalog, stats: Map<string, TopicStats>) {
   });
 }
 
-export function overall(catalog: Catalog, state: ProgressState) {
-  const stats = allStats(catalog, state);
+export function overall(catalog: Catalog, state: ProgressState, practice?: PracticeState) {
+  const stats = allStats(catalog, state, practice);
   const vals = [...stats.values()];
   const read = vals.reduce((a, s) => a + s.pagesRead, 0);
   const total = vals.reduce((a, s) => a + s.pagesTotal, 0) + (catalog.prepMap ? 1 : 0);
@@ -137,10 +159,10 @@ export interface Suggestion {
   title: string;
   reason: string;
   url: string;
-  kind: 'review' | 'weak' | 'continue' | 'next' | 'start' | 'mock';
+  kind: 'review' | 'weak' | 'continue' | 'next' | 'start' | 'mock' | 'practice';
 }
 
-export function suggestions(catalog: Catalog, state: ProgressState, limit = 3): Suggestion[] {
+export function suggestions(catalog: Catalog, state: ProgressState, limit = 3, practice?: PracticeState): Suggestion[] {
   const out: Suggestion[] = [];
   const seen = new Set<string>();
   const push = (s: Suggestion) => {
@@ -148,7 +170,7 @@ export function suggestions(catalog: Catalog, state: ProgressState, limit = 3): 
     seen.add(s.url);
     out.push(s);
   };
-  const stats = allStats(catalog, state);
+  const stats = allStats(catalog, state, practice);
   const firstUnread = (t: Topic) => t.pages.find((p) => !state.pages[p.key]?.readAt) ?? t.pages[0];
 
   const due = dueCount(state);
@@ -163,6 +185,21 @@ export function suggestions(catalog: Catalog, state: ProgressState, limit = 3): 
 
   if (state.lastPage && !state.pages[state.lastPage.key]?.readAt) {
     push({ kind: 'continue', title: state.lastPage.title, reason: 'Pick up where you left off.', url: state.lastPage.url });
+  }
+
+  const lastCh = practice?.lastChallenge;
+  if (lastCh) {
+    const st = statusOf(practice?.records[lastCh.id]);
+    if (st === 'attempted' || st === 'unsolved') {
+      push({ kind: 'practice', title: `Practice: ${lastCh.title}`, reason: 'Finish the challenge you started.', url: lastCh.url });
+    }
+  }
+  const weakPractice = [...stats.values()]
+    .filter((s) => s.started && s.practiceTotal > 0 && s.practiceSolved < s.practiceTotal)
+    .sort((a, b) => a.practicePct - b.practicePct);
+  for (const s of weakPractice.slice(0, 2)) {
+    const t = catalog.topics.find((x) => x.slug === s.slug);
+    if (t) push({ kind: 'practice', title: `${t.emoji} ${t.title}: Practice Lab`, reason: `${s.practiceSolved}/${s.practiceTotal} challenges solved — code beats re-reading.`, url: `/practice?topic=${t.slug}` });
   }
 
   const inProgress = catalog.topics

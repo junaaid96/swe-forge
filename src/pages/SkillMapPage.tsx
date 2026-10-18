@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCatalog } from '../lib/content';
-import { progress, useProgress } from '../lib/progress';
+import { useProgress } from '../lib/progress';
+import { usePractice } from '../lib/practiceStore';
+import { exportAll, importAll, resetAll } from '../lib/dataTransfer';
 import { allStats, dueCount, groupMastery, overall, suggestions, type TopicStats } from '../lib/stats';
 import { RadarChart } from '../components/RadarChart';
 import { Bar, Ring } from '../components/Ring';
@@ -19,16 +21,17 @@ function level(s: TopicStats) {
 export function SkillMapPage() {
   const { data: catalog } = useCatalog();
   const state = useProgress();
+  const practiceState = usePractice();
   const [confirm, setConfirm] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     document.title = 'Skill map · Forgeline';
   }, []);
-  const stats = useMemo(() => (catalog ? allStats(catalog, state) : null), [catalog, state]);
-  const totals = useMemo(() => (catalog ? overall(catalog, state) : null), [catalog, state]);
+  const stats = useMemo(() => (catalog ? allStats(catalog, state, practiceState) : null), [catalog, state, practiceState]);
+  const totals = useMemo(() => (catalog ? overall(catalog, state, practiceState) : null), [catalog, state, practiceState]);
   const radar = useMemo(() => (catalog && stats ? groupMastery(catalog, stats) : []), [catalog, stats]);
-  const next = useMemo(() => (catalog ? suggestions(catalog, state, 4) : []), [catalog, state]);
+  const next = useMemo(() => (catalog ? suggestions(catalog, state, 4, practiceState) : []), [catalog, state, practiceState]);
   if (!catalog || !stats || !totals) return <PageFallback />;
 
   const mockCount = state.mocks.length;
@@ -37,7 +40,7 @@ export function SkillMapPage() {
     : null;
 
   const download = () => {
-    const blob = new Blob([progress.exportJson()], { type: 'application/json' });
+    const blob = new Blob([exportAll()], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
     a.download = `forgeline-progress-${new Date().toISOString().slice(0, 10)}.json`;
@@ -50,7 +53,7 @@ export function SkillMapPage() {
       <header className="page-head">
         <p className="eyebrow">Dashboard</p>
         <h1>Skill map</h1>
-        <p className="lead">Mastery per area blends pages read (45%), flashcards mastered (30%) and quiz and mock-interview scores (25%).</p>
+        <p className="lead">Mastery per area blends pages read, flashcards mastered, quiz and mock-interview scores — plus Practice Lab solves where a topic has challenges.</p>
       </header>
 
       <div className="skills-top">
@@ -158,6 +161,14 @@ export function SkillMapPage() {
                             <small>Tests {s.mockPct ?? s.quizPct ?? '—'}{s.mockPct !== null || s.quizPct !== null ? '%' : ''}</small>
                             <Bar value={s.mockPct ?? s.quizPct ?? 0} color={t.accent} />
                           </span>
+                          {s.practiceTotal ? (
+                            <span>
+                              <small>
+                                Solved {s.practiceSolved}/{s.practiceTotal}
+                              </small>
+                              <Bar value={s.practicePct} color={t.accent} />
+                            </span>
+                          ) : null}
                         </span>
                         <span className="skill-level">
                           {lv.label} <IconArrowRight width={12} height={12} />
@@ -191,7 +202,7 @@ export function SkillMapPage() {
               const f = e.target.files?.[0];
               if (!f) return;
               try {
-                progress.importJson(await f.text());
+                importAll(await f.text());
                 setMsg('Progress imported.');
               } catch (err) {
                 setMsg(err instanceof Error ? err.message : 'Import failed');
@@ -209,13 +220,13 @@ export function SkillMapPage() {
       <ConfirmDialog
         open={confirm}
         title="Reset all progress?"
-        message="This clears pages read, bookmarks, flashcard schedules, quiz scores and mock history in this browser. Export first if you might want it back."
+        message="This clears pages read, bookmarks, flashcard schedules, quiz scores, mock history and Practice Lab progress in this browser. Export first if you might want it back."
         confirmLabel="Reset everything"
         cancelLabel="Keep my progress"
         danger
         onCancel={() => setConfirm(false)}
         onConfirm={() => {
-          progress.reset();
+          resetAll();
           setConfirm(false);
         }}
       />

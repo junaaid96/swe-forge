@@ -16,7 +16,7 @@ const GRADES: Array<{ g: Grade; label: string; key: string; cls: string }> = [
   { g: 4, label: 'Good', key: '3', cls: 'btn-good' },
   { g: 5, label: 'Easy', key: '4', cls: 'btn-accent' },
 ];
-const SOURCES: CardSource[] = ['interview', 'prep', 'mcq', 'concept'];
+const SOURCES: CardSource[] = ['interview', 'prep', 'mcq', 'concept', 'pattern'];
 
 function Session({ initial, onDone }: { initial: Card[]; onDone: (n: number) => void }) {
   const state = useProgress();

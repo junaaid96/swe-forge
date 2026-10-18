@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { topicMap, useCatalog, useResource, urls } from '../lib/content';
-import { practice, statusOf, usePractice } from '../lib/practiceStore';
+import { patternCardId, practice, statusOf, usePractice } from '../lib/practiceStore';
+import { progress, useProgress } from '../lib/progress';
 import { remoteRunnerUrl, runnerFor } from '../lib/runners';
 import { formatValue } from '../lib/runner-shared';
 import type { PracticeChallenge, PracticeIndex } from '../lib/types';
@@ -35,6 +36,7 @@ export function PracticeWorkspacePage() {
   const { data: challenge, error } = useResource<PracticeChallenge>(safe && topic && slug ? urls.challenge(topic, slug) : null);
   const { data: index } = useResource<PracticeIndex>(urls.practice);
   const state = usePractice();
+  const progressState = useProgress();
 
   const [tab, setTab] = useState<Tab>('problem');
   const [language, setLanguage] = useState<string | null>(null);
@@ -176,6 +178,10 @@ export function PracticeWorkspacePage() {
   };
 
   const vt = challenge.visibleTests;
+  const cardId = patternCardId(challenge.id);
+  const cardQueued = Boolean(progressState.cards[cardId]);
+  const addCard = () => progress.dueToday([{ id: cardId, topic: challenge.topic }]);
+  const failedSubmit = Boolean(submission?.submitted && (!submission.visible.ok || (submission.hidden && !submission.hidden.ok)));
 
   return (
     <div className="practice-workspace" style={{ ['--topic' as string]: topicInfo?.accent ?? 'var(--accent)' }}>
@@ -342,6 +348,17 @@ export function PracticeWorkspacePage() {
                 ) : challenge.hints.length > 0 ? (
                   <p className="muted small">All hints revealed. Using hints still counts as solved — just noted on your record.</p>
                 ) : null}
+                {revealed >= 2 ? (
+                  cardQueued ? (
+                    <p className="muted small">
+                      Pattern card queued — <Link to="/flashcards">review it</Link>.
+                    </p>
+                  ) : (
+                    <button type="button" className="btn btn-sm" onClick={addCard}>
+                      Add pattern card to flashcards
+                    </button>
+                  )
+                ) : null}
               </div>
             ) : null}
 
@@ -439,7 +456,20 @@ export function PracticeWorkspacePage() {
           )}
 
           {runner ? (
-            <PracticeResults submission={submission} running={running} />
+            <>
+              <PracticeResults submission={submission} running={running} />
+              {failedSubmit && !running ? (
+                cardQueued ? (
+                  <p className="muted small">
+                    Pattern card queued — <Link to="/flashcards">review it</Link>.
+                  </p>
+                ) : (
+                  <button type="button" className="btn btn-sm" onClick={addCard}>
+                    Add pattern card to flashcards
+                  </button>
+                )
+              ) : null}
+            </>
           ) : (
             <div className="results">
               <p className="muted small">

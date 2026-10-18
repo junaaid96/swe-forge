@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { formatMinutes, useCatalog } from '../lib/content';
 import { useProgress } from '../lib/progress';
+import { usePractice } from '../lib/practiceStore';
 import { allStats, dueCount, overall, suggestions, trackStats } from '../lib/stats';
 import { Bar, Ring } from '../components/Ring';
 import { IconArrowRight, IconBolt, IconCards, IconCode, IconFlame, IconMap, IconRadar, IconSpark, IconTimer } from '../components/Icons';
@@ -13,12 +14,13 @@ import { dayKey } from '../lib/srs';
 export function HomePage() {
   const { data: catalog, error } = useCatalog();
   const state = useProgress();
+  const practiceState = usePractice();
   useEffect(() => {
     document.title = 'Forgeline · Software engineering study hub';
   }, []);
-  const stats = useMemo(() => (catalog ? allStats(catalog, state) : null), [catalog, state]);
-  const totals = useMemo(() => (catalog ? overall(catalog, state) : null), [catalog, state]);
-  const next = useMemo(() => (catalog ? suggestions(catalog, state, 3) : []), [catalog, state]);
+  const stats = useMemo(() => (catalog ? allStats(catalog, state, practiceState) : null), [catalog, state, practiceState]);
+  const totals = useMemo(() => (catalog ? overall(catalog, state, practiceState) : null), [catalog, state, practiceState]);
+  const next = useMemo(() => (catalog ? suggestions(catalog, state, 3, practiceState) : []), [catalog, state, practiceState]);
 
   if (error) return <p className="empty-state">Could not load the content catalog. Run <code>npm run content</code> and reload.</p>;
   if (!catalog || !stats || !totals) return <PageFallback />;

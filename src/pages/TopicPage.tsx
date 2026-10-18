@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { formatMinutes, useCatalog, useResource, urls } from '../lib/content';
 import { progress, useProgress } from '../lib/progress';
+import { usePractice } from '../lib/practiceStore';
 import { topicStats } from '../lib/stats';
 import { Ring } from '../components/Ring';
 import { QuizPanel } from '../components/QuizPanel';
@@ -23,8 +24,9 @@ export function TopicPage() {
   const { data: catalog, loading } = useCatalog();
   const { data: extras } = useResource<TopicExtras>(slug ? urls.topic(slug) : null);
   const state = useProgress();
+  const practiceState = usePractice();
   const topic = catalog?.topics.find((t) => t.slug === slug);
-  const s = useMemo(() => (topic ? topicStats(topic, state) : null), [topic, state]);
+  const s = useMemo(() => (topic ? topicStats(topic, state, undefined, practiceState) : null), [topic, state, practiceState]);
 
   useEffect(() => {
     if (topic) document.title = `${topic.title} · Forgeline`;
@@ -119,6 +121,14 @@ export function TopicPage() {
               <dt>Mock avg</dt>
               <dd>{s.mockPct === null ? '—' : `${s.mockPct}%`}</dd>
             </div>
+            {s.practiceTotal ? (
+              <div>
+                <dt>Challenges</dt>
+                <dd>
+                  {s.practiceSolved}/{s.practiceTotal}
+                </dd>
+              </div>
+            ) : null}
           </dl>
         </div>
       </header>

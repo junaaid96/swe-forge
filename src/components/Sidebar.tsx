@@ -2,6 +2,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useMemo, type ReactNode } from 'react';
 import { useCatalog } from '../lib/content';
 import { useProgress } from '../lib/progress';
+import { usePractice } from '../lib/practiceStore';
 import { allStats, dueCount, overall } from '../lib/stats';
 import { IconBookmark, IconBolt, IconCards, IconCheck, IconCode, IconHome, IconMap, IconRadar, IconRoute, IconSpark, IconTimer, IconFlame, IconWrench } from './Icons';
 import { Logo } from './Logo';
@@ -11,9 +12,10 @@ import { Bar } from './Ring';
 export function Sidebar({ onNavigate }: { onNavigate: () => void }) {
   const { data: catalog } = useCatalog();
   const state = useProgress();
+  const practiceState = usePractice();
   const { pathname } = useLocation();
-  const stats = useMemo(() => (catalog ? allStats(catalog, state) : null), [catalog, state]);
-  const totals = useMemo(() => (catalog ? overall(catalog, state) : null), [catalog, state]);
+  const stats = useMemo(() => (catalog ? allStats(catalog, state, practiceState) : null), [catalog, state, practiceState]);
+  const totals = useMemo(() => (catalog ? overall(catalog, state, practiceState) : null), [catalog, state, practiceState]);
   const due = dueCount(state);
   const activeSlug = pathname.match(/^\/topics\/([^/]+)/)?.[1];
 

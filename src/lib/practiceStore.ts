@@ -1,8 +1,11 @@
 /** Practice Lab progress: versioned store, migrated from legacy solved state. */
 import { useSyncExternalStore } from 'react';
+import { progress } from './progress';
 
 const KEY = 'forgeline:practice:v1';
 const LEGACY_PROGRESS_KEY = 'forgeline:progress:v1';
+/** Solved challenges resurface for a recall check this many days later. */
+const RECALL_DAYS = 3;
 
 export type PracticeStatus = 'unsolved' | 'attempted' | 'solved' | 'solved-hints';
 
@@ -37,6 +40,21 @@ export function statusOf(r?: ChallengeRecord): PracticeStatus {
   if (!r || (!r.attempts && !r.solvedAt)) return 'unsolved';
   if (r.solvedAt) return r.hintsUsed > 0 ? 'solved-hints' : 'solved';
   return 'attempted';
+}
+
+/** FNV-1a mirror of the build script's hash: pattern card id for a challenge. */
+export function patternCardId(challengeId: string): string {
+  let h = 0x811c9dc5;
+  const str = `practice|${challengeId}`;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(36);
+}
+
+export function challengeTopic(challengeId: string): string {
+  return challengeId.slice(0, challengeId.indexOf('/'));
 }
 
 /** Carry over manually-marked legacy solutions so nobody loses solved state. */
@@ -142,14 +160,19 @@ export const practice = {
     });
   },
   recordSolve(id: string) {
+    let firstSolve = false;
     update((s) => {
       const r = record(s, id);
       if (r.solvedAt) return;
+      firstSolve = true;
       const now = Date.now();
       r.solvedAt = now;
       r.lastAttemptAt = now;
       if (r.firstAttemptAt) r.timeMs = now - r.firstAttemptAt;
     });
+    if (!firstSolve) return;
+    progress.touchStreak();
+    progress.dueIn([{ id: patternCardId(id), topic: challengeTopic(id) }], RECALL_DAYS);
   },
   setHintsUsed(id: string, n: number) {
     update((s) => {

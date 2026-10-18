@@ -10,6 +10,7 @@
   <url><loc>https://swe-forge.vercel.app/skills</loc></url>
   <url><loc>https://swe-forge.vercel.app/bookmarks</loc></url>
   <url><loc>https://swe-forge.vercel.app/tools</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice</loc></url>
   <url><loc>https://swe-forge.vercel.app/topics/interview-mcq</loc></url>
   <url><loc>https://swe-forge.vercel.app/topics/interview-mcq/notes/01-programming</loc></url>
   <url><loc>https://swe-forge.vercel.app/topics/interview-mcq/notes/02-data-structures-algorithms</loc></url>
@@ -270,6 +271,131 @@
   <url><loc>https://swe-forge.vercel.app/topics/golang/interview/basics</loc></url>
   <url><loc>https://swe-forge.vercel.app/topics/golang/interview/medium</loc></url>
   <url><loc>https://swe-forge.vercel.app/topics/golang/interview/advanced</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/interview-mcq/mc-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/interview-mcq/mc-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/behavioral/bh-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/behavioral/bh-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/software-engineering/pf-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/software-engineering/pf-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/software-engineering/de-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/software-engineering/de-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/software-engineering/imm-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/software-engineering/imm-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/low-level-design/dp-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/low-level-design/dp-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/testing-quality/te-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/testing-quality/te-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/testing-quality/tdd-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/testing-quality/tdd-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/testing-quality/tq-qa-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/git-collaboration/gi-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/git-collaboration/gi-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/javascript/js-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/javascript/js-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/python/py-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/python/py-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/java/jv-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/java/jv-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/c-cpp/cc-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/c-cpp/cc-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/rust/rs-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/rust/rs-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/rust/rs-p3</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/rust/rs-p4</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/frontend/fe-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/frontend/fe-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/frontend/perf-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/frontend/html-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/react/re-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/react/re-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/nextjs/nx-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/nextjs/nx-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/angular/ng-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/angular/ng-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/ui-ux/ux-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/ui-ux/ux-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/backend/cache-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/backend/cache-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/backend/msg-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/backend/msg-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/backend/idem-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/backend/idem-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/backend/net-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/backend/search-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/api-design/api-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/api-design/api-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/api-design/gg-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/api-design/gg-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/api-design/page-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/api-design/hook-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/nodejs/nd-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/nodejs/nd-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/spring-boot/sb-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/spring-boot/sb-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/django/dj-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/django/dj-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/cs-fundamentals/conc-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/cs-fundamentals/conc-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/cs-fundamentals/net-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/cs-fundamentals/net-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/cs-fundamentals/os-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/cs-fundamentals/os-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/dsa/ds-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/dsa/ds-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/dsa/al-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/dsa/al-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/dsa/ps-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/dsa/ps-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/system-design/sd-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/system-design/sd-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/database/db-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/database/db-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/devops-cloud/cd-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/devops-cloud/cd-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/devops-cloud/ob-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/devops-cloud/ob-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/devops-cloud/gitops-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/security/se-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/security/se-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/security/auth-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/security/auth-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/ai-ml/ai-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/ai-ml/ai-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/postgresql/pg-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/postgresql/pg-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/postgresql/pg-p3</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/postgresql/pg-p4</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/ai-engineering/aie-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/ai-engineering/aie-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/data-analysis/da-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/data-analysis/da-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/data-science/ds-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/machine-learning/ml-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/machine-learning/ml-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/mlops/mo-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/mlops/mo-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/data-engineering/de-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/data-engineering/de-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/devsecops/dso-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/cyber-security/cy-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/networking/ne-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/networking/ne-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/software-architecture/sa-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/ux-design/ux-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/product-management/pm-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/engineering-management/em-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/android/an-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/game-development/gd-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/game-server/gs-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/seo/seo-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/reverse-engineering/re-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/reverse-engineering/re-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/reverse-engineering/re-p3</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/reverse-engineering/re-p4</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/golang/go-p1</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/golang/go-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/golang/go-p3</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/golang/go-p4</loc></url>
   <url><loc>https://swe-forge.vercel.app/tools/json</loc></url>
   <url><loc>https://swe-forge.vercel.app/tools/csv-json</loc></url>
   <url><loc>https://swe-forge.vercel.app/tools/markdown</loc></url>

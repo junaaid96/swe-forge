@@ -169,6 +169,220 @@ function parseInterviewItems(markdown) {
 const SKIP_SECTION = /table of contents|^contents$|learn more|further reading|references|resources|^summary$|cheat ?sheet|^see also|^links|quick reference|^tl;dr/i;
 
 // ---------------------------------------------------------------------------
+// Practice Lab: content/<topic>/practice/<slug>.md
+//
+// Frontmatter: title (required), difficulty easy|medium|hard (required),
+// runner js|python|sql|none (required), tags[], languages[],
+// estimatedMinutes, learnLinks[] ("topic/kind/id[#anchor]").
+// Body: statement (preamble before the first ## section, plus an optional
+// ## Problem section), ## Examples, ## Learn, ## Hints (3 bullets),
+// ## Solution (explanation prose), ## Complexity, ## Common mistakes.
+// Fenced blocks: ```starter:<lang>, ```solution:<lang>, ```visible-tests,
+// ```hidden-tests (JSON), ```seed-sql.
+
+const PRACTICE_RUNNERS = ['js', 'python', 'sql', 'none'];
+const PRACTICE_DIFFICULTY = ['easy', 'medium', 'hard'];
+const PRACTICE_DEFAULT_LANG = { js: ['javascript'], python: ['python'], sql: ['sql'], none: [] };
+
+const PRACTICE_SECTIONS = {
+  examples: ['examples'],
+  learn: ['learn', 'concept recap', 'recap'],
+  hints: ['hints', 'hint'],
+  solution: ['solution', 'solution explanation', 'reference solution'],
+  complexity: ['complexity', 'time and space complexity', 'time/space complexity'],
+  mistakes: ['common mistakes', 'mistakes', 'gotchas', 'pitfalls'],
+  problem: ['problem', 'statement', 'problem statement'],
+};
+
+/** Pull special fences out of the markdown so they don't render as sections. */
+function extractPracticeFences(markdown) {
+  const lines = markdown.split('\n');
+  const out = [];
+  const blocks = [];
+  let i = 0;
+  while (i < lines.length) {
+    const m = lines[i].match(/^\s*```(\S*)\s*$/);
+    if (!m) {
+      out.push(lines[i]);
+      i += 1;
+      continue;
+    }
+    const info = m[1].trim();
+    const buf = [];
+    i += 1;
+    while (i < lines.length && !/^\s*```\s*$/.test(lines[i])) {
+      buf.push(lines[i]);
+      i += 1;
+    }
+    i += 1; // closing fence (or EOF)
+    if (/^(starter|solution):[a-z0-9+#-]+$/.test(info) || info === 'visible-tests' || info === 'hidden-tests' || info === 'seed-sql') {
+      blocks.push({ info, code: buf.join('\n').replace(/\s+$/, '') });
+    } else {
+      out.push(`\`\`\`${info}`, ...buf, '```');
+    }
+  }
+  return { text: out.join('\n'), blocks };
+}
+
+function parseHintList(text) {
+  const hints = [];
+  for (const raw of text.split('\n')) {
+    const m = raw.match(/^\s*(?:[-*+]|\d+[.)])\s+(.*\S)\s*$/);
+    if (m) hints.push(m[1]);
+    else if (hints.length && /^\s{2,}\S/.test(raw) && raw.trim()) hints[hints.length - 1] += ` ${raw.trim()}`;
+  }
+  return hints;
+}
+
+function checkTestSpec(spec, runner, where, errors) {
+  if (spec === null || typeof spec !== 'object' || Array.isArray(spec)) {
+    errors.push(`${where}: tests must be a JSON object`);
+    return;
+  }
+  const wantKind = runner === 'sql' ? 'sql' : 'fn';
+  if (spec.kind !== wantKind) errors.push(`${where}: tests need "kind": "${wantKind}" for the ${runner} runner`);
+  if (wantKind === 'fn' && typeof spec.function !== 'string') errors.push(`${where}: fn tests need a "function" name`);
+  if (!Array.isArray(spec.cases) || !spec.cases.length) {
+    errors.push(`${where}: tests need a non-empty "cases" array`);
+    return;
+  }
+  spec.cases.forEach((c, i) => {
+    if (!c || typeof c.name !== 'string') errors.push(`${where}: case ${i} needs a "name"`);
+    if (wantKind === 'sql' && c && !Array.isArray(c.expectedRows)) errors.push(`${where}: sql case "${c?.name ?? i}" needs "expectedRows"`);
+  });
+}
+
+function parsePracticeFile(file, topicSlug, errors, warnings) {
+  const slug = path.basename(file, '.md');
+  const where = `${topicSlug}/practice/${slug}`;
+  const fail = (msg) => errors.push(`${where}: ${msg}`);
+  const { data: fm, content } = matter(fs.readFileSync(file, 'utf8'));
+
+  const title = typeof fm.title === 'string' ? fm.title.trim() : '';
+  if (!title) fail('frontmatter needs a "title"');
+  const difficulty = fm.difficulty;
+  if (!PRACTICE_DIFFICULTY.includes(difficulty)) fail(`frontmatter "difficulty" must be one of ${PRACTICE_DIFFICULTY.join('|')}`);
+  const runner = fm.runner;
+  if (!PRACTICE_RUNNERS.includes(runner)) fail(`frontmatter "runner" must be one of ${PRACTICE_RUNNERS.join('|')}`);
+  const tags = Array.isArray(fm.tags) ? fm.tags.map(String) : [];
+  const languages = Array.isArray(fm.languages) ? fm.languages.map(String) : (PRACTICE_DEFAULT_LANG[runner] ?? []);
+  const estimatedMinutes = Number.isFinite(Number(fm.estimatedMinutes)) ? Number(fm.estimatedMinutes) : 10;
+  const learnLinks = Array.isArray(fm.learnLinks) ? fm.learnLinks.map(String) : [];
+
+  const { text, blocks } = extractPracticeFences(rewriteLinks(content.trim(), topicSlug));
+  const starters = {};
+  const solutionCode = {};
+  let visibleTests = null;
+  let hiddenTests = null;
+  let seedSql = '';
+  for (const b of blocks) {
+    const sm = b.info.match(/^(starter|solution):([a-z0-9+#-]+)$/);
+    if (sm) {
+      const store = sm[1] === 'starter' ? starters : solutionCode;
+      if (store[sm[2]]) fail(`duplicate \`\`\`${b.info} block`);
+      store[sm[2]] = b.code;
+      continue;
+    }
+    if (b.info === 'visible-tests' || b.info === 'hidden-tests') {
+      let spec = null;
+      try {
+        spec = JSON.parse(b.code);
+      } catch {
+        fail(`\`\`\`${b.info} is not valid JSON`);
+        continue;
+      }
+      if (b.info === 'visible-tests') visibleTests = spec;
+      else hiddenTests = spec;
+      continue;
+    }
+    if (b.info === 'seed-sql') seedSql = b.code;
+  }
+
+  if (runner === 'none' && (visibleTests || hiddenTests)) fail('runner "none" challenges cannot have test blocks');
+  if ((runner === 'js' || runner === 'python') && !visibleTests) fail('js/python challenges need a ```visible-tests block');
+  if (runner === 'sql') {
+    if (!visibleTests) fail('sql challenges need a ```visible-tests block');
+    if (!seedSql) fail('sql challenges need a ```seed-sql block');
+  }
+  if (visibleTests) checkTestSpec(visibleTests, runner, `${where} visible-tests`, errors);
+  if (hiddenTests) checkTestSpec(hiddenTests, runner, `${where} hidden-tests`, errors);
+
+  const a = analyse(text);
+  const byName = new Map();
+  for (const s of a.sections) {
+    if (s.depth === 2) byName.set(s.text.toLowerCase(), s.lines.join('\n').trim());
+  }
+  const section = (key) => {
+    for (const alias of PRACTICE_SECTIONS[key]) {
+      const hit = byName.get(alias);
+      if (hit !== undefined) return hit;
+    }
+    return '';
+  };
+  const preamble = (a.sections[0]?.lines.join('\n') ?? '').trim();
+  const statement = [preamble, section('problem')].filter(Boolean).join('\n\n').trim();
+  if (!statement) fail('missing problem statement (preamble or ## Problem section)');
+  const hints = parseHintList(section('hints'));
+  if (!hints.length) fail('## Hints needs at least one bullet');
+  else if (hints.length !== 3) warnings.push(`${where}: expected 3 hints, found ${hints.length}`);
+
+  return {
+    id: `${topicSlug}/${slug}`,
+    topic: topicSlug,
+    slug,
+    title: title || slug,
+    difficulty,
+    tags,
+    languages,
+    runner,
+    estimatedMinutes,
+    learnLinks,
+    statement,
+    examples: section('examples'),
+    learn: section('learn'),
+    hints,
+    starters,
+    visibleTests,
+    hiddenTests,
+    seedSql,
+    solution: { code: solutionCode, explanation: section('solution') },
+    complexity: section('complexity'),
+    mistakes: section('mistakes'),
+    source: 'practice',
+    url: `/practice/${topicSlug}/${slug}`,
+  };
+}
+
+/** Legacy meta.json problems[] become think-&-check challenges; solved state migrates client-side. */
+function legacyChallenge(topicSlug, p) {
+  return {
+    id: `${topicSlug}/${p.id}`,
+    topic: topicSlug,
+    slug: p.id,
+    title: p.title,
+    difficulty: p.difficulty,
+    tags: ['legacy'],
+    languages: [],
+    runner: 'none',
+    estimatedMinutes: 10,
+    learnLinks: [],
+    statement: p.prompt,
+    examples: '',
+    learn: '',
+    hints: p.hints ?? [],
+    starters: {},
+    visibleTests: null,
+    hiddenTests: null,
+    seedSql: '',
+    solution: { code: {}, explanation: p.solution ?? '' },
+    complexity: '',
+    mistakes: '',
+    source: 'legacy',
+    url: `/practice/${topicSlug}/${p.id}`,
+  };
+}
+
+// ---------------------------------------------------------------------------
 
 const manifest = readJson(path.join(CONTENT, 'manifest.json'));
 const groups = manifest.groups ?? [{ id: 'all', label: 'Topics', hint: '', topics: manifest.topics.map((t) => t.slug) }];
@@ -180,6 +394,10 @@ fs.mkdirSync(OUT, { recursive: true });
 const search = [];
 const cards = [];
 const topics = [];
+const practiceAll = [];
+const practiceCountByTopic = {};
+const practiceErrors = [];
+const practiceWarnings = [];
 const fileToRoute = new Map(); // "<slug>/<file>.md" -> url
 let totalWords = 0;
 let totalMinutes = 0;
@@ -198,8 +416,9 @@ const plan = manifest.topics
     const notes = list('notes');
     const deep = DEEP_TRACKS.filter((x) => list('deep').includes(`${x}.md`));
     const interview = INTERVIEW_LEVELS.filter((x) => list('interview').includes(`${x}.md`));
+    const practice = list('practice');
     for (const f of notes) fileToRoute.set(`${t.slug}/${f}`, pageUrl(t.slug, 'notes', f.replace(/\.md$/, '')));
-    return { ...t, dir, notes, deep, interview };
+    return { ...t, dir, notes, deep, interview, practice };
   });
 
 function rewriteLinks(md, slug) {
@@ -272,6 +491,25 @@ for (const t of plan) {
   }
   writeJson(path.join(OUT, 'topics', `${t.slug}.json`), { quiz, problems: meta.problems ?? [] });
 
+  const challenges = [];
+  const seenSlugs = new Set();
+  for (const f of t.practice) {
+    const ch = parsePracticeFile(path.join(t.dir, 'practice', f), t.slug, practiceErrors, practiceWarnings);
+    if (seenSlugs.has(ch.slug)) practiceErrors.push(`${t.slug}/practice/${ch.slug}: duplicate challenge slug in this topic`);
+    seenSlugs.add(ch.slug);
+    challenges.push(ch);
+  }
+  for (const p of meta.problems ?? []) {
+    if (seenSlugs.has(p.id)) {
+      practiceErrors.push(`${t.slug}/practice/${p.id}: legacy problem id collides with a practice file slug`);
+      continue;
+    }
+    seenSlugs.add(p.id);
+    challenges.push(legacyChallenge(t.slug, p));
+  }
+  practiceAll.push(...challenges);
+  practiceCountByTopic[t.slug] = challenges.length;
+
   topics.push({
     slug: t.slug,
     title: meta.title,
@@ -288,9 +526,52 @@ for (const t of plan) {
     related: meta.relatedTopics ?? [],
     quizCount: quiz.length,
     problemCount: (meta.problems ?? []).length,
+    practiceCount: practiceCountByTopic[t.slug] ?? 0,
     minutes: pages.reduce((n, p) => n + p.minutes, 0),
     pages,
   });
+}
+
+// ---------------------------------------------------------------------------
+// Practice Lab phase 2: resolve learnLinks against the emitted pages, then
+// write one JSON per challenge plus the practice index.
+{
+  const topicTitle = Object.fromEntries(topics.map((x) => [x.slug, x.title]));
+  const resolveLearnLink = (ch, ref) => {
+    const [pageRef, anchor] = String(ref).split('#');
+    const parts = pageRef.split('/');
+    if (parts.length !== 3) {
+      practiceErrors.push(`${ch.id}: learnLink "${ref}" must look like "topic/kind/id"`);
+      return null;
+    }
+    const [slug, kind, id] = parts;
+    const f = path.join(OUT, 'pages', slug, kind, `${id}.json`);
+    if (!fs.existsSync(f)) {
+      practiceErrors.push(`${ch.id}: learnLink "${ref}" points at a missing page`);
+      return null;
+    }
+    const page = readJson(f);
+    if (anchor && !page.headings.some((h) => h.id === anchor)) practiceErrors.push(`${ch.id}: learnLink "${ref}" points at a missing anchor`);
+    return { ref: String(ref), url: page.url + (anchor ? `#${anchor}` : ''), title: page.title };
+  };
+  for (const ch of practiceAll) {
+    if (ch.source === 'practice') ch.learnLinks = ch.learnLinks.map((ref) => resolveLearnLink(ch, ref)).filter(Boolean);
+  }
+  if (practiceErrors.length) {
+    console.error(`[content] practice errors:\n  ${practiceErrors.join('\n  ')}`);
+    process.exit(1);
+  }
+  for (const w of practiceWarnings) console.warn(`[content] practice warning: ${w}`);
+
+  const index = [];
+  for (const ch of practiceAll) {
+    writeJson(path.join(OUT, 'pages', ch.topic, 'practice', `${ch.slug}.json`), ch);
+    index.push({ id: ch.id, topic: ch.topic, slug: ch.slug, title: ch.title, difficulty: ch.difficulty, tags: ch.tags, languages: ch.languages, runner: ch.runner, estimatedMinutes: ch.estimatedMinutes, url: ch.url, source: ch.source });
+    search.push({ u: ch.url, t: `${ch.title} — Practice`, tp: topicTitle[ch.topic] ?? ch.topic, s: ch.title, a: '', x: clip(`${stripMd(ch.statement)} Tags: ${ch.tags.join(', ')}`, 360) });
+    const recall = ch.solution.explanation || ch.complexity || ch.hints[ch.hints.length - 1] || ch.statement;
+    cards.push({ id: hash(`practice|${ch.id}`), t: ch.topic, src: 'pattern', u: ch.url, ctx: `${topicTitle[ch.topic] ?? ch.topic} · Practice`, q: `${ch.title} — how do you solve it?`, ans: clip(stripMd(recall), 500) });
+  }
+  writeJson(path.join(OUT, 'practice.json'), { challenges: index });
 }
 
 // ---------------------------------------------------------------------------
@@ -395,7 +676,7 @@ for (const t of topics) t.cardCount = cardCount[t.slug] ?? 0;
 writeJson(path.join(OUT, 'catalog.json'), {
   site: { name: 'Forgeline', tagline: 'Learn, practise and track software engineering — topic by topic.' },
   generatedAt: new Date().toISOString(),
-  totals: { topics: topics.length, pages: totalPages, words: totalWords, minutes: totalMinutes, tracks: tracks.length, cards: uniqueCards.length, mcq: uniqueCards.filter((c) => c.src === 'mcq').length },
+  totals: { topics: topics.length, pages: totalPages, words: totalWords, minutes: totalMinutes, tracks: tracks.length, cards: uniqueCards.length, mcq: uniqueCards.filter((c) => c.src === 'mcq').length, practice: practiceAll.length },
   groups: groups.map((g) => ({ id: g.id, label: g.label, hint: g.hint, topics: g.topics.filter((s) => topics.some((t) => t.slug === s)) })),
   topics,
   tracks,
@@ -412,11 +693,12 @@ writeJson(path.join(OUT, 'cards.json'), uniqueCards);
     const reg = fs.readFileSync(path.join(ROOT, 'src', 'tools', 'registry.ts'), 'utf8');
     toolSlugs = [...reg.matchAll(/slug:\s*'([^']+)'/g)].map((m) => m[1]);
   } catch { /* tools not present */ }
-  const urls = new Set(['/', '/prep-map', '/roadmaps', '/flashcards', '/mock', '/arena', '/ai', '/skills', '/bookmarks', '/tools']);
+  const urls = new Set(['/', '/prep-map', '/roadmaps', '/flashcards', '/mock', '/arena', '/ai', '/skills', '/bookmarks', '/tools', '/practice']);
   for (const t of topics) {
     urls.add(`/topics/${t.slug}`);
     for (const p of t.pages) urls.add(p.url);
   }
+  for (const ch of practiceAll) urls.add(ch.url);
   for (const s of toolSlugs) urls.add(`/tools/${s}`);
   for (const tr of tracks) urls.add(`/roadmaps/${tr.slug}`);
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...urls].map((u) => `  <url><loc>${SITE}${u}</loc></url>`).join('\n')}\n</urlset>\n`;

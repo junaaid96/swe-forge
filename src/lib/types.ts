@@ -28,6 +28,7 @@ export interface Topic {
   related: string[];
   quizCount: number;
   problemCount: number;
+  practiceCount: number;
   cardCount: number;
   minutes: number;
   pages: PageRef[];
@@ -43,7 +44,7 @@ export interface Group {
 export interface Catalog {
   site: { name: string; tagline: string };
   generatedAt: string;
-  totals: { topics: number; tracks?: number; pages: number; words: number; minutes: number; cards: number; mcq: number };
+  totals: { topics: number; tracks?: number; pages: number; words: number; minutes: number; cards: number; mcq: number; practice?: number };
   groups: Group[];
   topics: Topic[];
   tracks?: Track[];
@@ -100,6 +101,87 @@ export interface TopicExtras {
   problems: PracticeProblem[];
 }
 
+export type PracticeRunner = 'js' | 'python' | 'sql' | 'none';
+export type PracticeDifficulty = 'easy' | 'medium' | 'hard';
+
+export interface FnTestCase {
+  name: string;
+  args?: unknown[];
+  expected?: unknown;
+  /** expected error message substring when the call should throw */
+  throws?: string;
+}
+
+export interface FnTestSpec {
+  kind: 'fn';
+  function: string;
+  cases: FnTestCase[];
+}
+
+export interface SqlTestCase {
+  name: string;
+  expectedColumns?: string[];
+  expectedRows: unknown[][];
+  orderInsensitive?: boolean;
+}
+
+export interface SqlTestSpec {
+  kind: 'sql';
+  cases: SqlTestCase[];
+}
+
+export type PracticeTestSpec = FnTestSpec | SqlTestSpec;
+
+export interface PracticeLearnLink {
+  ref: string;
+  url: string;
+  title: string;
+}
+
+export interface PracticeChallenge {
+  id: string;
+  topic: string;
+  slug: string;
+  title: string;
+  difficulty: PracticeDifficulty;
+  tags: string[];
+  languages: string[];
+  runner: PracticeRunner;
+  estimatedMinutes: number;
+  learnLinks: PracticeLearnLink[];
+  statement: string;
+  examples: string;
+  learn: string;
+  hints: string[];
+  starters: Record<string, string>;
+  visibleTests: PracticeTestSpec | null;
+  hiddenTests: PracticeTestSpec | null;
+  seedSql: string;
+  solution: { code: Record<string, string>; explanation: string };
+  complexity: string;
+  mistakes: string;
+  source: 'practice' | 'legacy';
+  url: string;
+}
+
+export interface PracticeIndexEntry {
+  id: string;
+  topic: string;
+  slug: string;
+  title: string;
+  difficulty: PracticeDifficulty;
+  tags: string[];
+  languages: string[];
+  runner: PracticeRunner;
+  estimatedMinutes: number;
+  url: string;
+  source: 'practice' | 'legacy';
+}
+
+export interface PracticeIndex {
+  challenges: PracticeIndexEntry[];
+}
+
 export interface SearchEntry {
   /** url */ u: string;
   /** page title */ t: string;
@@ -109,7 +191,7 @@ export interface SearchEntry {
   /** text excerpt */ x: string;
 }
 
-export type CardSource = 'interview' | 'concept' | 'prep' | 'mcq';
+export type CardSource = 'interview' | 'concept' | 'prep' | 'mcq' | 'pattern';
 
 export interface Card {
   id: string;
@@ -137,6 +219,7 @@ export const SOURCE_LABEL: Record<CardSource, string> = {
   concept: 'Concept recall',
   prep: 'Prep map',
   mcq: 'MCQ',
+  pattern: 'Pattern',
 };
 
 export interface TrackItem {

@@ -6,6 +6,7 @@ import './styles/prose.css';
 import './styles/tools.css';
 import './styles/ai.css';
 import './styles/arena.css';
+import './styles/practice.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

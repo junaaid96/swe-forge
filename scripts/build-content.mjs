@@ -579,8 +579,7 @@ for (const t of plan) {
 const PREP_MAP = path.join(CONTENT, 'prep-map.md');
 let prepMap = null;
 if (fs.existsSync(PREP_MAP)) {
-  const md = rewriteLinks(matter(fs.readFileSync(PREP_MAP, 'utf8')).content.trim(), '');
-  const a = analyse(md);
+  let md = rewriteLinks(matter(fs.readFileSync(PREP_MAP, 'utf8')).content.trim(), '');
   const ROUTES = [
     [/backend fundamentals/i, 'backend'], [/spring|^java\b/i, 'spring-boot'], [/django/i, 'django'], [/^python/i, 'python'], [/node|runtime & concurrency/i, 'nodejs'],
     [/sql|nosql|database scaling|database & data layer/i, 'database'], [/typescript|javascript core|async javascript/i, 'javascript'],
@@ -592,6 +591,40 @@ if (fs.existsSync(PREP_MAP)) {
     [/backend fundamentals|caching|architecture & design/i, 'backend'],
   ];
   const H2 = [[/backend/i, 'backend'], [/database/i, 'database'], [/dsa/i, 'dsa'], [/frontend|javascript/i, 'frontend'], [/system design/i, 'system-design'], [/testing/i, 'testing-quality'], [/devops/i, 'devops-cloud'], [/security/i, 'security'], [/soft skills/i, 'behavioral'], [/interview/i, 'behavioral']];
+  // Practice Lab callouts after H3 headings (own lines — heading anchors unchanged).
+  {
+    const lines = md.split('\n');
+    const out = [];
+    let fence = false;
+    let curH2 = '';
+    for (const line of lines) {
+      out.push(line);
+      if (/^\s*(```+|~~~+)/.test(line)) {
+        fence = !fence;
+        continue;
+      }
+      if (fence) continue;
+      const h2m = line.match(/^##\s+(.+?)\s*$/);
+      if (h2m) {
+        curH2 = h2m[1];
+        continue;
+      }
+      const h3m = line.match(/^###\s+(.+?)\s*$/);
+      if (!h3m) continue;
+      let slug = '';
+      for (const [re, s] of ROUTES) {
+        if (re.test(h3m[1])) {
+          slug = s;
+          break;
+        }
+      }
+      if (!slug) for (const [re, s] of H2) if (re.test(curH2)) slug = s;
+      const n = slug ? (practiceCountByTopic[slug] ?? 0) : 0;
+      if (n > 0) out.push('', `> **Practice:** [${n} challenge${n === 1 ? '' : 's'} in the Practice Lab](/practice?topic=${slug})`);
+    }
+    md = out.join('\n');
+  }
+  const a = analyse(md);
   let h2 = '';
   let h3 = null;
   const routeFor = () => {

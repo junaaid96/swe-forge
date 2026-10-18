@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { Card, Catalog, Page, SearchEntry, Topic, TopicExtras } from './types';
+import type { Card, Catalog, Page, PracticeChallenge, PracticeIndex, SearchEntry, Topic, TopicExtras } from './types';
 
 const cache = new Map<string, Promise<unknown>>();
 const resolved = new Map<string, unknown>();
@@ -31,6 +31,8 @@ export const urls = {
   topic: (slug: string) => `/data/topics/${slug}.json`,
   search: '/data/search.json',
   cards: '/data/cards.json',
+  practice: '/data/practice.json',
+  challenge: (topic: string, slug: string) => `/data/pages/${topic}/practice/${slug}.json`,
 };
 
 export const getCatalog = () => load<Catalog>(urls.catalog);
@@ -38,6 +40,8 @@ export const getPage = (url: string) => load<Page>(url);
 export const getTopicExtras = (slug: string) => load<TopicExtras>(urls.topic(slug));
 export const getSearchIndex = () => load<SearchEntry[]>(urls.search);
 export const getCards = () => load<Card[]>(urls.cards);
+export const getPracticeIndex = () => load<PracticeIndex>(urls.practice);
+export const getChallenge = (topic: string, slug: string) => load<PracticeChallenge>(urls.challenge(topic, slug));
 
 export interface Resource<T> {
   data: T | undefined;

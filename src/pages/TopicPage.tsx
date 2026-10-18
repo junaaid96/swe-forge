@@ -148,7 +148,12 @@ export function TopicPage() {
 
       {extras?.problems.length ? (
         <section className="topic-section" aria-labelledby="sec-practice">
-          <h2 id="sec-practice">Practice problems</h2>
+          <div className="row-between">
+            <h2 id="sec-practice">Practice problems</h2>
+            <Link className="btn btn-sm" to={`/practice?topic=${slug}`}>
+              Open in Practice Lab
+            </Link>
+          </div>
           <PracticePanel slug={slug} problems={extras.problems} />
         </section>
       ) : null}

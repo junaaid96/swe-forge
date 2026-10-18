@@ -1,13 +1,48 @@
 # Forgeline
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-indigo.svg)](LICENSE)
+[![CI](https://github.com/junaaid96/swe-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/junaaid96/swe-forge/actions/workflows/ci.yml)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-indigo.svg)](CONTRIBUTING.md)
+[![Live](https://img.shields.io/badge/live-swe--forge.vercel.app-4f46e5.svg)](https://swe-forge.vercel.app/)
+
+> Learn it. Drill it. Track it. A free, open-source study hub for software engineers: role-based roadmaps, in-depth guides, interview Q&A, flashcards, mock interviews and a Practice Lab that runs your code in the browser.
+
 **Live:** [swe-forge.vercel.app](https://swe-forge.vercel.app/)
 
-**Forgeline** is a fast, static study hub for software engineering: guides, deep dives, interview Q&A, MCQ test prep, spaced-repetition flashcards, timed mock interviews, a quiz arena, a Practice Lab with in-browser code execution, 22 developer tools, an optional AI coach and a skill map. It all runs in the browser. Progress lives in `localStorage`, and there is no account or backend to run.
+**Forgeline** is a fast, static study hub for software engineering. It covers the whole loop: **learn** (24 role-based roadmaps, 48 topics, 213 guides), **practise** (a Practice Lab running JavaScript/TypeScript, Python and SQL in the browser, system design prompts, mock coding rounds), **review** (3,000+ spaced-repetition flashcards, quizzes, a Quiz Arena) and **track** (skill map, badges, study plan, daily challenge). It all runs in the browser. Progress lives in `localStorage`, and there is no account or backend to run.
 
 > Forgeline merges two earlier projects: **SWE Forge** (this repository) and **PrepShelf** (static Markdown guides plus interview MCQs). All PrepShelf content now lives under `content/`, in one taxonomy.
 
+## Screenshots
+
+| | |
+|---|---|
+| ![Home with daily challenge and what to study next](docs/screenshots/home.jpg) | ![24 role-based roadmaps](docs/screenshots/roadmaps.jpg) |
+| **Home**: daily challenge, review queue, what to study next | **Roadmaps**: 24 role-based tracks with progress rings |
+| ![Practice Lab running JavaScript tests](docs/screenshots/practice-lab.jpg) | ![SQL challenge on SQLite WASM](docs/screenshots/practice-sql.jpg) |
+| **Practice Lab**: JS/TS challenges tested in your browser | **SQL and Python** in sandboxed Web Workers |
+| ![Learning paths](docs/screenshots/learning-paths.jpg) | ![Study plan generator](docs/screenshots/study-plan.jpg) |
+| **Learning paths**: guides, quizzes, practice and interviews in sequence | **Study plan**: a day-by-day checklist with `.ics` export |
+| ![Sorting visualizer](docs/screenshots/visualizer.jpg) | ![System design workspace](docs/screenshots/system-design.jpg) |
+| **Visualizers**: step through sorting, graphs, the event loop and more | **System design**: structured answers, live Mermaid and a rubric |
+| ![AI Coach hub](docs/screenshots/ai-coach.jpg) | ![Skill map](docs/screenshots/skill-map.jpg) |
+| **AI Coach** (bring your own Groq key) | **Skill map**: radar chart, study-next list and badges |
+| ![Home in the dark theme](docs/screenshots/home-dark.jpg) | <img src="docs/screenshots/mobile-practice.jpg" alt="Practice Lab on mobile" width="240"> |
+| **Dark theme** with no flash on load | **Responsive**: works on phones |
+
+## Tech stack
+
+- **Frontend:** React 19, TypeScript, Vite, React Router 7
+- **Content:** Markdown compiled to static JSON at build time (`gray-matter`, `react-markdown`, `rehype-highlight`, Mermaid)
+- **Practice Lab:** Web Workers, Pyodide (Python), SQLite WASM via `sql.js`, CodeMirror 6, Sucrase for TypeScript
+- **AI coach:** Groq, bring your own key, with model fallback and a daily token budget guard
+- **Platform:** hand-rolled PWA service worker, prerendered SEO shells, per-page Open Graph images (resvg)
+- **Quality:** oxlint, Playwright smoke tests, GitHub Actions CI, a content validator
+- **Hosting:** Vercel (static build)
+
 ## Features
 
+- **24 role-based roadmaps** (`/roadmaps`): Backend, Full Stack, Frontend, AI Engineer, Software Architect, DevOps, DevSecOps, Android, SEO, Data Analyst, AI & Data Scientist, Data Engineer, PostgreSQL, Machine Learning, API Design, QA, Cyber Security, UX Design, Game Developer, Server Side Game Developer, Product Manager, MLOps, Engineering Manager and Network Engineer. Each stage links to original guides, and every track has a progress ring and a checkpoint quiz. Topic checklists are inspired by [roadmap.sh](https://roadmap.sh/); all explanations are original.
 - **48 topics in 11 groups:** Interview prep, Engineering craft, Languages (JS/TS, Python, Java, C/C++, Rust, Go), Frontend, Backend & frameworks, CS & algorithms, Systems & data, DevOps/cloud/security (incl. Reverse Engineering), AI & data, Architecture/product/leadership, Mobile/games/growth. 213 Markdown pages in all.
 - **Quizzes and practice on every topic:** 392 MCQs and 125 practice problems across all topics, defined in each topic's `meta.json`, plus 24 executable Practice Lab challenges (8 JS/TS, 8 Python, 8 SQL) under `content/<topic>/practice/`.
 - **Readers for every kind of page:** guides (`notes`), six deep-dive tracks, and interview Q&A in four levels. Each has a table of contents with scroll spy, syntax highlighting, copyable code blocks, heading anchors, a reading progress bar and prev/next navigation.
@@ -162,3 +197,19 @@ public/sw.js                   hand-rolled service worker (network-first navigat
 public/offline.html            offline fallback page
 content/        48 topics + prep map + roadmap tracks + 5 learning paths + 6 design prompts
 ```
+
+## Roadmap credit
+
+The topic checklists behind the 24 roadmaps are **inspired by [roadmap.sh](https://roadmap.sh/)**. Forgeline is not affiliated with roadmap.sh. All guides, diagrams, examples, quizzes and flashcards in this repository were written from scratch and fact-checked against current (2026) versions.
+
+## Contributing
+
+Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first, and please follow the [Code of Conduct](CODE_OF_CONDUCT.md). To report a vulnerability, see [SECURITY.md](SECURITY.md).
+
+## License
+
+Forgeline is released under the [MIT License](LICENSE). Brand marks under `public/logos/` belong to their respective owners.
+
+## Credits
+
+Developed by **[`<CodeJBorg />`](https://junaidul.pro.bd/codejborg)**, a software studio from Bangladesh founded in 2025. See more work at [junaidul.pro.bd/projects](https://junaidul.pro.bd/projects).

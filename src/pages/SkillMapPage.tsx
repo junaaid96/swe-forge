@@ -9,6 +9,7 @@ import { evaluateBadges } from '../lib/badges';
 import { pathProgress } from '../lib/paths';
 import { RadarChart } from '../components/RadarChart';
 import { ShareCard } from '../components/ShareCard';
+import { SyncPanel } from '../components/SyncPanel';
 import { Bar, Ring } from '../components/Ring';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { PageFallback } from '../components/Layout';
@@ -259,6 +260,11 @@ export function SkillMapPage() {
             radar: radar.map((r) => ({ label: r.label.replace(/ & .*/, '').replace(/,.*/, ''), value: r.value })),
           }}
         />
+      </section>
+
+      <section className="card pad data-tools" aria-labelledby="sync-h">
+        <h2 id="sync-h">Sync (optional)</h2>
+        <SyncPanel />
       </section>
 
       <section className="card pad data-tools" aria-labelledby="data-h">

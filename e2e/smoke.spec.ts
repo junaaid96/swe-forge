@@ -400,6 +400,97 @@ test('a mock interview with a coding round solves and scores', async ({ page }) 
   await expect(page.getByTestId('mock-coding-results').locator('pre code')).not.toBeEmpty();
 });
 
+test('prerendered pages carry SEO head tags and OG images', async ({ page }) => {
+  const html = await page.request.get('/topics/dsa/').then((r) => r.text());
+  expect(html).toContain('<link rel="canonical" href="https://swe-forge.vercel.app/topics/dsa" />');
+  expect(html).toContain('/og/topic-dsa.png');
+  expect(html).toContain('application/ld+json');
+  const og = await page.request.get('/og/topic-dsa.png');
+  expect(og.status()).toBe(200);
+  expect(og.headers()['content-type']).toContain('image/png');
+  const guide = await page.request.get('/topics/dsa/notes/01-complexity-and-core-structures').then((r) => r.text());
+  expect(guide).toContain('og:image');
+});
+
+test('PWA shell registers and serves offline', async ({ page, context }) => {
+  await page.goto('/');
+  expect(await page.locator('link[rel="manifest"]').count()).toBe(1);
+  const manifest = await page.request.get('/manifest.webmanifest').then((r) => r.json());
+  expect(manifest.short_name).toBe('Forgeline');
+  await page.evaluate(() => navigator.serviceWorker.ready.then(() => undefined));
+  await page.waitForFunction(() => !!navigator.serviceWorker.controller);
+  // One online reload so the navigation + hashed assets pass through the SW.
+  await page.reload();
+  await expect(page.getByTestId('home-title')).toBeVisible();
+  // Visited pages work offline; unvisited ones get the offline fallback.
+  await context.setOffline(true);
+  await page.reload();
+  await expect(page.getByTestId('home-title')).toBeVisible();
+  await page.goto('/flashcards');
+  await expect(page.getByText("You're offline")).toBeVisible();
+  await context.setOffline(false);
+});
+
+test('sync merges a mocked remote without data loss', async ({ page }) => {
+  const REMOTE_PAGE = 'dsa/notes/01-complexity-and-core-structures';
+  const remoteProgress = {
+    version: 1,
+    pages: { [REMOTE_PAGE]: { visitedAt: 1, readAt: 2 } },
+    bookmarks: ['python/notes/01-python'],
+    quiz: {},
+    problems: {},
+    completed: [],
+    cards: {},
+    reviews: {},
+    newCards: { day: '2026-01-01', count: 0 },
+    srs: { newPerDay: 15, topics: [], sources: [] },
+    mocks: [],
+    streak: 0,
+  };
+  const envelope = {
+    app: 'forgeline',
+    version: 1,
+    updatedAt: 1,
+    deviceId: 'remote-device',
+    progress: remoteProgress,
+    practice: { version: 1, records: {} },
+    daily: { version: 1, date: '', kind: 'study', topic: '', challengeId: '', skipped: false, done: false },
+    plan: { version: 1, inputs: { daysAvailable: 14, hoursPerDay: 1, interviewDate: '', focusTopics: [] }, createdAt: '', days: [], checks: [] },
+    notes: { version: 1, notes: [] },
+    customCards: { version: 1, cards: [], includeMcqInSessions: false },
+    design: { version: 1, attempts: {} },
+  };
+  let patched: Record<string, unknown> | null = null;
+  await page.route('**/api.github.com/**', async (route) => {
+    if (route.request().method() === 'PATCH') {
+      patched = JSON.parse(route.request().postData() ?? '{}') as Record<string, unknown>;
+      return route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
+    }
+    return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ files: { 'forgeline-sync.json': { content: JSON.stringify(envelope) } } }) });
+  });
+  // Local state the remote lacks: must survive the merge.
+  const catalog = (await page.request.get('/data/catalog.json').then((r) => r.json())) as {
+    topics: Array<{ pages: Array<{ key: string; url: string }> }>;
+  };
+  const local = catalog.topics.flatMap((t) => t.pages).find((p) => p.url.includes('/notes/'));
+  expect(local, 'catalog has a guide page').toBeTruthy();
+  await page.goto(local!.url);
+  await page.getByTestId('mark-read').click();
+  await expect(page.getByTestId('mark-read')).toContainText('Read');
+  await page.goto('/skills');
+  await expect(page.getByTestId('sync-panel')).toBeVisible();
+  await page.getByTestId('sync-provider').selectOption('gist');
+  await page.getByTestId('sync-token').fill('ghp_test');
+  await page.getByTestId('sync-remote').fill('abc123');
+  await page.getByTestId('sync-now').click();
+  await expect(page.getByTestId('sync-status')).toContainText('Synced');
+  const merged = await stored<{ pages: Record<string, { readAt?: number }>; bookmarks: string[] }>(page, PROGRESS_KEY);
+  expect(merged?.pages[REMOTE_PAGE]?.readAt, 'remote page merged in').toBe(2);
+  expect(merged?.pages[local!.key]?.readAt, 'local page kept').toBeTruthy();
+  expect(merged?.bookmarks).toContain('python/notes/01-python');
+  expect(patched, 'merged envelope pushed back').toBeTruthy();
+});
+
 test('the Python practice runner executes in the browser', async ({ page }) => {
   test.setTimeout(120_000);
   // Seed the reference solution first so the single run proves execution.

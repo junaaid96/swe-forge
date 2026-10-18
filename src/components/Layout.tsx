@@ -9,6 +9,7 @@ import { toggleTheme, useTheme } from '../lib/theme';
 import { isTyping } from '../lib/hotkeys';
 import { useProgress } from '../lib/progress';
 import { dueCount } from '../lib/stats';
+import { applySWUpdate, onSWUpdate, useOnline } from '../lib/sw';
 
 export function PageFallback() {
   return (
@@ -38,6 +39,9 @@ export function Layout() {
   const state = useProgress();
   const due = dueCount(state);
   const mainRef = useRef<HTMLElement>(null);
+  const online = useOnline();
+  const [swUpdate, setSwUpdate] = useState(false);
+  useEffect(() => onSWUpdate(() => setSwUpdate(true)), []);
   const menuRef = useRef<HTMLButtonElement>(null);
   const drawerRef = useRef<HTMLElement>(null);
   const gPressed = useRef(0);
@@ -183,6 +187,29 @@ export function Layout() {
 
       <CommandPalette open={palette} onClose={() => setPalette(false)} />
       <ShortcutsDialog open={help} onClose={() => setHelp(false)} />
+      {!online ? (
+        <p className="net-banner" role="status" data-testid="offline-banner">
+          You're offline — studying continues locally, AI is paused.
+        </p>
+      ) : null}
+      {swUpdate ? (
+        <div className="update-toast" role="status" data-testid="update-toast">
+          <span>A new version is available.</span>
+          <button
+            type="button"
+            className="btn btn-sm btn-primary"
+            onClick={() => {
+              applySWUpdate();
+              window.location.reload();
+            }}
+          >
+            Reload to update
+          </button>
+          <button type="button" className="btn btn-sm" onClick={() => setSwUpdate(false)}>
+            Later
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }

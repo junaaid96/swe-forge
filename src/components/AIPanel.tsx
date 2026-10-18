@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AiError, GROQ_MODELS, chat, clip, getBudget, keySource, setBudget, setKey, setModel, testConnection, useAiStatus, type ChatMsg } from '../lib/ai';
+import { useOnline } from '../lib/sw';
 import { useDialogFocus } from '../lib/focus';
 import { Markdown } from './Markdown';
 import { IconClose } from './Icons';
@@ -125,6 +126,7 @@ export function AIPanel({ open, onClose, context }: { open: boolean; onClose: ()
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const online = useOnline();
   const bottomRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -199,7 +201,7 @@ export function AIPanel({ open, onClose, context }: { open: boolean; onClose: ()
           <>
             <div className="ai-actions" role="group" aria-label="Quick actions">
               {ACTIONS.map((a) => (
-                <button key={a.id} type="button" className="chip chip-toggle" disabled={busy || !status.key} onClick={() => send(a.prompt)}>
+                <button key={a.id} type="button" className="chip chip-toggle" disabled={busy || !status.key || !online} onClick={() => send(a.prompt)}>
                   {a.label}
                 </button>
               ))}
@@ -227,8 +229,8 @@ export function AIPanel({ open, onClose, context }: { open: boolean; onClose: ()
                 send(input);
               }}
             >
-              <input value={input} onChange={(e) => setInput(e.target.value)} placeholder={status.key ? 'Ask about this page…' : 'Add an API key first (Settings)'} aria-label="Ask about this page" disabled={!status.key || busy} autoFocus />
-              <button type="submit" className="btn btn-primary btn-sm" disabled={!status.key || busy || !input.trim()}>
+              <input value={input} onChange={(e) => setInput(e.target.value)} placeholder={!online ? 'Offline — AI is paused' : status.key ? 'Ask about this page…' : 'Add an API key first (Settings)'} aria-label="Ask about this page" disabled={!status.key || busy || !online} autoFocus />
+              <button type="submit" className="btn btn-primary btn-sm" disabled={!status.key || busy || !online || !input.trim()}>
                 Send
               </button>
             </form>

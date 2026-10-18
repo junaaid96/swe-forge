@@ -29,7 +29,7 @@ export interface AiUsage {
   outTokens: number;
 }
 
-export type AiErrorKind = 'nokey' | 'auth' | 'budget' | 'ratelimit' | 'model' | 'network' | 'parse';
+export type AiErrorKind = 'nokey' | 'auth' | 'budget' | 'ratelimit' | 'model' | 'network' | 'parse' | 'offline';
 
 export class AiError extends Error {
   kind: AiErrorKind;
@@ -204,6 +204,7 @@ export function estimateTokens(text: string) {
 }
 
 export async function chat(messages: ChatMsg[], opts: { maxTokens?: number; temperature?: number; signal?: AbortSignal } = {}): Promise<ChatResult> {
+  if (typeof navigator !== 'undefined' && !navigator.onLine) throw new AiError('offline', 'You are offline. AI features need a connection; everything else keeps working.');
   const key = getKey();
   if (!key) throw new AiError('nokey', 'Add your Groq API key in AI settings to enable this.');
   const budget = getBudget();

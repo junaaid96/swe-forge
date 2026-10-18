@@ -1,6 +1,10 @@
 {
   "name": "forgeline",
   "private": true,
+  "license": "MIT",
+  "description": "Forgeline: a free, open-source study hub for software engineers",
+  "homepage": "https://swe-forge.vercel.app",
+  "repository": { "type": "git", "url": "git+https://github.com/junaaid96/swe-forge.git" },
   "version": "2.0.0",
   "type": "module",
   "scripts": {

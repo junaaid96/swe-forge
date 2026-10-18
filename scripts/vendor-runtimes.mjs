@@ -28,7 +28,7 @@ function vendorDir(name, pkg, files) {
       console.error(`[vendor] missing ${pkg}/${f} — reinstall dependencies`);
       process.exit(1);
     }
-    fs.copyFileSync(src, path.join(out, f));
+    fs.copyFileSync(src, path.join(out, path.basename(f)));
     bytes += fs.statSync(src).size;
   }
   fs.writeFileSync(stamp, `${version}\n`);
@@ -38,3 +38,6 @@ function vendorDir(name, pkg, files) {
 // Pyodide: classic loader + wasm + stdlib. Loaded lazily by the Python
 // practice worker on first use; never part of the JS bundle.
 vendorDir('pyodide', 'pyodide', ['pyodide.js', 'pyodide.asm.mjs', 'pyodide.asm.wasm', 'python_stdlib.zip', 'pyodide-lock.json']);
+
+// sql.js: classic loader + wasm. Loaded lazily by the SQL practice worker.
+vendorDir('sqljs', 'sql.js', ['dist/sql-wasm.js', 'dist/sql-wasm.wasm']);

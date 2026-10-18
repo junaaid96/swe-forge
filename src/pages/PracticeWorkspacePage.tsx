@@ -102,12 +102,14 @@ export function PracticeWorkspacePage() {
     setConfirmReset(false);
   };
 
+  const runOpts = { language: lang, seedSql: challenge.seedSql };
+
   const handleRun = async () => {
     if (!runner || !challenge.visibleTests || running) return;
     practice.recordAttempt(challenge.id);
     setRunning(true);
     try {
-      const visible = await runner.run(code, challenge.visibleTests, { language: lang });
+      const visible = await runner.run(code, challenge.visibleTests, runOpts);
       setSubmission({ visible, submitted: false, hiddenCount: challenge.hiddenTests?.cases.length ?? 0 });
     } finally {
       setRunning(false);
@@ -119,13 +121,13 @@ export function PracticeWorkspacePage() {
     practice.recordAttempt(challenge.id);
     setRunning(true);
     try {
-      const visible = await runner.run(code, challenge.visibleTests, { language: lang });
+      const visible = await runner.run(code, challenge.visibleTests, runOpts);
       if (!visible.ok || !challenge.hiddenTests) {
         setSubmission({ visible, submitted: true, hiddenCount: challenge.hiddenTests?.cases.length ?? 0 });
         if (visible.ok && !challenge.hiddenTests) practice.recordSolve(challenge.id);
         return;
       }
-      const hidden = await runner.run(code, challenge.hiddenTests, { language: lang });
+      const hidden = await runner.run(code, challenge.hiddenTests, runOpts);
       setSubmission({ visible, hidden, submitted: true, hiddenCount: hidden.cases.length });
       if (hidden.ok) practice.recordSolve(challenge.id);
     } finally {

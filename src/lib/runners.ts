@@ -2,14 +2,17 @@
 import type { PracticeTestSpec } from './types';
 import type { JsRunResponse } from '../workers/jsRunner';
 import type { PyRunResponse } from '../workers/pyRunner';
+import type { SqlRunResponse } from '../workers/sqlRunner';
 
 export interface RunOpts {
-  /** Kill the run after this long (default 5000). Enforced by terminating the worker. */
+  /** Kill the run after this long. Enforced by terminating the worker. */
   timeoutMs?: number;
   /** Cap on captured stdout in chars (default 20000). */
   outputLimit?: number;
   /** Editor language id, e.g. 'javascript' | 'typescript'. */
   language?: string;
+  /** SQL seed statements; used only by the SQL runner. */
+  seedSql?: string;
 }
 
 export interface CaseResult {
@@ -45,10 +48,11 @@ function failure(error: string, extra?: Partial<RunResults>): RunResults {
 // Worker-backed runners: a lazily created Worker per runner, terminated +
 // respawned on timeout. Worker chunks load only when first constructed.
 
-type WorkerResponse = JsRunResponse | PyRunResponse;
+type WorkerResponse = JsRunResponse | PyRunResponse | SqlRunResponse;
 
 interface WorkerRunnerDef {
   id: string;
+  kinds: Array<'fn' | 'sql'>;
   makeWorker: () => Worker;
   defaultTimeoutMs: number;
   startError: string;
@@ -88,7 +92,7 @@ function createWorkerRunner(def: WorkerRunnerDef): Runner {
   return {
     id: def.id,
     run(code: string, spec: PracticeTestSpec, opts: RunOpts = {}): Promise<RunResults> {
-      if (spec.kind !== 'fn') return Promise.resolve(failure(`The ${def.id} runner needs function-style ("fn") tests.`));
+      if (!def.kinds.includes(spec.kind)) return Promise.resolve(failure(`The ${def.id} runner cannot run "${spec.kind}" tests.`));
       const timeoutMs = opts.timeoutMs ?? def.defaultTimeoutMs;
       const outputLimit = opts.outputLimit ?? 20000;
       return new Promise((resolve) => {
@@ -123,6 +127,7 @@ function createWorkerRunner(def: WorkerRunnerDef): Runner {
 
 export const jsRunner: Runner = createWorkerRunner({
   id: 'js',
+  kinds: ['fn'],
   makeWorker: () => new Worker(new URL('../workers/jsRunner.ts', import.meta.url), { type: 'module', name: 'forgeline-js-runner' }),
   defaultTimeoutMs: 5000,
   startError: 'Could not start the JS runner.',
@@ -131,6 +136,7 @@ export const jsRunner: Runner = createWorkerRunner({
 
 export const pythonRunner: Runner = createWorkerRunner({
   id: 'python',
+  kinds: ['fn'],
   // Classic worker: the runtime loads via importScripts from /vendor, so the
   // chunk stays tiny and Pyodide never touches the bundler.
   makeWorker: () => new Worker(new URL('../workers/pyRunner.ts', import.meta.url), { type: 'classic', name: 'forgeline-py-runner' }),
@@ -140,12 +146,22 @@ export const pythonRunner: Runner = createWorkerRunner({
   toRequest: (id, code, spec, _opts, outputLimit) => ({ id, code, spec, outputLimit }),
 });
 
+export const sqlRunner: Runner = createWorkerRunner({
+  id: 'sql',
+  kinds: ['sql'],
+  makeWorker: () => new Worker(new URL('../workers/sqlRunner.ts', import.meta.url), { type: 'classic', name: 'forgeline-sql-runner' }),
+  defaultTimeoutMs: 10000,
+  startError: 'Could not start the SQL runner.',
+  toRequest: (id, code, spec, opts, outputLimit) => ({ id, code, seedSql: opts.seedSql ?? '', spec, outputLimit }),
+});
+
 // ---------------------------------------------------------------------------
-// Registry. SQL lands in the next step; unknown runners resolve null.
+// Registry. Unknown runners resolve null.
 
 const registry = new Map<string, Runner>([
   ['js', jsRunner],
   ['python', pythonRunner],
+  ['sql', sqlRunner],
 ]);
 
 export function registerRunner(runner: Runner) {

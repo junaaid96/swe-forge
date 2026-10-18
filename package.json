@@ -34,6 +34,7 @@
     "rehype-slug": "^6.0.0",
     "remark-gfm": "^4.0.1",
     "sql-formatter": "^15.9.0",
+    "sql.js": "^1.15.0",
     "sucrase": "^3.35.1"
   },
   "devDependencies": {

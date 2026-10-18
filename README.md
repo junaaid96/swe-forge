@@ -17,6 +17,18 @@
 - **Mock interview mode** (`/mock`): a timed session of random questions across the topics you choose. You answer MCQs directly and self-grade open questions (or let the AI coach grade typed answers). At the end you get a score summary with per-topic results, weak areas linked to study material, a list of missed questions with "add to flashcards", and your session history.
 - **Quiz Arena** (`/arena`): a rapid-fire MCQ game — 15 seconds per question, 3 lives, streak combos, time bonuses and local bests, with missed questions linked back to study material.
 - **Practice Lab** (`/practice`): learn a concept, then prove it with code. A filterable catalog and a split-view workspace (Problem | Learn | Hints | Solution tabs, editor, results panel) with JS/TS, Python and SQL challenges executed in the browser against visible and hidden tests. Legacy topic problems appear as think-&-check challenges. See *Practice Lab sandbox* below for the guarantees.
+- **Learning paths** (`/paths`): 5 curated curricula (including an interview crash course) with per-step status derived from existing progress, a "next step" button, and path progress on the skill map and home.
+- **Daily challenge** (home): deterministic per day, biased toward your weakest topic, counting toward the streak with one skip allowed.
+- **Study plan** (`/plan`): enter days/hours (and an optional interview date) to generate a day-by-day checklist from skill-map gaps and path steps; it re-plans when you fall behind and exports `.ics`.
+- **Badges + share card** (skill map): declarative badge rules (streaks, mastery, mock scores, groups) and a locally rendered PNG share card (radar, streak, counts). Nothing is uploaded.
+- **Notes & highlights** (`/notes`): select text in any reader to highlight, annotate or make a flashcard. Anchors use heading id + text-quote with re-anchor fallback; broken anchors are flagged as orphaned, never deleted. Markdown export included.
+- **AI-generated cards:** a "Generate cards" button on readers uses the existing Groq client + token guard with strict validated JSON; accept/edit/delete in a preview before items join the SM-2 queue (labelled AI-generated, MCQ opt-in for mock/arena, deduped).
+- **Visualizers** (`/visualize`, embeddable via `::visualizer{id="…"}` in guides): sorting, graph traversal (editable graph), event loop, B-tree lookup and hash-table collisions — lazy SVG, play/pause/step/back/speed, pseudocode + counters, step-only under reduced motion.
+- **System design practice** (`/design`): 6 prompts (URL shortener, rate limiter, chat, news feed, notifications, file storage) with structured sections, lazy Mermaid preview, rubric checklist, model answers and optional AI review. Attempts saved locally.
+- **Coding round in mocks** (`/mock` setup): optionally blend up to 3 timed (5 min) runnable coding challenges into a mock interview, with blended scoring, AI approach feedback and final code in results.
+- **SEO + OG:** build-time prerendered route shells (title, description, canonical, Article JSON-LD, sitemap, robots) and a per-page OG image (`/og/<slug>.png`).
+- **PWA:** installable manifest + icons, hand-rolled service worker (network-first navigations, cache-first hashed/vendor assets, SWR data/OG), offline fallback page, update toast and offline indicator. AI features disable gracefully offline.
+- **Optional sync** (off by default, skill map): merge local progress with a GitHub Gist backup via per-record merge (union reads/bookmarks, last-write-wins SRS cards). AI keys are never synced.
 - **AI study coach (Groq, BYOK):** page-grounded chat (explain / summarize / quiz-me / interview-me) on every reader page, AI grading in mock interviews, and one-click explanations on flashcards. Keys live in the browser or optional `.env` (`VITE_GROQ_API_KEY`, see `.env.example`); model chain falls back automatically on rate limits with a daily token budget guard.
 - **Skill map dashboard** (`/skills`): a radar chart of every topic group plus a roadmap of all topics. Each tile shows pages read, cards mastered and quiz/mock scores, along with a ranked "what to study next" list. You can also export, import or reset your progress.
 - **Developer tools** (`/tools`): 22 client-side utilities (JSON, SQL, JWT, regex, cron, curl, diff, git, Docker, LLM tokens, mock data, subnet, QR, Unicode…) with search, favorites and recent history. No data leaves the browser.
@@ -41,9 +53,18 @@ Requires Node 20+ (tested on Node 22).
 |---|---|
 | `npm run content` | compile `content/` into static JSON in `public/data/` (runs automatically via `predev` / `prebuild`) |
 | `npm run vendor` | vendor Pyodide + sql.js into `public/vendor/` (runs automatically via `predev` / `prebuild`) |
-| `npm run validate:practice` | run every Practice Lab reference solution against its tests (runs automatically via `prebuild`; run it manually while authoring) |
+| `npm run validate` | content validator + practice validator (runs automatically via `prebuild`, fails on errors; warns only via `predev`) |
+| `npm run validate:content` | check meta.json schema, manifest refs, interview format, links, leaked markup, placeholders, fences, duplicate slugs |
+| `npm run validate:practice` | run every Practice Lab reference solution against its tests (run it manually while authoring) |
+| `npm run lint` | oxlint |
+| `npm run prerender` | write SEO route shells + sitemap/robots and stamp the service worker (runs automatically after `vite build`) |
+| `npm run og` | generate per-page OG images into `dist/og/` (runs automatically after `prerender`) |
+| `npm run icons` | generate PWA icons into `dist/icons/` (runs automatically after `vite build`) |
 | `npm run dev` | Vite dev server |
 | `npm run preview` | Serves the production build locally |
+| `npm run e2e` | Playwright smoke suite (29 tests) against `preview` on port 4173, no external network |
+
+CI (`.github/workflows/ci.yml`) runs on push and PR: Node 22, `npm ci`, validate, lint, build, plus a bundle-size summary.
 
 ## Content quality
 
@@ -55,6 +76,8 @@ The content was reviewed after the merge: leaked citation markup (e.g. `<cite in
 content/
   manifest.json               groups + topic order
   prep-map.md                 topic-wise prep map
+  paths/<slug>.json           learning paths: title, blurb, estimatedHours, steps[{type, ref}]
+  design/<slug>.md            system-design prompts: frontmatter (title, blurb, emoji) + Brief/Model answer
   <topic>/
     meta.json                 title, emoji, group, blurb, quiz[], problems[], relatedTopics[]
     notes/*.md                guides (most came from PrepShelf)
@@ -67,6 +90,8 @@ content/
 - **Guides** are plain Markdown. `> **Asked as:** …` blockquotes render as interview callouts. Relative `.md` links are rewritten to site routes.
 - **Topic quizzes** in `meta.json` appear on topic pages and become MCQ flashcards and mock questions.
 - To **add a topic**, create `content/<slug>/meta.json` plus Markdown files, then add the slug to a group in `content/manifest.json`. `scripts/build-content.mjs` does the rest.
+- **Learning paths** (`content/paths/*.json`) reference existing catalog entries only (`guide`, `quiz`, `flashcards`, `interview`, `practice` + `ref`); they compile into `catalog.json` `paths` and derive status from the progress/practice stores. **Design prompts** (`content/design/*.md`) carry YAML frontmatter plus a brief and a model answer.
+- **Visualizer embeds:** a `::visualizer{id="<id>"}` line in any guide renders the matching lazy visualizer (`src/visualizers/registry.ts`).
 - **Practice challenges** live in `content/<topic>/practice/<slug>.md`: frontmatter (`id`, `title`, `difficulty`, `tags`, `languages`, `runner`, `estimatedMinutes`, `learnLinks` to `topic/kind/id` pages), a statement preamble plus `## Examples`, `## Learn`, `## Hints` (3 bullets), `## Solution`, `## Complexity`, `## Common mistakes`, and fenced blocks (```starter:<lang>, ```solution:<lang>, ```visible-tests / ```hidden-tests JSON, ```seed-sql for SQL). The compiler emits `practice.json` plus one lazy JSON per challenge, and adapts legacy `meta.json` `problems[]` into think-&-check challenges (no schema change). `npm run validate:practice` executes every reference solution against its tests and fails the build on any mismatch.
 
 The compiler writes `catalog.json`, `search.json`, `cards.json`, per-topic extras and one JSON file per page. Pages load lazily, so the first load stays small. `public/data/` is generated and git-ignored.
@@ -79,6 +104,12 @@ Everything is stored in your browser's `localStorage`:
 |---|---|
 | `forgeline:progress:v1` | pages read, bookmarks, quiz scores, problems, SRS card state, mock history, streak |
 | `forgeline:practice:v1` | Practice Lab attempts, hints used, solve times, drafts, last challenge (legacy solved problems migrate here on first load) |
+| `forgeline:daily:v1` | daily challenge state (date, skip used, done) |
+| `forgeline:plan:v1` | study plan inputs, generated days, manual checks |
+| `forgeline:notes:v1` | highlights + notes with text-quote anchors |
+| `forgeline:custom-cards:v1` | AI-generated cards + MCQ-in-sessions opt-in |
+| `forgeline:design:v1` | design attempts per prompt |
+| `forgeline:sync:v1` | sync provider, remote id, last result (**token stays in `forgeline:sync:token`, never exported or synced**) |
 | `forgeline:theme` | `light` / `dark` |
 | `forgeline:tools:*` | tool favorites + recents |
 | `forgeline:arena:v1` | quiz arena bests |
@@ -100,7 +131,11 @@ Honest limits: this stops accidents, not a determined attacker running their own
 
 ## Deployment
 
-The frontend is a static Vite build deployed on **Vercel**. Vercel runs `npm run build`, which compiles the content first, and serves `dist/`. `vercel.json` rewrites client routes such as `/topics/java` to `index.html`, so deep links and refreshes work.
+The frontend is a static Vite build deployed on **Vercel**. Vercel runs `npm run build`, which compiles the content first, and serves `dist/`. `vercel.json` rewrites client routes such as `/topics/java` to `index.html`, so deep links and refreshes work — except prerendered SEO shells (`/topics/*`, `/prep-map`), which are served as static HTML with canonical + OG tags.
+
+Build pipeline order: `prebuild` (content → data, vendor runtimes, validate) → `tsc` → `vite build` → `icons` → `prerender` (262 route shells, sitemap, robots, SW version stamp) → `og` (262 PNGs, ~85–95s cold with worker threads, faster warm via `node_modules/.cache`). OG generation uses system fonts (resolved via `fc-match`) with Twemoji-rendered emoji, plus the `@resvg/resvg-js` native dep (no browser needed). `dist/og/*.png` and shells add output size — watch Vercel build minutes.
+
+The service worker (`public/sw.js`, version-stamped per build) uses network-first navigations so a deploy is never shadowed by stale HTML; hashed assets/vendor are cache-first, data/OG are stale-while-revalidate. Approve the "update available" toast to activate a new SW. `/sw.js`, `/og/*`, `/data/*` and `/icons/*` bypass the SPA rewrite (see `vercel.json`).
 
 ## Project layout
 
@@ -109,11 +144,21 @@ src/
   lib/          content loading, progress + practice stores, runners, SM-2 scheduler, stats, theme, hotkeys, AI client
   workers/      JS/TS, Python (Pyodide) and SQL (SQLite) sandbox workers
   components/   layout, sidebar, command palette, markdown renderer, charts, quiz/practice panels, AI panel, code editor
-  pages/        home, topic, reader, flashcards, mock, arena, skill map, bookmarks, tools, practice lab
+  pages/        home, topic, reader, flashcards, mock, arena, skill map, bookmarks, tools, practice lab,
+                paths, study plan, notes, visualize hub, design, sync panel
   styles/       global.css, prose.css, tools.css, ai.css, arena.css, practice.css
   tools/        22 client-side developer utilities
-scripts/build-content.mjs      content/<topic>/practice/<slug>.md challenges
+  visualizers/  lazy SVG visualizers (sorting, graph, event loop, btree, hash table) + shared player
+scripts/build-content.mjs      compiles content/ + paths + design index into public/data/
+scripts/validate-content.mjs   content quality gate (schema, links, placeholders, fences, slugs)
 scripts/validate-practice.mts  runs every reference solution against its tests (build gate)
 scripts/vendor-runtimes.mjs    vendors Pyodide + sql.js to public/vendor/
-content/        48 topics + prep map + roadmap tracks
+scripts/prerender.mjs          SEO route shells + sitemap/robots + SW stamp (post-build)
+scripts/og.mjs + og-worker.mjs per-page OG images via resvg worker threads (post-build)
+scripts/seo-lib.mjs            shared route/title/description helpers for prerender + OG
+scripts/icons.mjs              PWA icons from public/icons/icon.svg (post-build)
+scripts/fonts.mjs              shared font buffers for OG rendering
+public/sw.js                   hand-rolled service worker (network-first navigations, versioned caches)
+public/offline.html            offline fallback page
+content/        48 topics + prep map + roadmap tracks + 5 learning paths + 6 design prompts
 ```

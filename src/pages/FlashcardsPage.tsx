@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useCards, useCatalog } from '../lib/content';
+import { customAsCards, useCustomCards } from '../lib/customCards';
 import { progress, useProgress } from '../lib/progress';
 import { buildQueue } from '../lib/stats';
 import { dayKey, intervalLabel, isMastered, previewIntervals, type Grade } from '../lib/srs';
@@ -134,6 +135,8 @@ export function FlashcardsPage() {
   const { data: cards, loading } = useCards();
   const { data: catalog } = useCatalog();
   const state = useProgress();
+  const customs = useCustomCards();
+  const bank = useMemo(() => [...customAsCards(customs.cards), ...(cards ?? [])], [customs, cards]);
   const [params, setParams] = useSearchParams();
   const [session, setSession] = useState<Card[] | null>(null);
   const [finished, setFinished] = useState<number | null>(null);
@@ -153,7 +156,7 @@ export function FlashcardsPage() {
     }
   }, [params, setParams]);
 
-  const queue = useMemo(() => (cards ? buildQueue(cards, state, today) : null), [cards, state, today]);
+  const queue = useMemo(() => (cards ? buildQueue(bank, state, today) : null), [cards, bank, state, today]);
   const counts = useMemo(() => {
     const vals = Object.values(state.cards);
     return { learned: vals.filter((c) => c.reps > 0 || c.lapses > 0).length, mastered: vals.filter(isMastered).length };
@@ -193,8 +196,9 @@ export function FlashcardsPage() {
         <p className="eyebrow">Spaced repetition</p>
         <h1>Flashcards</h1>
         <p className="lead">
-          {cards.length.toLocaleString()} cards generated from every guide, interview answer, prep-map concept and MCQ. Reviews follow the SM-2 algorithm: cards you know drift
-          out to weeks or months, and cards you miss come back tomorrow.
+          {bank.length.toLocaleString()} cards ({cards.length.toLocaleString()} generated from every guide, interview answer, prep-map concept and MCQ
+          {customs.cards.length ? `, plus ${customs.cards.length} of your own` : ''}). Reviews follow the SM-2 algorithm: cards you know drift out to weeks or months, and cards you miss
+          come back tomorrow.
         </p>
       </header>
 

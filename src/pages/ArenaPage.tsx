@@ -2,6 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCards, useCatalog } from '../lib/content';
+import { customAsCards, customCards, useCustomCards } from '../lib/customCards';
 import { PageFallback } from '../components/Layout';
 import { IconBolt, IconTimer } from '../components/Icons';
 import type { Card } from '../lib/types';
@@ -45,6 +46,11 @@ type Phase = 'setup' | 'run' | 'over';
 export function ArenaPage() {
   const { data: cards, loading } = useCards();
   const { data: catalog } = useCatalog();
+  const customs = useCustomCards();
+  const bank = useMemo(
+    () => [...(customs.includeMcqInSessions ? customAsCards(customs.cards.filter((c) => c.kind === 'mcq')) : []), ...(cards ?? [])],
+    [customs, cards],
+  );
   const [phase, setPhase] = useState<Phase>('setup');
   const [topics, setTopics] = useState<string[]>([]);
   const [count, setCount] = useState(10);
@@ -66,10 +72,7 @@ export function ArenaPage() {
     document.title = 'Quiz Arena · Forgeline';
   }, []);
 
-  const pool = useMemo(() => {
-    if (!cards) return [];
-    return cards.filter((c) => c.opts && c.opts.length >= 2 && (!topics.length || topics.includes(c.t)));
-  }, [cards, topics]);
+  const pool = useMemo(() => bank.filter((c) => c.opts && c.opts.length >= 2 && (!topics.length || topics.includes(c.t))), [bank, topics]);
 
   const start = () => {
     const chosen = shuffle(pool).slice(0, Math.min(count, pool.length)).map((card) => {
@@ -291,6 +294,12 @@ export function ArenaPage() {
             ))}
           </div>
         </div>
+        {customs.cards.some((c) => c.kind === 'mcq') ? (
+          <label className="switch">
+            <input type="checkbox" checked={customs.includeMcqInSessions} onChange={(e) => customCards.setIncludeMcq(e.target.checked)} />
+            <span>Include my AI multiple-choice ({customs.cards.filter((c) => c.kind === 'mcq').length})</span>
+          </label>
+        ) : null}
         <div className="row">
           <button type="button" className="btn btn-primary btn-lg" disabled={!pool.length} onClick={start} data-testid="arena-start">
             <IconBolt /> Start ({Math.min(count, pool.length)} questions)

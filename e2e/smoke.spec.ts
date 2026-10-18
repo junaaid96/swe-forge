@@ -242,6 +242,94 @@ test('badges and the share card render on the skill map', async ({ page }) => {
   expect(await (await download).path(), 'png downloaded').toBeTruthy();
 });
 
+test('text selection creates a highlight that survives reload', async ({ page }) => {
+  const catalog = (await page.request.get('/data/catalog.json').then((r) => r.json())) as {
+    topics: Array<{ pages: Array<{ key: string; url: string }> }>;
+  };
+  const target = catalog.topics.flatMap((t) => t.pages).find((p) => p.url.includes('/notes/'));
+  await page.goto(target!.url);
+  const para = page.locator('.prose p').first();
+  await para.click({ clickCount: 3 });
+  await expect(page.getByTestId('sel-toolbar')).toBeVisible();
+  await page.getByTestId('hl-color-green').click();
+  await expect(page.locator('mark[data-note-id]').first()).toBeVisible();
+  await page.reload();
+  await expect(page.locator('mark[data-note-id]').first(), 'highlight re-anchored after reload').toBeVisible();
+  const notes = await stored<{ notes: Array<{ quote: string; orphaned: boolean }> }>(page, 'forgeline:notes:v1');
+  expect(notes?.notes.length).toBe(1);
+  expect(notes?.notes[0].orphaned).toBe(false);
+  await page.goto('/notes');
+  await expect(page.getByTestId('note-item')).toHaveCount(1);
+  await expect(page.getByTestId('note-item').first()).toContainText(notes!.notes[0].quote);
+});
+
+test('AI card generation previews and accepts mocked cards', async ({ page }) => {
+  await page.route('**/api.groq.com/**', async (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        choices: [
+          {
+            message: {
+              content: JSON.stringify({
+                cards: [
+                  { type: 'recall', question: 'What is the temporal dead zone in one sentence?', answer: 'The period where a let/const binding exists but cannot be accessed.' },
+                  { type: 'mcq', question: 'Which method copies an array?', answer: 'slice', options: ['slice', 'splice', 'split'], correctIndex: 0 },
+                ],
+              }),
+            },
+          },
+        ],
+        usage: { prompt_tokens: 100, completion_tokens: 80 },
+      }),
+    }),
+  );
+  const catalog = (await page.request.get('/data/catalog.json').then((r) => r.json())) as {
+    topics: Array<{ slug: string; pages: Array<{ key: string; url: string }> }>;
+  };
+  const topic = catalog.topics.find((t) => t.slug === 'javascript')!;
+  await page.goto(topic.pages[0].url);
+  await page.evaluate(() => localStorage.setItem('forgeline:groq:key', 'gsk_test'));
+  await page.getByTestId('gen-open').click();
+  await page.getByTestId('gen-start').click();
+  await expect(page.getByTestId('gen-draft')).toHaveCount(2);
+  await page.getByTestId('gen-accept').click();
+  await expect(page.getByTestId('gen-cards')).toContainText('2 cards added');
+  const customs = await stored<{ cards: Array<{ q: string; ai: boolean }> }>(page, 'forgeline:custom-cards:v1');
+  expect(customs?.cards.length).toBe(2);
+  expect(customs?.cards.every((c) => c.ai)).toBe(true);
+  await page.goto('/flashcards');
+  await expect(page.getByRole('heading', { name: 'Flashcards' })).toBeVisible();
+  await expect(page.locator('.page-head')).toContainText('plus 2 of your own');
+});
+
+for (const { w, h, name } of [
+  { w: 1440, h: 900, name: 'desktop' },
+  { w: 390, h: 844, name: 'mobile' },
+]) {
+  test(`practice filters do not overflow (${name})`, async ({ page }) => {
+    await page.setViewportSize({ width: w, height: h });
+    await page.goto('/practice');
+    await expect(page.locator('.practice-filters')).toBeVisible();
+    const overflow = await page.evaluate(() => {
+      const bar = document.querySelector('.practice-filters')!;
+      const bb = bar.getBoundingClientRect();
+      const bad: string[] = [];
+      for (const el of bar.querySelectorAll('.field')) {
+        const r = el.getBoundingClientRect();
+        if (r.right > bb.right + 1 || r.left < bb.left - 1) bad.push('field box outside bar');
+      }
+      for (const el of bar.querySelectorAll('input, select')) {
+        const r = el.getBoundingClientRect();
+        if (r.right > bb.right + 1) bad.push(`${el.getAttribute('aria-label')}: control spills past bar`);
+      }
+      return bad;
+    });
+    expect(overflow).toEqual([]);
+  });
+}
+
 test('the Python practice runner executes in the browser', async ({ page }) => {
   test.setTimeout(120_000);
   // Seed the reference solution first so the single run proves execution.

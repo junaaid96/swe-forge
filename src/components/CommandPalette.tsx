@@ -98,6 +98,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
       { id: 'a-roadmaps', url: '/roadmaps', title: 'Browse roadmaps', sub: '24 role-based learning tracks', kind: 'action' },
       { id: 'a-paths', url: '/paths', title: 'Browse learning paths', sub: 'Curated step-by-step sequences', kind: 'action' },
       { id: 'a-plan', url: '/plan', title: 'Open study plan', sub: 'Day-by-day schedule', kind: 'action' },
+      { id: 'a-notes', url: '/notes', title: 'Open notes & highlights', sub: 'Search, filter, export', kind: 'action' },
       { id: 'a-skills', url: '/skills', title: 'Open skill map', sub: 'Progress & what to study next', kind: 'action' },
       { id: 'a-prep', url: '/prep-map', title: 'Topic-wise prep map', sub: 'Guide', kind: 'action' },
       { id: 'a-tools', url: '/tools', title: 'Browse developer tools', sub: `${TOOLS.length} client-side utilities`, kind: 'action' },

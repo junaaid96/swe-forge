@@ -786,7 +786,7 @@ writeJson(path.join(OUT, 'cards.json'), uniqueCards);
     const reg = fs.readFileSync(path.join(ROOT, 'src', 'tools', 'registry.ts'), 'utf8');
     toolSlugs = [...reg.matchAll(/slug:\s*'([^']+)'/g)].map((m) => m[1]);
   } catch { /* tools not present */ }
-  const urls = new Set(['/', '/prep-map', '/roadmaps', '/paths', '/plan', '/flashcards', '/mock', '/arena', '/ai', '/skills', '/bookmarks', '/tools', '/practice']);
+  const urls = new Set(['/', '/prep-map', '/roadmaps', '/paths', '/plan', '/notes', '/flashcards', '/mock', '/arena', '/ai', '/skills', '/bookmarks', '/tools', '/practice']);
   for (const t of topics) {
     urls.add(`/topics/${t.slug}`);
     for (const p of t.pages) urls.add(p.url);

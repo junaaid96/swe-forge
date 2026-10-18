@@ -557,6 +557,37 @@ a.page-row:hover, .page-row:hover { background: var(--bg-soft); }
   .daily-card .row, .share-card .row, .plan-schedule .banner { display: none !important; }
 }
 
+/* ---- Highlights / notes / card generation -------------------------------- */
+mark.hl { border-radius: 3px; padding: 0 1px; cursor: pointer; }
+mark.hl-yellow { background: #fef08a; color: #422006; }
+mark.hl-green { background: #bbf7d0; color: #052e16; }
+mark.hl-blue { background: #bfdbfe; color: #172554; }
+mark.hl-pink { background: #fbcfe8; color: #500724; }
+.sel-pop { position: fixed; z-index: 60; }
+.sel-toolbar { display: flex; align-items: center; gap: 6px; padding: 6px 8px; background: var(--bg-elev); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 8px 24px rgb(0 0 0 / 0.18); }
+.sel-pop [role='dialog'] { width: min(320px, calc(100vw - 16px)); padding: 12px; background: var(--bg-elev); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 12px 32px rgb(0 0 0 / 0.22); }
+.hl-colors { display: flex; gap: 8px; margin-bottom: 8px; }
+.hl-dot { width: 22px; height: 22px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; padding: 0; }
+.hl-dot.hl-yellow { background: #facc15; }
+.hl-dot.hl-green { background: #4ade80; }
+.hl-dot.hl-blue { background: #60a5fa; }
+.hl-dot.hl-pink { background: #f472b6; }
+.hl-dot.on { border-color: var(--text); }
+.hl-quote { margin: 0 0 8px; padding: 6px 10px; border-left: 3px solid var(--accent); background: var(--bg-soft); border-radius: 0 8px 8px 0; font-size: 0.88rem; max-height: 120px; overflow: auto; }
+.sel-pop textarea { width: 100%; resize: vertical; }
+.notes-list { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.note-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.note-head .hl-dot { cursor: default; }
+.note-item blockquote { margin: 10px 0; }
+.gen-dialog { width: min(640px, calc(100vw - 32px)); max-height: min(85vh, 900px); overflow: auto; }
+.gen-preview ol { list-style: none; margin: 12px 0; padding: 0; display: flex; flex-direction: column; gap: 12px; counter-reset: gen; }
+.gen-opt { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+.gen-opt input[type='text'] { flex: 1; }
+@media print {
+  .sel-pop, .gen-dialog { display: none !important; }
+  mark.hl { border: 1px solid #999; }
+}
+
 /* ---- Roadmaps ---------------------------------------------------------- */
 .credit-roadmap { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); text-decoration: none; }
 .credit-roadmap strong { color: var(--text); font-weight: 600; }

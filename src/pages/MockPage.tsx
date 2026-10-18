@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useCards, useCatalog } from '../lib/content';
+import { customAsCards, customCards, useCustomCards } from '../lib/customCards';
 import { progress, useProgress, type MockAnswer, type MockResult } from '../lib/progress';
 import { SOURCE_LABEL, type Card, type CardSource, type Catalog } from '../lib/types';
 import { PageFallback } from '../components/Layout';
@@ -153,6 +154,11 @@ export function MockPage() {
   const { data: cards, loading } = useCards();
   const { data: catalog } = useCatalog();
   const state = useProgress();
+  const customs = useCustomCards();
+  const bank = useMemo(
+    () => [...(customs.includeMcqInSessions ? customAsCards(customs.cards.filter((c) => c.kind === 'mcq')) : []), ...(cards ?? [])],
+    [customs, cards],
+  );
   const [params] = useSearchParams();
   const [phase, setPhase] = useState<Phase>('setup');
   const [topics, setTopics] = useState<string[]>(() => params.get('topics')?.split(',').filter(Boolean) ?? []);
@@ -178,7 +184,7 @@ export function MockPage() {
     document.title = 'Mock interview · Forgeline';
   }, []);
 
-  const poolSize = useMemo(() => (cards ? cards.filter((c) => (!topics.length || topics.includes(c.t)) && types.includes(c.src)).length : 0), [cards, topics, types]);
+  const poolSize = useMemo(() => bank.filter((c) => (!topics.length || topics.includes(c.t)) && types.includes(c.src)).length, [bank, topics, types]);
 
   const finish = (final: MockAnswer[]) => {
     // The timeout watcher and the answer buttons can fire in the same tick — record once.
@@ -212,7 +218,7 @@ export function MockPage() {
   if (loading || !cards || !catalog) return <PageFallback />;
 
   const start = () => {
-    const qs = pickQuestions(cards, topics, types, count);
+    const qs = pickQuestions(bank, topics, types, count);
     if (!qs.length) return;
     setQuestions(qs);
     setI(0);
@@ -421,6 +427,12 @@ export function MockPage() {
             })}
           </div>
         </div>
+        {customs.cards.some((c) => c.kind === 'mcq') ? (
+          <label className="switch">
+            <input type="checkbox" checked={customs.includeMcqInSessions} onChange={(e) => customCards.setIncludeMcq(e.target.checked)} />
+            <span>Include my AI multiple-choice ({customs.cards.filter((c) => c.kind === 'mcq').length})</span>
+          </label>
+        ) : null}
         <div className="field-row">
           <div className="field">
             <span className="field-label">Questions</span>

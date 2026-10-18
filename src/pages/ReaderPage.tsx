@@ -3,7 +3,9 @@ import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Markdown } from '../components/Markdown';
 import { Toc } from '../components/Toc';
 import { AIPanel } from '../components/AIPanel';
-import { IconArrowLeft, IconArrowRight, IconBookmark, IconCheck, IconSpark } from '../components/Icons';
+import { SelectionToolbar } from '../components/SelectionToolbar';
+import { GenerateCards } from '../components/GenerateCards';
+import { IconArrowLeft, IconArrowRight, IconBookmark, IconCards, IconCheck, IconSpark } from '../components/Icons';
 import { formatMinutes, readingOrder, urls, useCatalog, useResource } from '../lib/content';
 import { progress, useProgress } from '../lib/progress';
 import { useHotkeys } from '../lib/hotkeys';
@@ -84,6 +86,7 @@ export function ReaderPage({ prepMap = false }: { prepMap?: boolean }) {
   const location = useLocation();
   const navigate = useNavigate();
   const articleRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const pct = useReadingProgress(articleRef, page);
   const [practice, setPractice] = useState(() => {
     try {
@@ -93,6 +96,7 @@ export function ReaderPage({ prepMap = false }: { prepMap?: boolean }) {
     }
   });
   const [aiOpen, setAiOpen] = useState(false);
+  const [genOpen, setGenOpen] = useState(false);
 
   const topic = catalog?.topics.find((t) => t.slug === slug);
   const key = prepMap ? 'prep-map' : `${slug}/${kind}/${id}`;
@@ -178,6 +182,12 @@ export function ReaderPage({ prepMap = false }: { prepMap?: boolean }) {
             <button type="button" className="btn btn-accent" onClick={() => setAiOpen(true)} title="Ask AI about this page (needs a Groq key)">
               <IconSpark /> Ask AI
             </button>
+            <button type="button" className="btn" onClick={() => setGenOpen(true)} title="Generate flashcards from this page (needs a Groq key)" data-testid="gen-open">
+              <IconCards /> Generate cards
+            </button>
+            <Link className="btn" to="/notes">
+              <IconBookmark /> Notes
+            </Link>
             {isQA ? (
               <label className="switch">
                 <input
@@ -203,15 +213,25 @@ export function ReaderPage({ prepMap = false }: { prepMap?: boolean }) {
           <Toc headings={tocHeadings} title="Contents" />
         </details>
 
-        {isQA ? (
-          <div className="qa-list">
-            {page.items!.map((it, i) => (
-              <QAItem key={it.id} item={it} practice={practice} index={i} />
-            ))}
-          </div>
-        ) : (
-          <Markdown>{body}</Markdown>
-        )}
+        <div ref={contentRef}>
+          {isQA ? (
+            <div className="qa-list">
+              {page.items!.map((it, i) => (
+                <QAItem key={it.id} item={it} practice={practice} index={i} />
+              ))}
+            </div>
+          ) : (
+            <Markdown>{body}</Markdown>
+          )}
+        </div>
+        <SelectionToolbar
+          containerRef={contentRef}
+          pageKey={key}
+          pageUrl={page.url}
+          pageTitle={page.title}
+          topic={slug}
+          suspendOrphan={Boolean(isQA && practice)}
+        />
 
         <footer className="reader-foot">
           {!read ? (
@@ -255,6 +275,14 @@ export function ReaderPage({ prepMap = false }: { prepMap?: boolean }) {
           title: page.title,
           body: isQA ? page.items!.map((it, ix) => `Q${ix + 1}: ${it.question}\nA: ${it.answer}`).join('\n\n') : page.markdown,
         }}
+      />
+      <GenerateCards
+        open={genOpen}
+        onClose={() => setGenOpen(false)}
+        pageTitle={page.title}
+        topic={slug}
+        sourceUrl={page.url}
+        body={isQA ? page.items!.map((it, ix) => `Q${ix + 1}: ${it.question}\nA: ${it.answer}`).join('\n\n') : page.markdown}
       />
     </div>
   );

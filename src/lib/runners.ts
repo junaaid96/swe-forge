@@ -1,6 +1,7 @@
 /** One interface for every Practice Lab runner: `Runner.run(code, testSpec, opts)`. */
 import type { PracticeTestSpec } from './types';
 import type { JsRunResponse } from '../workers/jsRunner';
+import type { PyRunResponse } from '../workers/pyRunner';
 
 export interface RunOpts {
   /** Kill the run after this long (default 5000). Enforced by terminating the worker. */
@@ -41,76 +42,111 @@ function failure(error: string, extra?: Partial<RunResults>): RunResults {
 }
 
 // ---------------------------------------------------------------------------
-// JS/TS runner: a lazily created module Worker, terminated + respawned on timeout.
+// Worker-backed runners: a lazily created Worker per runner, terminated +
+// respawned on timeout. Worker chunks load only when first constructed.
 
-let worker: Worker | null = null;
-let seq = 0;
-const pending = new Map<number, (m: JsRunResponse) => void>();
+type WorkerResponse = JsRunResponse | PyRunResponse;
 
-function killWorker() {
-  try {
-    worker?.terminate();
-  } catch {
-    /* already gone */
-  }
-  worker = null;
-  pending.clear();
+interface WorkerRunnerDef {
+  id: string;
+  makeWorker: () => Worker;
+  defaultTimeoutMs: number;
+  startError: string;
+  toRequest: (id: number, code: string, spec: PracticeTestSpec, opts: RunOpts, outputLimit: number) => unknown;
 }
 
-function getWorker(): Worker {
-  if (!worker) {
-    worker = new Worker(new URL('../workers/jsRunner.ts', import.meta.url), { type: 'module', name: 'forgeline-js-runner' });
-    worker.onmessage = (e: MessageEvent<JsRunResponse>) => {
-      const cb = pending.get(e.data.id);
-      if (cb) {
-        pending.delete(e.data.id);
-        cb(e.data);
-      }
-    };
-    worker.onerror = () => killWorker();
-  }
-  return worker;
-}
+function createWorkerRunner(def: WorkerRunnerDef): Runner {
+  let worker: Worker | null = null;
+  let seq = 0;
+  const pending = new Map<number, (m: WorkerResponse) => void>();
 
-export const jsRunner: Runner = {
-  id: 'js',
-  run(code: string, spec: PracticeTestSpec, opts: RunOpts = {}): Promise<RunResults> {
-    if (spec.kind !== 'fn') return Promise.resolve(failure('The JS runner needs function-style ("fn") tests.'));
-    const timeoutMs = opts.timeoutMs ?? 5000;
-    const outputLimit = opts.outputLimit ?? 20000;
-    return new Promise((resolve) => {
-      const id = ++seq;
-      let done = false;
-      const timer = window.setTimeout(() => {
-        if (done) return;
-        done = true;
-        pending.delete(id);
-        killWorker(); // terminate; the next run respawns lazily
-        resolve(failure(`Timed out after ${timeoutMs}ms — likely an infinite loop.`, { runtimeMs: timeoutMs, timedOut: true }));
-      }, timeoutMs);
-      pending.set(id, (m) => {
-        if (done) return;
-        done = true;
-        window.clearTimeout(timer);
-        resolve({ ...m, timedOut: false });
+  const killWorker = () => {
+    try {
+      worker?.terminate();
+    } catch {
+      /* already gone */
+    }
+    worker = null;
+    pending.clear();
+  };
+
+  const getWorker = () => {
+    if (!worker) {
+      worker = def.makeWorker();
+      worker.onmessage = (e: MessageEvent<WorkerResponse>) => {
+        const cb = pending.get(e.data.id);
+        if (cb) {
+          pending.delete(e.data.id);
+          cb(e.data);
+        }
+      };
+      worker.onerror = () => killWorker();
+    }
+    return worker;
+  };
+
+  return {
+    id: def.id,
+    run(code: string, spec: PracticeTestSpec, opts: RunOpts = {}): Promise<RunResults> {
+      if (spec.kind !== 'fn') return Promise.resolve(failure(`The ${def.id} runner needs function-style ("fn") tests.`));
+      const timeoutMs = opts.timeoutMs ?? def.defaultTimeoutMs;
+      const outputLimit = opts.outputLimit ?? 20000;
+      return new Promise((resolve) => {
+        const id = ++seq;
+        let done = false;
+        const timer = window.setTimeout(() => {
+          if (done) return;
+          done = true;
+          pending.delete(id);
+          killWorker(); // terminate; the next run respawns lazily
+          resolve(failure(`Timed out after ${timeoutMs}ms — likely an infinite loop.`, { runtimeMs: timeoutMs, timedOut: true }));
+        }, timeoutMs);
+        pending.set(id, (m) => {
+          if (done) return;
+          done = true;
+          window.clearTimeout(timer);
+          resolve({ ...m, timedOut: false });
+        });
+        try {
+          getWorker().postMessage(def.toRequest(id, code, spec, opts, outputLimit));
+        } catch (e) {
+          if (done) return;
+          done = true;
+          window.clearTimeout(timer);
+          pending.delete(id);
+          resolve(failure(e instanceof Error ? e.message : def.startError));
+        }
       });
-      try {
-        getWorker().postMessage({ id, code, language: opts.language ?? 'javascript', spec, outputLimit });
-      } catch (e) {
-        if (done) return;
-        done = true;
-        window.clearTimeout(timer);
-        pending.delete(id);
-        resolve(failure(e instanceof Error ? e.message : 'Could not start the JS runner.'));
-      }
-    });
-  },
-};
+    },
+  };
+}
+
+export const jsRunner: Runner = createWorkerRunner({
+  id: 'js',
+  makeWorker: () => new Worker(new URL('../workers/jsRunner.ts', import.meta.url), { type: 'module', name: 'forgeline-js-runner' }),
+  defaultTimeoutMs: 5000,
+  startError: 'Could not start the JS runner.',
+  toRequest: (id, code, spec, opts, outputLimit) => ({ id, code, language: opts.language ?? 'javascript', spec, outputLimit }),
+});
+
+export const pythonRunner: Runner = createWorkerRunner({
+  id: 'python',
+  // Classic worker: the runtime loads via importScripts from /vendor, so the
+  // chunk stays tiny and Pyodide never touches the bundler.
+  makeWorker: () => new Worker(new URL('../workers/pyRunner.ts', import.meta.url), { type: 'classic', name: 'forgeline-py-runner' }),
+  // First run includes the one-time runtime load (~1-3s); later runs are fast.
+  defaultTimeoutMs: 15000,
+  startError: 'Could not start the Python runner.',
+  toRequest: (id, code, spec, _opts, outputLimit) => ({ id, code, spec, outputLimit }),
+});
 
 // ---------------------------------------------------------------------------
-// Registry. Python/SQL runners land in later steps; unknown runners resolve null.
+// Registry. SQL lands in the next step; unknown runners resolve null.
 
-const registry = new Map<string, Runner>([['js', jsRunner]]);
+const registry = new Map<string, Runner>([
+  ['js', jsRunner],
+  ['python', pythonRunner],
+]);
 
 export function registerRunner(runner: Runner) {
   registry.set(runner.id, runner);

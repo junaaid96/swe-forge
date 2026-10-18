@@ -69,3 +69,6 @@ test-results/
 
 # Generated content (npm run content)
 public/data/
+
+# Vendored browser runtimes (npm run vendor)
+public/vendor/

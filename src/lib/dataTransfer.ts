@@ -1,16 +1,31 @@
-/** Combined progress backup: reading/SRS state plus Practice Lab state. */
+/** Combined progress backup: reading/SRS state plus feature stores. */
 import { practice, type PracticeState } from './practiceStore';
 import { progress, type ProgressState } from './progress';
+import { daily, type DailyState } from './daily';
+import { studyPlan, type StudyPlanState } from './studyPlan';
 
 interface Envelope {
   app: 'forgeline';
   version: 2;
   progress: ProgressState;
   practice: PracticeState;
+  daily?: DailyState;
+  plan?: StudyPlanState;
 }
 
 export function exportAll(): string {
-  return JSON.stringify({ app: 'forgeline', version: 2, progress: JSON.parse(progress.exportJson()), practice: practice.exportData() } as Envelope, null, 2);
+  return JSON.stringify(
+    {
+      app: 'forgeline',
+      version: 2,
+      progress: JSON.parse(progress.exportJson()),
+      practice: practice.exportData(),
+      daily: daily.exportData(),
+      plan: studyPlan.exportData(),
+    } as Envelope,
+    null,
+    2,
+  );
 }
 
 /** Accepts the combined envelope and legacy progress-only files. */
@@ -21,6 +36,8 @@ export function importAll(json: string): void {
     if (env.practice?.version !== 1) throw new Error('Not a Forgeline practice file');
     progress.importJson(JSON.stringify(env.progress));
     practice.importData(env.practice);
+    if (env.daily) daily.importData(env.daily);
+    if (env.plan) studyPlan.importData(env.plan);
     return;
   }
   progress.importJson(json);
@@ -29,4 +46,6 @@ export function importAll(json: string): void {
 export function resetAll(): void {
   progress.reset();
   practice.reset();
+  daily.reset();
+  studyPlan.reset();
 }

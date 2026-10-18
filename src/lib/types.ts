@@ -48,6 +48,7 @@ export interface Catalog {
   groups: Group[];
   topics: Topic[];
   tracks?: Track[];
+  paths?: Path[];
   prepMap: { key: string; title: string; url: string; minutes: number } | null;
 }
 
@@ -247,6 +248,32 @@ export interface Track {
   order: number;
   source: string;
   stages: TrackStage[];
+  topics: string[];
+  minutes: number;
+}
+
+export type PathStepType = 'guide' | 'quiz' | 'flashcards' | 'interview' | 'practice';
+
+export interface PathStep {
+  type: PathStepType;
+  ref: string;
+  label: string;
+  url: string;
+  topic: string;
+  minutes: number;
+  /** page keys when the step is a single page (guide/interview) */
+  keys: string[];
+}
+
+export interface Path {
+  slug: string;
+  title: string;
+  emoji: string;
+  accent: string;
+  blurb: string;
+  estimatedHours: number;
+  order: number;
+  steps: PathStep[];
   topics: string[];
   minutes: number;
 }

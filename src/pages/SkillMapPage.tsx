@@ -5,7 +5,10 @@ import { useProgress } from '../lib/progress';
 import { usePractice } from '../lib/practiceStore';
 import { exportAll, importAll, resetAll } from '../lib/dataTransfer';
 import { allStats, dueCount, groupMastery, overall, suggestions, type TopicStats } from '../lib/stats';
+import { evaluateBadges } from '../lib/badges';
+import { pathProgress } from '../lib/paths';
 import { RadarChart } from '../components/RadarChart';
+import { ShareCard } from '../components/ShareCard';
 import { Bar, Ring } from '../components/Ring';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { PageFallback } from '../components/Layout';
@@ -32,6 +35,17 @@ export function SkillMapPage() {
   const totals = useMemo(() => (catalog ? overall(catalog, state, practiceState) : null), [catalog, state, practiceState]);
   const radar = useMemo(() => (catalog && stats ? groupMastery(catalog, stats) : []), [catalog, stats]);
   const next = useMemo(() => (catalog ? suggestions(catalog, state, 4, practiceState) : []), [catalog, state, practiceState]);
+  const pathRows = useMemo(
+    () => (catalog?.paths ?? []).map((p) => ({ path: p, prog: pathProgress(p, state, practiceState) })),
+    [catalog, state, practiceState],
+  );
+  const badges = useMemo(
+    () =>
+      catalog && stats
+        ? evaluateBadges({ catalog, state, practice: practiceState, stats, pathsDone: pathRows.filter((r) => r.prog.pct === 100).length })
+        : [],
+    [catalog, stats, state, practiceState, pathRows],
+  );
   if (!catalog || !stats || !totals) return <PageFallback />;
 
   const mockCount = state.mocks.length;
@@ -183,6 +197,70 @@ export function SkillMapPage() {
         </ol>
       </section>
 
+      {pathRows.length ? (
+        <section aria-labelledby="paths-h" className="roadmap" data-testid="skills-paths">
+          <div className="row-between">
+            <h2 id="paths-h">Learning paths</h2>
+            <Link to="/paths" className="small">
+              All paths →
+            </Link>
+          </div>
+          <div className="topic-grid">
+            {pathRows.map(({ path, prog }) => (
+              <Link key={path.slug} to={`/paths/${path.slug}`} className="topic-card card" style={{ ['--topic' as string]: path.accent }}>
+                <div className="topic-card-head">
+                  <span className="topic-emoji" aria-hidden>
+                    {path.emoji}
+                  </span>
+                  <div>
+                    <strong>{path.title}</strong>
+                    <small>
+                      {prog.done}/{prog.total} steps
+                    </small>
+                  </div>
+                  {prog.pct ? <span className="topic-pct">{prog.pct}%</span> : null}
+                </div>
+                <Bar value={prog.pct} color={path.accent} label={`${path.title}: ${prog.pct}% complete`} />
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      <section className="card pad" aria-labelledby="badges-h" data-testid="badges">
+        <h2 id="badges-h">
+          Badges · {badges.filter((b) => b.earned).length}/{badges.length}
+        </h2>
+        <ul className="badge-grid">
+          {badges.map(({ rule, earned }) => (
+            <li key={rule.id} className={`badge-item ${earned ? 'earned' : 'locked'}`} aria-label={`${rule.title}: ${earned ? 'earned' : 'locked'}`}>
+              <span className="badge-emoji" aria-hidden>
+                {rule.emoji}
+              </span>
+              <strong>{rule.title}</strong>
+              <small>{rule.blurb}</small>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="card pad" aria-labelledby="share-h">
+        <h2 id="share-h">Share card</h2>
+        <p className="muted small">Render your progress as a PNG and download it. Nothing is uploaded anywhere.</p>
+        <ShareCard
+          stats={{
+            name: '',
+            streak: state.streak,
+            pagesRead: totals.read,
+            pagesTotal: totals.total,
+            mastered: totals.mastered,
+            mockAvg,
+            pathsDone: pathRows.filter((r) => r.prog.pct === 100).length,
+            radar: radar.map((r) => ({ label: r.label.replace(/ & .*/, '').replace(/,.*/, ''), value: r.value })),
+          }}
+        />
+      </section>
+
       <section className="card pad data-tools" aria-labelledby="data-h">
         <h2 id="data-h">Your data</h2>
         <p className="muted small">Progress lives only in this browser (localStorage). Export it to back up or move to another device.</p>
@@ -221,7 +299,7 @@ export function SkillMapPage() {
       <ConfirmDialog
         open={confirm}
         title="Reset all progress?"
-        message="This clears pages read, bookmarks, flashcard schedules, quiz scores, mock history and Practice Lab progress in this browser. Export first if you might want it back."
+        message="This clears pages read, bookmarks, flashcard schedules, quiz scores, mock history, Practice Lab progress, study plan and daily challenge state in this browser. Export first if you might want it back."
         confirmLabel="Reset everything"
         cancelLabel="Keep my progress"
         danger

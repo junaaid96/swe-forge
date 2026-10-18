@@ -701,6 +701,63 @@ if (fs.existsSync(TRACKS)) {
   tracks.sort((a, b) => a.order - b.order);
 }
 
+// ---------------------------------------------------------------------------
+// Learning paths: content/paths/<slug>.json order existing material into
+// steps ({type: guide|quiz|flashcards|interview|practice, ref}). Refs resolve
+// to page keys (guide/interview), topic slugs (quiz/flashcards) or challenge
+// ids (practice). Unknown refs fail the build, like tracks.
+const PATHS = path.join(CONTENT, 'paths');
+const paths = [];
+if (fs.existsSync(PATHS)) {
+  const pageByKey = new Map();
+  for (const t of topics) for (const p of t.pages) pageByKey.set(p.key, { ...p, topic: t });
+  const topicBySlug = new Map(topics.map((t) => [t.slug, t]));
+  const challengeById = new Map(practiceAll.map((c) => [c.id, c]));
+  const errors = [];
+  for (const f of fs.readdirSync(PATHS).filter((x) => x.endsWith('.json')).sort(natural)) {
+    const def = readJson(path.join(PATHS, f));
+    const used = new Set();
+    const steps = (def.steps ?? []).map((st, i) => {
+      const where = `${f}#steps[${i}]`;
+      const fail = (msg) => {
+        errors.push(`${where}: ${msg}`);
+        return null;
+      };
+      if (st.type === 'guide' || st.type === 'interview') {
+        const p = pageByKey.get(st.ref);
+        if (!p) return fail(`unknown page "${st.ref}"`);
+        used.add(p.topic.slug);
+        return { type: st.type, ref: st.ref, label: st.label ?? p.title, url: p.url, topic: p.topic.slug, minutes: p.minutes, keys: [p.key] };
+      }
+      if (st.type === 'quiz' || st.type === 'flashcards') {
+        const t = topicBySlug.get(st.ref);
+        if (!t) return fail(`unknown topic "${st.ref}"`);
+        if (st.type === 'quiz' && !t.quizCount) return fail(`topic "${st.ref}" has no quiz`);
+        used.add(t.slug);
+        const url = st.type === 'quiz' ? `/topics/${t.slug}#quiz` : `/flashcards?topic=${t.slug}`;
+        const label = st.label ?? (st.type === 'quiz' ? `${t.title} quiz` : `${t.title} flashcards`);
+        return { type: st.type, ref: st.ref, label, url, topic: t.slug, minutes: st.type === 'quiz' ? 10 : 15, keys: [] };
+      }
+      if (st.type === 'practice') {
+        const c = challengeById.get(st.ref);
+        if (!c) return fail(`unknown challenge "${st.ref}"`);
+        used.add(c.topic);
+        return { type: st.type, ref: st.ref, label: st.label ?? c.title, url: c.url, topic: c.topic, minutes: c.estimatedMinutes ?? 10, keys: [] };
+      }
+      return fail(`unknown step type "${st.type}" (want guide|quiz|flashcards|interview|practice)`);
+    }).filter(Boolean);
+    if (!def.slug || !def.title) errors.push(`${f}: missing slug/title`);
+    if (!steps.length) errors.push(`${f}: no steps`);
+    const minutes = steps.reduce((a, s) => a + s.minutes, 0);
+    paths.push({ slug: def.slug, title: def.title, emoji: def.emoji ?? '🗺️', accent: def.accent ?? '#0D9488', blurb: def.blurb ?? '', estimatedHours: def.estimatedHours ?? Math.max(1, Math.round(minutes / 60)), order: def.order ?? 99, steps, minutes, topics: [...used] });
+  }
+  if (errors.length) {
+    console.error(`[content] path errors:\n  ${errors.join('\n  ')}`);
+    process.exit(1);
+  }
+  paths.sort((a, b) => a.order - b.order);
+}
+
 // De-duplicate cards by id (identical headings in one page).
 const seen = new Set();
 const uniqueCards = cards.filter((c) => (seen.has(c.id) ? false : (seen.add(c.id), true)));
@@ -715,6 +772,7 @@ writeJson(path.join(OUT, 'catalog.json'), {
   groups: groups.map((g) => ({ id: g.id, label: g.label, hint: g.hint, topics: g.topics.filter((s) => topics.some((t) => t.slug === s)) })),
   topics,
   tracks,
+  paths,
   prepMap,
 });
 writeJson(path.join(OUT, 'search.json'), search);
@@ -728,7 +786,7 @@ writeJson(path.join(OUT, 'cards.json'), uniqueCards);
     const reg = fs.readFileSync(path.join(ROOT, 'src', 'tools', 'registry.ts'), 'utf8');
     toolSlugs = [...reg.matchAll(/slug:\s*'([^']+)'/g)].map((m) => m[1]);
   } catch { /* tools not present */ }
-  const urls = new Set(['/', '/prep-map', '/roadmaps', '/flashcards', '/mock', '/arena', '/ai', '/skills', '/bookmarks', '/tools', '/practice']);
+  const urls = new Set(['/', '/prep-map', '/roadmaps', '/paths', '/plan', '/flashcards', '/mock', '/arena', '/ai', '/skills', '/bookmarks', '/tools', '/practice']);
   for (const t of topics) {
     urls.add(`/topics/${t.slug}`);
     for (const p of t.pages) urls.add(p.url);
@@ -736,6 +794,7 @@ writeJson(path.join(OUT, 'cards.json'), uniqueCards);
   for (const ch of practiceAll) urls.add(ch.url);
   for (const s of toolSlugs) urls.add(`/tools/${s}`);
   for (const tr of tracks) urls.add(`/roadmaps/${tr.slug}`);
+  for (const p of paths) urls.add(`/paths/${p.slug}`);
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...urls].map((u) => `  <url><loc>${SITE}${u}</loc></url>`).join('\n')}\n</urlset>\n`;
   fs.writeFileSync(path.join(ROOT, 'public', 'sitemap.xml'), xml);
 }

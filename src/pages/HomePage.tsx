@@ -4,6 +4,8 @@ import { formatMinutes, useCatalog } from '../lib/content';
 import { useProgress } from '../lib/progress';
 import { usePractice } from '../lib/practiceStore';
 import { allStats, dueCount, overall, suggestions, trackStats } from '../lib/stats';
+import { pathProgress } from '../lib/paths';
+import { DailyCard } from '../components/DailyCard';
 import { Bar, Ring } from '../components/Ring';
 import { IconArrowRight, IconBolt, IconCards, IconCode, IconFlame, IconMap, IconRadar, IconSpark, IconTimer } from '../components/Icons';
 import { PageFallback } from '../components/Layout';
@@ -102,6 +104,8 @@ export function HomePage() {
         </div>
       </section>
 
+      <DailyCard catalog={catalog} />
+
       <section className="feature-row" aria-label="Practice tools">
         <Link to="/flashcards" className="feature card">
           <IconCards />
@@ -177,6 +181,29 @@ export function HomePage() {
                   <span aria-hidden>{tr.emoji}</span>
                   <span>{tr.title}</span>
                   {ts.pct ? <small>{ts.pct}%</small> : null}
+                </Link>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
+
+      {catalog.paths?.length ? (
+        <section className="group" aria-labelledby="g-paths">
+          <div className="group-head">
+            <h2 id="g-paths">Follow a learning path</h2>
+            <Link to="/paths" className="small">
+              All {catalog.paths.length} paths →
+            </Link>
+          </div>
+          <div className="track-strip">
+            {catalog.paths.map((p) => {
+              const prog = pathProgress(p, state, practiceState);
+              return (
+                <Link key={p.slug} to={`/paths/${p.slug}`} className="track-chip" style={{ ['--topic' as string]: p.accent }}>
+                  <span aria-hidden>{p.emoji}</span>
+                  <span>{p.title}</span>
+                  {prog.pct ? <small>{prog.pct}%</small> : null}
                 </Link>
               );
             })}

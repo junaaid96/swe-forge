@@ -194,6 +194,54 @@ test('the JS practice runner fails the starter and passes the solution', async (
   expect(Number(m![2])).toBeGreaterThan(0);
 });
 
+test('learning paths show steps and a next step', async ({ page }) => {
+  await page.goto('/paths');
+  await expect(page.getByTestId('paths-hub')).toBeVisible();
+  await page.getByTestId('paths-hub').locator('.topic-card').first().click();
+  await expect(page.getByTestId('path-detail')).toBeVisible();
+  const next = page.getByTestId('next-step');
+  await expect(next).toBeVisible();
+  const href = await next.getAttribute('href');
+  expect(href, 'next step links somewhere').toBeTruthy();
+  await next.click();
+  await expect.poll(() => page.url(), { message: 'next step navigates' }).toContain(href!.split('#')[0]);
+});
+
+test('the daily challenge shows on home and persists', async ({ page }) => {
+  await page.goto('/');
+  const card = page.getByTestId('daily-card');
+  await expect(card).toBeVisible();
+  await expect(card.locator('a.btn, .chip-good').first()).toBeVisible();
+  const day = await stored<{ date: string; kind: string; topic: string }>(page, 'forgeline:daily:v1');
+  expect(day?.topic, 'daily topic picked').toBeTruthy();
+  const now = new Date();
+  const localToday = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  expect(day?.date, 'daily date is today').toBe(localToday);
+});
+
+test('a study plan generates days and exports .ics', async ({ page }) => {
+  await page.goto('/plan');
+  await page.getByTestId('plan-form').getByLabel('Days available').fill('3');
+  await page.getByTestId('plan-generate').click();
+  await expect(page.getByTestId('plan-schedule')).toBeVisible();
+  await expect(page.getByTestId('plan-day')).toHaveCount(3);
+  const download = page.waitForEvent('download');
+  await page.getByTestId('plan-export').click();
+  const path = await (await download).path();
+  expect(path, 'ics downloaded').toBeTruthy();
+});
+
+test('badges and the share card render on the skill map', async ({ page }) => {
+  await page.goto('/skills');
+  await expect(page.getByTestId('badges')).toBeVisible();
+  await expect(page.getByTestId('badges').locator('.badge-item')).toHaveCount(12);
+  await expect(page.getByTestId('skills-paths')).toBeVisible();
+  await page.getByTestId('share-name').fill('Playwright');
+  const download = page.waitForEvent('download');
+  await page.getByTestId('share-download').click();
+  expect(await (await download).path(), 'png downloaded').toBeTruthy();
+});
+
 test('the Python practice runner executes in the browser', async ({ page }) => {
   test.setTimeout(120_000);
   // Seed the reference solution first so the single run proves execution.

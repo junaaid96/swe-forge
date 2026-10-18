@@ -4,7 +4,7 @@ import { useCatalog } from '../lib/content';
 import { useProgress } from '../lib/progress';
 import { usePractice } from '../lib/practiceStore';
 import { allStats, dueCount, overall } from '../lib/stats';
-import { IconBookmark, IconBolt, IconCards, IconCheck, IconCode, IconHome, IconMap, IconRadar, IconRoute, IconSpark, IconTimer, IconFlame, IconWrench } from './Icons';
+import { IconBookmark, IconBolt, IconCards, IconCheck, IconCode, IconHome, IconMap, IconRadar, IconRoute, IconSpark, IconStar, IconTimer, IconFlame, IconWrench } from './Icons';
 import { Logo } from './Logo';
 import { TopicMark } from './TopicMark';
 import { Bar } from './Ring';
@@ -42,6 +42,8 @@ export function Sidebar({ onNavigate }: { onNavigate: () => void }) {
         {link('/', 'Home', <IconHome />, undefined, true)}
         {link('/prep-map', 'Prep map', <IconMap />)}
         {link('/roadmaps', 'Roadmaps', <IconRoute />)}
+        {link('/paths', 'Learning paths', <IconStar />)}
+        {link('/plan', 'Study plan', <IconCheck />)}
         {link('/bookmarks', 'Bookmarks', <IconBookmark />)}
         <p className="side-group-label">Practice</p>
         {link('/flashcards', 'Flashcards', <IconCards />, due)}

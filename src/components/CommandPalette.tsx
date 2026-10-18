@@ -96,6 +96,8 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
       { id: 'a-practice', url: '/practice', title: 'Browse Practice Lab', sub: 'Code challenges with in-browser tests', kind: 'action' },
       { id: 'a-ai', url: '/ai', title: 'Open AI Coach', sub: 'Groq setup, usage, assistant', kind: 'action' },
       { id: 'a-roadmaps', url: '/roadmaps', title: 'Browse roadmaps', sub: '24 role-based learning tracks', kind: 'action' },
+      { id: 'a-paths', url: '/paths', title: 'Browse learning paths', sub: 'Curated step-by-step sequences', kind: 'action' },
+      { id: 'a-plan', url: '/plan', title: 'Open study plan', sub: 'Day-by-day schedule', kind: 'action' },
       { id: 'a-skills', url: '/skills', title: 'Open skill map', sub: 'Progress & what to study next', kind: 'action' },
       { id: 'a-prep', url: '/prep-map', title: 'Topic-wise prep map', sub: 'Guide', kind: 'action' },
       { id: 'a-tools', url: '/tools', title: 'Browse developer tools', sub: `${TOOLS.length} client-side utilities`, kind: 'action' },
@@ -113,6 +115,9 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
     }
     for (const tr of catalog?.tracks ?? []) {
       if (matchAll(`${tr.title} roadmap ${tr.slug} ${tr.blurb}`.toLowerCase())) out.push({ id: `r-${tr.slug}`, url: `/roadmaps/${tr.slug}`, title: `${tr.emoji} ${tr.title} roadmap`, sub: `Roadmap · ${tr.stages.length} stages`, kind: 'topic' });
+    }
+    for (const p of catalog?.paths ?? []) {
+      if (matchAll(`${p.title} path ${p.slug} ${p.blurb}`.toLowerCase())) out.push({ id: `path-${p.slug}`, url: `/paths/${p.slug}`, title: `${p.emoji} ${p.title} path`, sub: `Learning path · ${p.steps.length} steps`, kind: 'topic' });
     }
     for (const t of catalog?.topics ?? []) {
       if (matchAll(`${t.title} ${t.tag} ${t.slug} ${t.blurb}`.toLowerCase())) out.push({ id: `t-${t.slug}`, url: `/topics/${t.slug}`, title: `${t.emoji} ${t.title}`, sub: `Topic · ${t.pages.length} pages`, kind: 'topic' });

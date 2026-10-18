@@ -3,6 +3,8 @@
   <url><loc>https://swe-forge.vercel.app/</loc></url>
   <url><loc>https://swe-forge.vercel.app/prep-map</loc></url>
   <url><loc>https://swe-forge.vercel.app/roadmaps</loc></url>
+  <url><loc>https://swe-forge.vercel.app/paths</loc></url>
+  <url><loc>https://swe-forge.vercel.app/plan</loc></url>
   <url><loc>https://swe-forge.vercel.app/flashcards</loc></url>
   <url><loc>https://swe-forge.vercel.app/mock</loc></url>
   <url><loc>https://swe-forge.vercel.app/arena</loc></url>
@@ -466,4 +468,9 @@
   <url><loc>https://swe-forge.vercel.app/roadmaps/game-developer</loc></url>
   <url><loc>https://swe-forge.vercel.app/roadmaps/server-side-game-developer</loc></url>
   <url><loc>https://swe-forge.vercel.app/roadmaps/seo</loc></url>
+  <url><loc>https://swe-forge.vercel.app/paths/interview-crash-course</loc></url>
+  <url><loc>https://swe-forge.vercel.app/paths/dsa-foundations</loc></url>
+  <url><loc>https://swe-forge.vercel.app/paths/frontend-engineer</loc></url>
+  <url><loc>https://swe-forge.vercel.app/paths/backend-engineer</loc></url>
+  <url><loc>https://swe-forge.vercel.app/paths/system-design-interview</loc></url>
 </urlset>

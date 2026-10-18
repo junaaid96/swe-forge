@@ -186,6 +186,73 @@ for (const slug of topicDirs) {
 }
 
 // ---------------------------------------------------------------------------
+// Learning paths: content/paths/<slug>.json (mirrors the compiler's rules)
+// ---------------------------------------------------------------------------
+
+const PATH_TYPES = new Set(['guide', 'quiz', 'flashcards', 'interview', 'practice']);
+const metaCache = new Map();
+const metaOf = (slug) => {
+  if (!metaCache.has(slug)) {
+    try {
+      metaCache.set(slug, JSON.parse(fs.readFileSync(path.join(CONTENT, slug, 'meta.json'), 'utf8')));
+    } catch {
+      metaCache.set(slug, null);
+    }
+  }
+  return metaCache.get(slug);
+};
+const PATHS_DIR = path.join(CONTENT, 'paths');
+if (fs.existsSync(PATHS_DIR)) {
+  for (const f of fs.readdirSync(PATHS_DIR).filter((x) => x.endsWith('.json')).sort()) {
+    const file = path.join(PATHS_DIR, f);
+    let def;
+    try {
+      def = JSON.parse(fs.readFileSync(file, 'utf8'));
+    } catch (e) {
+      err(file, 1, `invalid JSON: ${(e instanceof Error && e.message) || e}`);
+      continue;
+    }
+    if (typeof def.slug !== 'string' || !def.slug.trim()) err(file, 1, 'path: "slug" must be a non-empty string');
+    if (typeof def.title !== 'string' || !def.title.trim()) err(file, 1, 'path: "title" must be a non-empty string');
+    if (!Array.isArray(def.steps) || !def.steps.length) {
+      err(file, 1, 'path: "steps" must be a non-empty array');
+      continue;
+    }
+    def.steps.forEach((st, i) => {
+      const where = `steps[${i}]`;
+      if (!st || !PATH_TYPES.has(st.type)) {
+        err(file, 1, `path: ${where} has unknown type "${st?.type}" (want guide|quiz|flashcards|interview|practice)`);
+        return;
+      }
+      if (typeof st.ref !== 'string' || !st.ref.trim()) {
+        err(file, 1, `path: ${where} is missing a ref`);
+        return;
+      }
+      if (st.type === 'guide' || st.type === 'interview') {
+        const [topic, kind, id] = st.ref.split('/');
+        if (!topicDirs.includes(topic) || !['notes', 'deep', 'interview'].includes(kind) || !id) {
+          err(file, 1, `path: ${where} ref "${st.ref}" must look like "topic/notes|deep|interview/id"`);
+        } else if (!fs.existsSync(path.join(CONTENT, topic, kind, `${id}.md`))) {
+          err(file, 1, `path: ${where} ref "${st.ref}" points at a missing page`);
+        }
+      } else if (st.type === 'quiz' || st.type === 'flashcards') {
+        if (!topicDirs.includes(st.ref)) {
+          err(file, 1, `path: ${where} ref "${st.ref}" is not a real topic`);
+        } else if (st.type === 'quiz' && !(metaOf(st.ref)?.quiz?.length)) {
+          err(file, 1, `path: ${where} topic "${st.ref}" has no quiz`);
+        }
+      } else if (st.type === 'practice') {
+        const [topic, slug] = st.ref.split('/');
+        const meta = topicDirs.includes(topic) ? metaOf(topic) : null;
+        const legacy = meta?.problems?.some((p) => p.id === slug);
+        const fileChallenge = topic && slug && fs.existsSync(path.join(CONTENT, topic, 'practice', `${slug}.md`));
+        if (!legacy && !fileChallenge) err(file, 1, `path: ${where} ref "${st.ref}" is not a real challenge`);
+      }
+    });
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Markdown files
 // ---------------------------------------------------------------------------
 

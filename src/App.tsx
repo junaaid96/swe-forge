@@ -18,6 +18,9 @@ const ArenaPage = lazy(() => import('./pages/ArenaPage'));
 const AIPage = lazy(() => import('./pages/AIPage'));
 const PracticeCatalogPage = lazy(() => import('./pages/PracticeCatalogPage'));
 const PracticeWorkspacePage = lazy(() => import('./pages/PracticeWorkspacePage'));
+const PathsPage = lazy(() => import('./pages/PathsPage'));
+const PathDetailPage = lazy(() => import('./pages/PathDetailPage'));
+const StudyPlanPage = lazy(() => import('./pages/StudyPlanPage'));
 
 /** Old SWE Forge URLs keep working. */
 function Legacy({ to }: { to: (p: Record<string, string | undefined>) => string }) {
@@ -46,6 +49,9 @@ export default function App() {
           <Route path="ai" element={<AIPage />} />
           <Route path="practice" element={<PracticeCatalogPage />} />
           <Route path="practice/:topic/:slug" element={<PracticeWorkspacePage />} />
+          <Route path="paths" element={<PathsPage />} />
+          <Route path="paths/:slug" element={<PathDetailPage />} />
+          <Route path="plan" element={<StudyPlanPage />} />
           <Route path="scoreboard" element={<Navigate to="/skills" replace />} />
           <Route path="learn/:slug" element={<Legacy to={(p) => `/topics/${p.slug}`} />} />
           <Route path="interview/:slug" element={<Legacy to={(p) => `/topics/${p.slug}`} />} />

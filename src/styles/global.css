@@ -533,6 +533,30 @@ a.page-row:hover, .page-row:hover { background: var(--bg-soft); }
   main { padding: 0; }
 }
 
+/* ---- Learning paths / daily / plan / badges / share -------------------- */
+.daily-card { margin: 18px 0; }
+.daily-card h2 { margin: 2px 0 4px; font-size: 1.25rem; }
+.daily-card p { margin: 0 0 12px; }
+.plan-schedule { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+.plan-days { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 12px; }
+.plan-day h3 { margin: 0; font-size: 1rem; }
+.plan-items { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.plan-items li { display: flex; align-items: center; gap: 8px; font-size: 0.92rem; }
+.plan-items li label { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; cursor: pointer; }
+.plan-items li.done a { text-decoration: line-through; color: var(--muted); }
+.plan-items input[type='checkbox'] { width: 18px; height: 18px; flex: none; accent-color: var(--accent); }
+.badge-grid { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr)); gap: 10px; }
+.badge-item { display: flex; flex-direction: column; gap: 2px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; }
+.badge-item small { color: var(--muted); }
+.badge-item.locked { opacity: 0.55; }
+.badge-item.locked .badge-emoji { filter: grayscale(1); }
+.badge-emoji { font-size: 1.5rem; }
+.share-card { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+.share-canvas { width: 100%; max-width: 600px; height: auto; border-radius: 12px; border: 1px solid var(--line); }
+@media print {
+  .daily-card .row, .share-card .row, .plan-schedule .banner { display: none !important; }
+}
+
 /* ---- Roadmaps ---------------------------------------------------------- */
 .credit-roadmap { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); text-decoration: none; }
 .credit-roadmap strong { color: var(--text); font-weight: 600; }

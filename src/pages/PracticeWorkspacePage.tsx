@@ -283,6 +283,23 @@ export function PracticeWorkspacePage() {
                     <Markdown>{challenge.examples}</Markdown>
                   </>
                 ) : null}
+                {challenge.runner === 'sql' ? (
+                  <>
+                    <h2>Dataset</h2>
+                    <p className="muted small">Your query runs against this data. Hidden tests use extra datasets with the same schema.</p>
+                    <Markdown>{`\`\`\`sql\n${challenge.seedSql}\n\`\`\``}</Markdown>
+                    {vt?.kind === 'sql'
+                      ? vt.cases
+                          .filter((c) => c.seed)
+                          .map((c) => (
+                            <details key={c.name}>
+                              <summary>Dataset for “{c.name}”</summary>
+                              <Markdown>{`\`\`\`sql\n${c.seed}\n\`\`\``}</Markdown>
+                            </details>
+                          ))
+                      : null}
+                  </>
+                ) : null}
                 {vt?.cases.length ? (
                   <>
                     <h2>Visible tests</h2>

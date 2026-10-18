@@ -290,8 +290,14 @@
   <url><loc>https://swe-forge.vercel.app/practice/testing-quality/tq-qa-p1</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/git-collaboration/gi-p1</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/git-collaboration/gi-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/javascript/flatten-object</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/javascript/pick</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/javascript/js-p1</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/javascript/js-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/python/chunk</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/python/deep-get</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/python/flatten-list</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/python/word-counts</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/python/py-p1</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/python/py-p2</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/java/jv-p1</loc></url>
@@ -302,6 +308,7 @@
   <url><loc>https://swe-forge.vercel.app/practice/rust/rs-p2</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/rust/rs-p3</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/rust/rs-p4</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/frontend/cx</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/frontend/fe-p1</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/frontend/fe-p2</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/frontend/perf-p1</loc></url>
@@ -340,6 +347,15 @@
   <url><loc>https://swe-forge.vercel.app/practice/cs-fundamentals/net-p2</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/cs-fundamentals/os-p1</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/cs-fundamentals/os-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/dsa/anagram</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/dsa/group-anagrams</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/dsa/longest-substring</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/dsa/merge-intervals</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/dsa/search-insert</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/dsa/three-sum</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/dsa/trap-rain-water</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/dsa/two-sum</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/dsa/valid-parentheses</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/dsa/ds-p1</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/dsa/ds-p2</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/dsa/al-p1</loc></url>
@@ -348,6 +364,11 @@
   <url><loc>https://swe-forge.vercel.app/practice/dsa/ps-p2</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/system-design/sd-p1</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/system-design/sd-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/database/above-manager</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/database/loyal-customers</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/database/orders-per-customer</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/database/product-revenue</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/database/top-earners</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/database/db-p1</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/database/db-p2</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/devops-cloud/cd-p1</loc></url>
@@ -361,6 +382,9 @@
   <url><loc>https://swe-forge.vercel.app/practice/security/auth-p2</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/ai-ml/ai-p1</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/ai-ml/ai-p2</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/postgresql/missing-emails</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/postgresql/org-depth</loc></url>
+  <url><loc>https://swe-forge.vercel.app/practice/postgresql/top-2-per-dept</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/postgresql/pg-p1</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/postgresql/pg-p2</loc></url>
   <url><loc>https://swe-forge.vercel.app/practice/postgresql/pg-p3</loc></url>

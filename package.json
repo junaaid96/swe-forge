@@ -6,9 +6,10 @@
   "scripts": {
     "content": "node scripts/build-content.mjs",
     "vendor": "node scripts/vendor-runtimes.mjs",
+    "validate:practice": "tsx scripts/validate-practice.mts",
     "predev": "npm run content && npm run vendor",
     "dev": "vite",
-    "prebuild": "npm run content && npm run vendor",
+    "prebuild": "npm run content && npm run vendor && npm run validate:practice",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "oxlint"

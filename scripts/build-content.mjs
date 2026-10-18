@@ -249,6 +249,7 @@ function checkTestSpec(spec, runner, where, errors) {
   spec.cases.forEach((c, i) => {
     if (!c || typeof c.name !== 'string') errors.push(`${where}: case ${i} needs a "name"`);
     if (wantKind === 'sql' && c && !Array.isArray(c.expectedRows)) errors.push(`${where}: sql case "${c?.name ?? i}" needs "expectedRows"`);
+    if (wantKind === 'sql' && c && c.seed !== undefined && typeof c.seed !== 'string') errors.push(`${where}: sql case "${c?.name ?? i}" has a non-string "seed"`);
   });
 }
 
@@ -260,6 +261,7 @@ function parsePracticeFile(file, topicSlug, errors, warnings) {
 
   const title = typeof fm.title === 'string' ? fm.title.trim() : '';
   if (!title) fail('frontmatter needs a "title"');
+  if (fm.id !== undefined && String(fm.id) !== slug) fail(`frontmatter "id" (${fm.id}) must match the file name (${slug})`);
   const difficulty = fm.difficulty;
   if (!PRACTICE_DIFFICULTY.includes(difficulty)) fail(`frontmatter "difficulty" must be one of ${PRACTICE_DIFFICULTY.join('|')}`);
   const runner = fm.runner;

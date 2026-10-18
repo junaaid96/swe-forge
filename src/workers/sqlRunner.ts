@@ -126,23 +126,41 @@ function emptyActual(db: SqlDb, query: string): SqlResultSet {
   return { columns, values: [] };
 }
 
-/** Pure over a minimal db handle so Node can drive it against real sql.js. */
-export function runSqlCases(db: SqlDb, query: string, spec: SqlTestSpec): { ok: boolean; cases: CaseResult[] } {
+function runOneCase(db: SqlDb, query: string, test: SqlTestCase): CaseResult {
   let sets: SqlResultSet[];
   try {
     sets = db.exec(query);
   } catch (e) {
-    const msg = errorMessage(e);
-    return { ok: false, cases: spec.cases.map((c) => ({ name: c.name, pass: false, error: msg })) };
+    return { name: test.name, pass: false, error: errorMessage(e) };
   }
   const actual = sets.length ? sets[sets.length - 1] : emptyResult(db, query);
-  if (!actual) {
-    return {
-      ok: false,
-      cases: spec.cases.map((c) => ({ name: c.name, pass: false, error: 'The query returned no result set. End with a SELECT.' })),
-    };
-  }
-  const cases = spec.cases.map((c) => compareCase(actual, c));
+  if (!actual) return { name: test.name, pass: false, error: 'The query returned no result set. End with a SELECT.' };
+  return compareCase(actual, test);
+}
+
+/**
+ * Pure over a minimal db factory so Node can drive it against real sql.js.
+ * Every case gets a fresh database seeded with its own `seed` (or the
+ * challenge `seedSql`), so hardcoded answers fail the hidden datasets.
+ */
+export function runSqlCases(createDb: () => SqlDb, seedSql: string, query: string, spec: SqlTestSpec): { ok: boolean; cases: CaseResult[] } {
+  const cases = spec.cases.map((test) => {
+    const db = createDb();
+    try {
+      try {
+        db.exec(test.seed ?? seedSql);
+      } catch (e) {
+        return { name: test.name, pass: false, error: `Seed data failed to load: ${errorMessage(e)}` };
+      }
+      return runOneCase(db, query, test);
+    } finally {
+      try {
+        db.close();
+      } catch {
+        /* already gone */
+      }
+    }
+  });
   return { ok: cases.every((c) => c.pass), cases };
 }
 
@@ -165,22 +183,7 @@ async function run(req: SqlRunRequest) {
 
   try {
     const sql = await ensureInit();
-    const db = new sql.Database();
-    try {
-      try {
-        db.exec(seedSql);
-      } catch (e) {
-        done({ ok: false, cases: [], error: `Seed data failed to load: ${errorMessage(e)}` });
-        return;
-      }
-      done(runSqlCases(db, code, spec));
-    } finally {
-      try {
-        db.close();
-      } catch {
-        /* already gone */
-      }
-    }
+    done(runSqlCases(() => new sql.Database(), seedSql, code, spec));
   } catch (err) {
     done({ ok: false, cases: [], error: errorMessage(err) });
   }

@@ -123,6 +123,8 @@ export interface SqlTestCase {
   expectedColumns?: string[];
   expectedRows: unknown[][];
   orderInsensitive?: boolean;
+  /** CREATE TABLE + INSERT statements replacing the challenge seed for this case. */
+  seed?: string;
 }
 
 export interface SqlTestSpec {

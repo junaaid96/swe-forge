@@ -169,7 +169,7 @@ export function ReaderPage({ prepMap = false }: { prepMap?: boolean }) {
             {read ? <span className="chip chip-good">Read</span> : null}
           </div>
           <div className="row">
-            <button type="button" className={`btn ${read ? 'btn-good' : ''}`} onClick={() => progress.setRead(key, !read)} aria-pressed={read} title="Shortcut: M">
+            <button type="button" className={`btn ${read ? 'btn-good' : ''}`} onClick={() => progress.setRead(key, !read)} aria-pressed={read} title="Shortcut: M" data-testid="mark-read">
               <IconCheck /> {read ? 'Read' : 'Mark as read'}
             </button>
             <button type="button" className={`btn ${bookmarked ? 'btn-accent' : ''}`} onClick={() => progress.toggleBookmark(key)} aria-pressed={bookmarked} title="Shortcut: B">

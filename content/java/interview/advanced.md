@@ -13,7 +13,7 @@ Topics: arrays, enums, varargs, assertions, garbage collection, initialization b
 
 ## Q109. What are the default values of array elements in Java?
 
-**Answer**
+**Answer:**
 
 When you declare an array without explicitly initializing each element, Java fills every slot with the **default value** for that component type:
 
@@ -27,7 +27,7 @@ When you declare an array without explicitly initializing each element, Java fil
 
 This applies to both local arrays (if you use `new`) and instance/static arrays. A **declared but uninitialized** local array variable (e.g., `int[] arr;`) has no array object yet — you cannot read `arr[0]` until `arr` is assigned.
 
-**Example**
+**Example:**
 
 ```java
 public class ArrayDefaults {
@@ -52,13 +52,13 @@ public class ArrayDefaults {
 
 ## Q110. What is the enhanced for-loop (for-each) and when should you use it?
 
-**Answer**
+**Answer:**
 
 The **enhanced for-loop** (`for (Type item : collection)`) iterates over any **Iterable** or array without manual index management. It is syntactic sugar over an iterator internally.
 
 Use it when you need to **read every element** in order and do not need the index, to remove elements mid-iteration, or to modify the collection structure. For indexed access, parallel updates, or reverse traversal, use a classic `for` loop or `ListIterator`.
 
-**Example**
+**Example:**
 
 ```java
 List<String> cities = List.of("Dhaka", "Chittagong", "Sylhet");
@@ -84,13 +84,13 @@ for (int score : scores) {
 
 ## Q111. How do you print an array's contents in Java?
 
-**Answer**
+**Answer:**
 
 Calling `array.toString()` on a primitive or object array prints the **object identity** (e.g., `[I@1b6d3586`), not the elements. Use **`Arrays.toString()`** for one-dimensional arrays and **`Arrays.deepToString()`** for nested (multi-dimensional) arrays.
 
 For collections, prefer the collection's own `toString()` (e.g., `list.toString()`).
 
-**Example**
+**Example:**
 
 ```java
 int[] nums = {1, 2, 3};
@@ -111,7 +111,7 @@ System.out.println(Arrays.deepToString(matrix));  // [[1, 2], [3, 4]]
 
 ## Q112. How do you compare arrays — `Arrays.equals` vs `==`?
 
-**Answer**
+**Answer:**
 
 | Operator / Method | What it compares |
 |-------------------|------------------|
@@ -121,7 +121,7 @@ System.out.println(Arrays.deepToString(matrix));  // [[1, 2], [3, 4]]
 
 Two arrays with identical content but created separately are **not** `==` equal.
 
-**Example**
+**Example:**
 
 ```java
 int[] a = {1, 2, 3};
@@ -143,7 +143,7 @@ System.out.println(Arrays.equals(s1, s2)); // true
 
 ## Q113. What are enums in Java and why use them instead of constants?
 
-**Answer**
+**Answer:**
 
 An **enum** defines a fixed set of named constants that are **type-safe singleton instances** of the enum class. Enums can have fields, constructors, methods, and even implement interfaces.
 
@@ -153,7 +153,7 @@ Advantages over `public static final int` constants:
 - Safe switch targets
 - Singleton semantics per constant
 
-**Example**
+**Example:**
 
 ```java
 public enum OrderStatus {
@@ -184,13 +184,13 @@ System.out.println(status.getDescription()); // Payment confirmed
 
 ## Q114. How does `switch` work with enums?
 
-**Answer**
+**Answer:**
 
 Since Java 5, `switch` accepts **enum constants**. The compiler verifies that cases are valid enum values. With Java 12+ **switch expressions**, you can assign a result directly.
 
 Best practice: cover all enum constants or include a `default` only when handling unknown/external input (e.g., after `valueOf`).
 
-**Example**
+**Example:**
 
 ```java
 public enum Day { MON, TUE, WED, THU, FRI, SAT, SUN }
@@ -216,7 +216,7 @@ switch (day) {
 
 ## Q115. What are varargs (variable-length arguments)?
 
-**Answer**
+**Answer:**
 
 Varargs let a method accept **zero or more** arguments of a specified type using `Type... name`. Inside the method, the parameter is treated as an **array**.
 
@@ -227,7 +227,7 @@ Rules:
 
 Overloading with varargs and arrays can cause ambiguity — prefer clear method names.
 
-**Example**
+**Example:**
 
 ```java
 public static int sum(int... numbers) {
@@ -256,7 +256,7 @@ public static void log(String level, String... messages) {
 
 ## Q116. When and how should you use assertions in Java?
 
-**Answer**
+**Answer:**
 
 **Assertions** (`assert condition : message`) verify **invariants** during development — conditions that should never fail if the code is correct. They are **not** a substitute for validating public API input (use exceptions for that).
 
@@ -269,7 +269,7 @@ public static void log(String level, String... messages) {
 
 Assertions must not have side effects you rely on in production, because they may be stripped out when disabled.
 
-**Example**
+**Example:**
 
 ```java
 public class Account {
@@ -291,7 +291,7 @@ public class Account {
 
 ## Q117. How does Garbage Collection work in Java? Show a basic example.
 
-**Answer**
+**Answer:**
 
 Java GC **automatically reclaims memory** occupied by objects that are no longer **reachable** from GC roots (stack frames, static fields, JNI references, etc.). Programmers do not call `delete`; they null out references or let variables go out of scope.
 
@@ -300,7 +300,7 @@ Typical generational model (HotSpot):
 - **Old generation**: long-lived objects; major/full GC
 - Collectors: G1 (default Java 9+), ZGC, Shenandoah (low-latency options)
 
-**Example**
+**Example:**
 
 ```java
 public class GcExample {
@@ -324,7 +324,7 @@ public class GcExample {
 
 ## Q118. When does Garbage Collection run?
 
-**Answer**
+**Answer:**
 
 There is **no deterministic schedule**. The JVM decides based on:
 
@@ -335,7 +335,7 @@ There is **no deterministic schedule**. The JVM decides based on:
 
 You cannot force a full GC reliably from application code. Tuning flags (`-Xms`, `-Xmx`, collector choice) affect frequency and pause times.
 
-**Example**
+**Example:**
 
 ```java
 List<byte[]> hoard = new ArrayList<>();
@@ -355,7 +355,7 @@ try {
 
 ## Q119. What are GC best practices for production Java applications?
 
-**Answer**
+**Answer:**
 
 | Practice | Why |
 |----------|-----|
@@ -390,7 +390,7 @@ public void process() {
 
 ## Q120. What are initialization blocks in Java?
 
-**Answer**
+**Answer:**
 
 Initialization blocks run **every time an object is created** (instance blocks) or **once when the class is loaded** (static blocks). They fill the gap between field declarations and constructors for shared setup logic.
 
@@ -399,7 +399,7 @@ Initialization blocks run **every time an object is created** (instance blocks) 
 2. Instance fields and **instance initializer blocks** (in source order)
 3. Constructor body
 
-**Example**
+**Example:**
 
 ```java
 public class Demo {
@@ -423,13 +423,13 @@ public class Demo {
 
 ## Q121. What is a static initializer block?
 
-**Answer**
+**Answer:**
 
 A **static initializer** (`static { ... }`) runs **once** when the class is first loaded by the JVM (before any instance of that class is created). Use it for expensive one-time setup: loading config, registering drivers, initializing static maps.
 
 If a static field has a complex initializer, the static block is an alternative when statements are needed (loops, try/catch).
 
-**Example**
+**Example:**
 
 ```java
 public class ConfigLoader {
@@ -454,13 +454,13 @@ public class ConfigLoader {
 
 ## Q122. What is an instance initializer block?
 
-**Answer**
+**Answer:**
 
 An **instance initializer** (`{ ... }` at class body level) runs **before every constructor** in the same class, in declaration order among other instance fields/blocks. Useful when multiple constructors share setup code.
 
 Anonymous classes can only use instance initializers (no named constructors).
 
-**Example**
+**Example:**
 
 ```java
 public class Employee {
@@ -487,7 +487,7 @@ public class Employee {
 
 ## Q123. How do you tokenize strings — `StringTokenizer` vs `String.split`?
 
-**Answer**
+**Answer:**
 
 | Approach | Notes |
 |----------|-------|
@@ -498,7 +498,7 @@ public class Employee {
 
 `split` treats metacharacters as regex (escape with `\\.` for literal dot). Use `split(",", -1)` to preserve trailing empty tokens.
 
-**Example**
+**Example:**
 
 ```java
 String csv = "apple,banana,,orange";
@@ -526,7 +526,7 @@ while (st.hasMoreTokens()) {
 
 ## Q124. How does Java serialization work (`Serializable`, `ObjectOutputStream` / `ObjectInputStream`)?
 
-**Answer**
+**Answer:**
 
 **Serialization** converts an object graph into a byte stream for storage or transmission. **Deserialization** rebuilds objects from bytes.
 
@@ -536,7 +536,7 @@ Requirements:
 - All non-transient fields must be serializable or null
 - Declare **`serialVersionUID`** for version compatibility
 
-**Example**
+**Example:**
 
 ```java
 public class User implements Serializable {
@@ -566,7 +566,7 @@ try (ObjectInputStream in = new ObjectInputStream(
 
 ## Q125. What is partial serialization using `transient`?
 
-**Answer**
+**Answer:**
 
 Fields marked **`transient`** are **skipped** during default serialization. After deserialization they receive default values (`null`, `0`, `false`) unless you restore them in custom `readObject`, a constructor, or initializer logic.
 
@@ -575,7 +575,7 @@ Use `transient` for:
 - Sensitive data (passwords, tokens) — but prefer not serializing secrets at all
 - Non-serializable resources (sockets, threads)
 
-**Example**
+**Example:**
 
 ```java
 public class Session implements Serializable {
@@ -597,7 +597,7 @@ public class Session implements Serializable {
 
 ## Q126. How does serialization behave with class hierarchies (inheritance)?
 
-**Answer**
+**Answer:**
 
 When a subclass implements `Serializable`:
 - **Serializable parent**: subclass fields + inherited serializable fields are written
@@ -607,7 +607,7 @@ If the parent has no accessible no-arg constructor, deserialization throws `Inva
 
 Polymorphic fields serialize with **runtime type metadata**; upon read, the stored class is instantiated (respecting inheritance chain rules).
 
-**Example**
+**Example:**
 
 ```java
 public class Animal implements Serializable {
@@ -630,7 +630,7 @@ public class Dog extends Animal implements Serializable {
 
 ## Q127. Are constructors called during deserialization?
 
-**Answer**
+**Answer:**
 
 **No regular constructor** is invoked for the object being deserialized. The JVM:
 1. Allocates memory without running constructors
@@ -641,7 +641,7 @@ public class Dog extends Animal implements Serializable {
 
 Use **`readObject`** to validate invariants after bytes are applied.
 
-**Example**
+**Example:**
 
 ```java
 public class Product implements Serializable {
@@ -667,13 +667,13 @@ public class Product implements Serializable {
 
 ## Q128. How are static variables handled during serialization?
 
-**Answer**
+**Answer:**
 
 **Static fields are NOT serialized.** They belong to the **class**, not the instance. When you deserialize, static fields retain whatever value the class currently holds in memory (from class initialization), not the value at serialization time.
 
 Instance serialization writes **instance state only**.
 
-**Example**
+**Example:**
 
 ```java
 public class Counter implements Serializable {
@@ -698,13 +698,13 @@ Counter b = new Counter(); // globalCount=2
 
 ## Q129. What is `serialVersionUID` and why define it explicitly?
 
-**Answer**
+**Answer:**
 
 `serialVersionUID` is a **version fingerprint** for a serializable class. During deserialization, the JVM compares the stream's UID with the class's UID. Mismatch → **`InvalidClassException`**.
 
 If you omit it, the compiler generates one from class structure — **any field change** can break compatibility unexpectedly. Explicit UID documents intentional compatibility.
 
-**Example**
+**Example:**
 
 ```java
 public class Order implements Serializable {
@@ -723,7 +723,7 @@ public class Order implements Serializable {
 
 ## Q130. How do custom `writeObject` and `readObject` work?
 
-**Answer**
+**Answer:**
 
 These **private** methods hook default serialization:
 
@@ -732,7 +732,7 @@ These **private** methods hook default serialization:
 
 Also useful: `writeReplace` / `readResolve` for singletons and defensive copies.
 
-**Example**
+**Example:**
 
 ```java
 public class SecureNote implements Serializable {
@@ -760,7 +760,7 @@ public class SecureNote implements Serializable {
 
 ## Q131. What is the `Externalizable` interface?
 
-**Answer**
+**Answer:**
 
 `Externalizable` extends `Serializable` but replaces default mechanism with explicit **`writeExternal`** / **`readExternal`** methods. You must write **every field** yourself (including superclass data unless you delegate).
 
@@ -768,7 +768,7 @@ Benefits: smaller payloads, full control, no reflection for default serializatio
 
 Unlike default serialization, **`Externalizable` objects call the public no-arg constructor** on read.
 
-**Example**
+**Example:**
 
 ```java
 public class Point implements Externalizable {
@@ -798,7 +798,7 @@ public class Point implements Externalizable {
 
 ## Q132. What are common `Arrays` utility methods beyond `toString` and `equals`?
 
-**Answer**
+**Answer:**
 
 `java.util.Arrays` provides static helpers used daily in interviews and production:
 
@@ -812,7 +812,7 @@ public class Point implements Externalizable {
 | `parallelSort` | Parallel sort for large arrays |
 | `compare` / `compareUnsigned` | Lexicographic compare (Java 9+) |
 
-**Example**
+**Example:**
 
 ```java
 int[] nums = {5, 1, 4, 2};
@@ -832,13 +832,13 @@ Arrays.sort(words, Comparator.comparing(String::length));
 
 ## Q133. How do multi-dimensional arrays work in Java?
 
-**Answer**
+**Answer:**
 
 Java multi-dimensional arrays are **arrays of arrays** (jagged arrays allowed — rows can differ in length). Memory is not a strict matrix unless you enforce equal row lengths.
 
 Default values apply per component. Use **`Arrays.deepToString`**, **`Arrays.deepEquals`**, and nested loops or enhanced for for traversal.
 
-**Example**
+**Example:**
 
 ```java
 // Rectangular 3x3
@@ -873,7 +873,7 @@ Topics: concurrent collections, CAS, locks, capacity tuning, fail-fast behavior,
 
 ## Q167. Synchronized collections vs concurrent collections — what is the difference?
 
-**Answer**
+**Answer:**
 
 | Aspect | Synchronized wrappers (`Collections.synchronizedXxx`, `Vector`, `Hashtable`) | Concurrent collections (`ConcurrentHashMap`, `CopyOnWriteArrayList`, etc.) |
 |--------|-------------------------------------------------------------------------------|-------------------------------------------------------------------------------|
@@ -883,7 +883,7 @@ Topics: concurrent collections, CAS, locks, capacity tuning, fail-fast behavior,
 | Compound ops | Not atomic (`if (!map.containsKey(k)) map.put(k,v)` races) | Atomic methods (`putIfAbsent`, `compute`) |
 | Null keys/values | Legacy maps allow null (Hashtable: no null) | Generally **no nulls** in concurrent maps |
 
-**Example**
+**Example:**
 
 ```java
 // Legacy — entire map locked per operation
@@ -903,7 +903,7 @@ concurrent.merge("visits", 1, Integer::sum);
 
 ## Q168. What are the main concurrent collection classes?
 
-**Answer**
+**Answer:**
 
 | Class | Replaces / role |
 |-------|-----------------|
@@ -918,7 +918,7 @@ concurrent.merge("visits", 1, Integer::sum);
 | **`PriorityBlockingQueue`** | Blocking priority queue |
 | **`SynchronousQueue`** | Zero-capacity handoff |
 
-**Example**
+**Example:**
 
 ```java
 ConcurrentHashMap<String, AtomicInteger> counters = new ConcurrentHashMap<>();
@@ -939,7 +939,7 @@ listeners.forEach(System.out::println); // snapshot iteration, no CME
 
 ## Q169. What is the Copy-On-Write (COW) approach?
 
-**Answer**
+**Answer:**
 
 **Copy-on-write** collections (e.g., `CopyOnWriteArrayList`) mutate by:
 1. Taking a **lock**
@@ -955,7 +955,7 @@ listeners.forEach(System.out::println); // snapshot iteration, no CME
 | No `ConcurrentModificationException` on iterate | Stale reads possible briefly |
 | Simple listener/event registries | Not for write-heavy workloads |
 
-**Example**
+**Example:**
 
 ```java
 CopyOnWriteArrayList<EventHandler> handlers = new CopyOnWriteArrayList<>();
@@ -979,7 +979,7 @@ void register(EventHandler h) {
 
 ## Q170. What is CAS (Compare-And-Swap) and how does it relate to concurrent collections?
 
-**Answer**
+**Answer:**
 
 **CAS** is a CPU-level atomic instruction: "If memory location equals expected, update to new value; else fail." Forms the basis of **lock-free** algorithms.
 
@@ -991,7 +991,7 @@ Java exposes CAS via:
 
 CAS loops retry on contention — no mutex, but can spin under heavy write conflicts.
 
-**Example**
+**Example:**
 
 ```java
 AtomicInteger counter = new AtomicInteger(0);
@@ -1011,7 +1011,7 @@ System.out.println(ref.get()); // updated if CAS succeeded
 
 ## Q171. `Lock` vs `synchronized` — when do you use each with collections?
 
-**Answer**
+**Answer:**
 
 | Feature | `synchronized` | `java.util.concurrent.locks.Lock` |
 |---------|----------------|-------------------------------------|
@@ -1026,7 +1026,7 @@ Use **`Lock`** when you need try-lock, fairness, or separate read/write locks (`
 
 Collections themselves hide locking — you choose concurrent vs manual sync.
 
-**Example**
+**Example:**
 
 ```java
 Lock lock = new ReentrantLock();
@@ -1050,7 +1050,7 @@ safe.offer("item");
 
 ## Q172. What is initial capacity for hash-based collections?
 
-**Answer**
+**Answer:**
 
 `HashMap`, `HashSet`, `HashTable`, etc. use a **bucket array** that grows as load increases. **Initial capacity** is the starting bucket count (default **16** for `HashMap`).
 
@@ -1062,7 +1062,7 @@ initialCapacity = expectedElements / loadFactor + 1
 ```
 (e.g., 100 elements / 0.75 ≈ 134 → use constructor `new HashMap<>(134)`)
 
-**Example**
+**Example:**
 
 ```java
 int expectedUsers = 10_000;
@@ -1077,7 +1077,7 @@ Set<String> tags = new HashSet<>(512); // reduce resize cycles
 
 ## Q173. What is load factor in hash-based collections?
 
-**Answer**
+**Answer:**
 
 **Load factor** (default **0.75** in `HashMap`) = threshold ratio of occupied buckets before **resize** (double capacity + rehash).
 
@@ -1088,7 +1088,7 @@ Set<String> tags = new HashSet<>(512); // reduce resize cycles
 
 Resize happens when `size > capacity * loadFactor`.
 
-**Example**
+**Example:**
 
 ```java
 // capacity 16, load 0.75 → resize after 12th entry
@@ -1104,7 +1104,7 @@ Map<Integer, String> tight = new HashMap<>(16, 0.5f);
 
 ## Q174. What causes `UnsupportedOperationException` in collections?
 
-**Answer**
+**Answer:**
 
 Thrown when an **optional operation** is not supported by a collection **view** or **wrapper**:
 
@@ -1116,7 +1116,7 @@ Thrown when an **optional operation** is not supported by a collection **view** 
 | SubList / keySet views | Some operations on backed views |
 | `Iterator.remove()` | When not implemented |
 
-**Example**
+**Example:**
 
 ```java
 List<String> mutable = new ArrayList<>(List.of("a", "b"));
@@ -1135,7 +1135,7 @@ System.out.println(frozen); // [a, b, c] — view reflects changes
 
 ## Q175. Fail-fast vs fail-safe iterators — explain with examples.
 
-**Answer**
+**Answer:**
 
 | Type | Behavior | Examples |
 |------|----------|----------|
@@ -1144,7 +1144,7 @@ System.out.println(frozen); // [a, b, c] — view reflects changes
 
 Fail-fast uses a **modCount** check — best-effort, not guaranteed in all concurrent scenarios.
 
-**Example**
+**Example:**
 
 ```java
 // Fail-fast
@@ -1168,7 +1168,7 @@ for (String s : cow) {
 
 ## Q176. What atomic operations do concurrent collections provide?
 
-**Answer**
+**Answer:**
 
 Beyond single-element `put`/`get`, concurrent collections offer **compound atomicity**:
 
@@ -1206,13 +1206,13 @@ hits.computeIfAbsent("page-home", k -> new AtomicInteger()).incrementAndGet();
 
 ## Q177. Demonstrate `BlockingQueue` with a producer-consumer example.
 
-**Answer**
+**Answer:**
 
 A classic pattern: **producers** `put` tasks into a bounded queue; **consumers** `take` and process. Backpressure occurs naturally when the queue is full — producers block instead of overwhelming memory.
 
 Use **`ExecutorService`** in production; raw threads illustrate the mechanism.
 
-**Example**
+**Example:**
 
 ```java
 public class ProducerConsumerDemo {
@@ -1283,11 +1283,11 @@ pool.shutdown();
 
 ## Q178
 
-**Answer**
+**Answer:**
 
 Generics let you parameterize types with type variables (`<T>`, `<E>`, `<K,V>`). The compiler checks type compatibility at compile time, so you get **compile-time type safety** and **eliminate explicit casts**. At runtime, due to **type erasure**, generic type information is removed and replaced with bounds or `Object`.
 
-**Example**
+**Example:**
 
 ```java
 // Without generics — unsafe, requires casting
@@ -1303,7 +1303,7 @@ names.add("Alice");
 String name = names.get(0);            // no cast needed
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Generics shift type errors from runtime (`ClassCastException`) to compile time. Remember: **generics are a compile-time feature**; JVM sees raw types after erasure.
 
@@ -1311,7 +1311,7 @@ Generics shift type errors from runtime (`ClassCastException`) to compile time. 
 
 ## Q179
 
-**Answer**
+**Answer:**
 
 Generics are needed because collections and APIs often work with **multiple types** but should remain **type-safe**. Without generics you either:
 1. Use `Object` everywhere → constant casting, runtime failures.
@@ -1319,7 +1319,7 @@ Generics are needed because collections and APIs often work with **multiple type
 
 Generics give one implementation that works for any reference type while preserving type safety.
 
-**Example**
+**Example:**
 
 ```java
 public class Box<T> {
@@ -1346,7 +1346,7 @@ public class GenericsDemo {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Generics solve the "one container, many types" problem without sacrificing safety or duplicating code.
 
@@ -1354,7 +1354,7 @@ Generics solve the "one container, many types" problem without sacrificing safet
 
 ## Q180
 
-**Answer**
+**Answer:**
 
 Declare a generic class by placing a **type parameter** in angle brackets after the class name. You can use multiple type parameters and bound them.
 
@@ -1367,7 +1367,7 @@ Common conventions:
 | `V` | Value |
 | `N` | Number |
 
-**Example**
+**Example:**
 
 ```java
 // Single type parameter
@@ -1405,7 +1405,7 @@ String top = stack.pop(); // "B"
 Pair<String, Integer> age = new Pair<>("Alice", 30);
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Type parameters go on the **class declaration** and propagate to fields, methods, and constructors. Instantiate with concrete types: `new Stack<String>()`.
 
@@ -1413,7 +1413,7 @@ Type parameters go on the **class declaration** and propagate to fields, methods
 
 ## Q181
 
-**Answer**
+**Answer:**
 
 Java generics have important **restrictions** due to type erasure:
 
@@ -1425,7 +1425,7 @@ Java generics have important **restrictions** due to type erasure:
 6. **Cannot catch generic exceptions** — `catch (T e)` is illegal.
 7. **Cannot overload methods differing only by type erasure** — `void foo(List<String>)` and `void foo(List<Integer>)` clash after erasure.
 
-**Example**
+**Example:**
 
 ```java
 public class GenericRestrictions<T extends Number> {
@@ -1450,7 +1450,7 @@ public class GenericRestrictions<T extends Number> {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Restrictions exist because **the JVM doesn't know `T` at runtime**. Interviewers love asking *why* — always tie answers back to **type erasure**.
 
@@ -1458,14 +1458,14 @@ Restrictions exist because **the JVM doesn't know `T` at runtime**. Interviewers
 
 ## Q182
 
-**Answer**
+**Answer:**
 
 An **upper bound** (`<T extends SomeType>`) restricts the type parameter to `SomeType` or its subtypes. This lets you call methods defined on `SomeType` inside the generic code.
 
 - `extends` here means "is-a or subtype of" (classes **and** interfaces).
 - Multiple bounds: `<T extends A & B & C>` (class first, then interfaces).
 
-**Example**
+**Example:**
 
 ```java
 public class NumberUtils {
@@ -1490,7 +1490,7 @@ Integer bigger = NumberUtils.max(10, 20);           // 20
 Double sum = NumberUtils.sum(List.of(1, 2.5, 3));  // 6.5
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 `extends` = **upper bound** = "at most this type." Use when you need to **read** from a structure or call methods on the bound type.
 
@@ -1498,7 +1498,7 @@ Double sum = NumberUtils.sum(List.of(1, 2.5, 3));  // 6.5
 
 ## Q183
 
-**Answer**
+**Answer:**
 
 A **lower bound** (`<? super SomeType>`) restricts a wildcard to `SomeType` or its **supertypes**. Combined with upper bounds, this gives the **PECS** rule:
 
@@ -1507,7 +1507,7 @@ A **lower bound** (`<? super SomeType>`) restricts a wildcard to `SomeType` or i
 | **P**roducer **E**xtends | `? extends T` | You **get/read** items (produces `T`) |
 | **C**onsumer **S**uper | `? super T` | You **put/write** items (consumes `T`) |
 
-**Example**
+**Example:**
 
 ```java
 public class CopyUtils {
@@ -1544,7 +1544,7 @@ List<Object> objects = new ArrayList<>();
 CopyUtils.copy(ints, objects);   // OK: Object super Integer
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Memorize **PECS**: `extends` for producers (read), `super` for consumers (write). This is the most common generics interview trap.
 
@@ -1552,13 +1552,13 @@ Memorize **PECS**: `extends` for producers (read), `super` for consumers (write)
 
 ## Q184
 
-**Answer**
+**Answer:**
 
 A **generic method** declares its own type parameter(s) on the **method**, independent of the class. The compiler infers types from arguments (diamond / inference), or you can specify them explicitly.
 
 Syntax: `<T> returnType methodName(T param)`
 
-**Example**
+**Example:**
 
 ```java
 public class GenericMethods {
@@ -1603,7 +1603,7 @@ public class GenericMethods {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Generic methods can live in **any** class (generic or not). Place `<T>` **before the return type**. The compiler infers `T` from arguments in most cases.
 
@@ -1617,7 +1617,7 @@ Generic methods can live in **any** class (generic or not). Place `<T>` **before
 
 ## Q185. What is the need for threads in Java?
 
-**Answer**
+**Answer:**
 
 Threads let a program do **multiple things concurrently** within one process, sharing the same memory heap. You need threads when:
 
@@ -1626,7 +1626,7 @@ Threads let a program do **multiple things concurrently** within one process, sh
 3. **Efficiency** — overlap I/O wait with computation.
 4. **Background tasks** — logging, notifications, scheduled jobs.
 
-**Example**
+**Example:**
 
 ```java
 public class WhyThreads {
@@ -1659,7 +1659,7 @@ public class WhyThreads {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Threads share memory (easy communication, hard synchronization). Processes are isolated (safer, heavier). Choose threads for **I/O overlap** and **multi-core CPU work**.
 
@@ -1667,7 +1667,7 @@ Threads share memory (easy communication, hard synchronization). Processes are i
 
 ## Q186. How do you create a thread?
 
-**Answer**
+**Answer:**
 
 Two primary ways to define work for a thread:
 
@@ -1678,7 +1678,7 @@ Two primary ways to define work for a thread:
 
 Java 8+ also use **lambda**: `new Thread(() -> { ... })`.
 
-**Example**
+**Example:**
 
 ```java
 // Way 1: Extend Thread (not recommended)
@@ -1719,7 +1719,7 @@ public class CreateThreadDemo {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Always prefer **`Runnable`** (or `Callable` for results). Extending `Thread` couples task logic to threading infrastructure.
 
@@ -2745,7 +2745,7 @@ public class ReentrantLockDemo {
 
 ## Q208
 
-**Answer**
+**Answer:**
 
 **Functional programming (FP)** treats computation as the evaluation of **pure functions** — functions that:
 
@@ -2755,7 +2755,7 @@ public class ReentrantLockDemo {
 
 Java is primarily OOP but adopted FP features in Java 8: lambdas, method references, streams, and functional interfaces.
 
-**Example**
+**Example:**
 
 ```java
 // Imperative — mutates external state (not pure)
@@ -2771,7 +2771,7 @@ int sum = numbers.stream()
     .sum();
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Java supports **hybrid FP** — use immutability, pure functions where possible, and streams for declarative data processing. Full purity isn't required, but side effects should be **controlled and explicit**.
 
@@ -2779,7 +2779,7 @@ Java supports **hybrid FP** — use immutability, pure functions where possible,
 
 ## Q209
 
-**Answer**
+**Answer:**
 
 A practical FP example in Java: transform data using **composition of functions** without loops or mutation.
 
@@ -2788,7 +2788,7 @@ Core ideas demonstrated:
 - Immutable transformations
 - Declarative "what" not "how"
 
-**Example**
+**Example:**
 
 ```java
 import java.util.*;
@@ -2832,7 +2832,7 @@ public class FunctionalExample {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 FP in Java means **immutable data + function composition + declarative pipelines**. Records (`record`) and streams make this natural.
 
@@ -2840,7 +2840,7 @@ FP in Java means **immutable data + function composition + declarative pipelines
 
 ## Q210
 
-**Answer**
+**Answer:**
 
 A **Stream** is a sequence of elements supporting **functional-style operations** (filter, map, reduce). Key properties:
 
@@ -2851,7 +2851,7 @@ A **Stream** is a sequence of elements supporting **functional-style operations*
 
 Stream types: `Stream<T>`, `IntStream`, `LongStream`, `DoubleStream` (avoid boxing overhead).
 
-**Example**
+**Example:**
 
 ```java
 import java.util.stream.*;
@@ -2864,7 +2864,7 @@ Stream<Double> randoms    = Stream.generate(Math::random).limit(5);
 IntStream range           = IntStream.rangeClosed(1, 10);  // 1..10
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Streams = **pipeline of operations** on a data source. They enable declarative processing but are **not** replacements for collections.
 
@@ -2872,7 +2872,7 @@ Streams = **pipeline of operations** on a data source. They enable declarative p
 
 ## Q211
 
-**Answer**
+**Answer:**
 
 A **stream pipeline** has three parts:
 
@@ -2880,7 +2880,7 @@ A **stream pipeline** has three parts:
 2. **Intermediate operations** — lazy transforms (return new stream)
 3. **Terminal operation** — triggers execution, produces result or side effect
 
-**Example**
+**Example:**
 
 ```java
 import java.util.*;
@@ -2919,7 +2919,7 @@ public class StreamExample {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Nothing runs until a **terminal operation** is invoked. Intermediate ops build a lazy pipeline.
 
@@ -2927,7 +2927,7 @@ Nothing runs until a **terminal operation** is invoked. Intermediate ops build a
 
 ### Intermediate Operations (between Q211–Q212)
 
-**Answer**
+**Answer:**
 
 **Intermediate operations** are lazy, return a new stream, and can be chained. Common ones:
 
@@ -2944,7 +2944,7 @@ Nothing runs until a **terminal operation** is invoked. Intermediate ops build a
 | `takeWhile(Predicate)` | Java 9+ — take while true |
 | `dropWhile(Predicate)` | Java 9+ — drop while true |
 
-**Example**
+**Example:**
 
 ```java
 import java.util.*;
@@ -2975,7 +2975,7 @@ public class IntermediateOpsDemo {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Intermediate ops are **lazy** and **stateless** (mostly). Order matters: `filter` before `map` avoids unnecessary transformations.
 
@@ -2983,7 +2983,7 @@ Intermediate ops are **lazy** and **stateless** (mostly). Order matters: `filter
 
 ## Q212
 
-**Answer**
+**Answer:**
 
 **Terminal operations** consume the stream and produce a result, side effect, or nothing. They trigger pipeline execution.
 
@@ -2999,7 +2999,7 @@ Intermediate ops are **lazy** and **stateless** (mostly). Order matters: `filter
 | `findFirst()` / `findAny()` | `Optional<T>` |
 | `toArray()` | Array |
 
-**Example**
+**Example:**
 
 ```java
 import java.util.*;
@@ -3035,7 +3035,7 @@ public class TerminalOpsDemo {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 One terminal op per pipeline. After terminal, the stream is **spent** — create a new one from the source to reuse.
 
@@ -3043,7 +3043,7 @@ One terminal op per pipeline. After terminal, the stream is **spent** — create
 
 ## Q213
 
-**Answer**
+**Answer:**
 
 **Method references** are shorthand for lambdas that only call an existing method. Syntax: `ClassName::methodName`.
 
@@ -3053,7 +3053,7 @@ Four types:
 3. **Instance method on arbitrary object** — `String::toLowerCase` (first arg becomes receiver)
 4. **Constructor reference** — `ArrayList::new`
 
-**Example**
+**Example:**
 
 ```java
 import java.util.*;
@@ -3090,7 +3090,7 @@ public class MethodReferenceDemo {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Use method references when the lambda **only delegates** to one method — cleaner and more readable. If you transform arguments, stick with a lambda.
 
@@ -3098,7 +3098,7 @@ Use method references when the lambda **only delegates** to one method — clean
 
 ## Q214
 
-**Answer**
+**Answer:**
 
 A **lambda expression** is an anonymous function — a concise way to implement a **functional interface** (single abstract method). Syntax:
 
@@ -3109,7 +3109,7 @@ A **lambda expression** is an anonymous function — a concise way to implement 
 
 Type inference: compiler deduces parameter types from context. Effectively final variables from enclosing scope can be captured.
 
-**Example**
+**Example:**
 
 ```java
 import java.util.*;
@@ -3142,7 +3142,7 @@ public class LambdaBasics {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Lambdas are **syntactic sugar** for anonymous classes implementing functional interfaces. They enable passing **behavior as data**.
 
@@ -3150,11 +3150,11 @@ Lambdas are **syntactic sugar** for anonymous classes implementing functional in
 
 ## Q215
 
-**Answer**
+**Answer:**
 
 A practical lambda example: event handling, sorting, and filtering without anonymous inner classes.
 
-**Example**
+**Example:**
 
 ```java
 import java.util.*;
@@ -3197,7 +3197,7 @@ public class LambdaExample {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Lambdas replace verbose anonymous classes and make **inline behavior** readable. Combine with streams for powerful data processing.
 
@@ -3205,7 +3205,7 @@ Lambdas replace verbose anonymous classes and make **inline behavior** readable.
 
 ## Q216
 
-**Answer**
+**Answer:**
 
 **Lambdas and functional interfaces** are two sides of the same coin:
 
@@ -3215,7 +3215,7 @@ Lambdas replace verbose anonymous classes and make **inline behavior** readable.
 
 Common built-in functional interfaces live in `java.util.function`.
 
-**Example**
+**Example:**
 
 ```java
 @FunctionalInterface
@@ -3252,7 +3252,7 @@ public class LambdaFunctionalInterfaceDemo {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Every lambda's type is a **functional interface**. If you need a custom shape, define your own `@FunctionalInterface`.
 
@@ -3260,7 +3260,7 @@ Every lambda's type is a **functional interface**. If you need a custom shape, d
 
 ## Q217
 
-**Answer**
+**Answer:**
 
 **`Predicate<T>`** — takes one argument, returns `boolean`. Used for filtering and conditional logic.
 
@@ -3268,7 +3268,7 @@ SAM: `boolean test(T t)`
 
 Key default methods: `and`, `or`, `negate`, `isEqual`.
 
-**Example**
+**Example:**
 
 ```java
 import java.util.*;
@@ -3303,7 +3303,7 @@ public class PredicateDemo {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 `Predicate` = **test/filter**. Compose with `and`/`or`/`negate` for readable validation logic.
 
@@ -3311,7 +3311,7 @@ public class PredicateDemo {
 
 ## Q218
 
-**Answer**
+**Answer:**
 
 **`Function<T, R>`** — takes one argument of type `T`, returns `R`. Used for mapping/transforming data.
 
@@ -3319,7 +3319,7 @@ SAM: `R apply(T t)`
 
 Key default methods: `andThen`, `compose`, `identity`.
 
-**Example**
+**Example:**
 
 ```java
 import java.util.*;
@@ -3353,7 +3353,7 @@ public class FunctionDemo {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 `Function` = **transform T → R**. Use in `map()`, composition chains, and dependency injection of behavior.
 
@@ -3361,7 +3361,7 @@ public class FunctionDemo {
 
 ## Q219
 
-**Answer**
+**Answer:**
 
 **`Consumer<T>`** — takes one argument, returns **void**. Used for side effects: printing, logging, adding to collections.
 
@@ -3369,7 +3369,7 @@ SAM: `void accept(T t)`
 
 Key default methods: `andThen`.
 
-**Example**
+**Example:**
 
 ```java
 import java.util.*;
@@ -3405,7 +3405,7 @@ public class ConsumerDemo {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 `Consumer` = **act on T, no return**. Use for side effects in `forEach`, `peek`, and event handlers.
 
@@ -3413,7 +3413,7 @@ public class ConsumerDemo {
 
 ## Q220
 
-**Answer**
+**Answer:**
 
 **Multi-argument functional interfaces** extend the pattern for two parameters:
 
@@ -3425,7 +3425,7 @@ public class ConsumerDemo {
 
 Also: `BinaryOperator<T>` extends `BiFunction<T,T,T>` — used in `reduce`.
 
-**Example**
+**Example:**
 
 ```java
 import java.util.*;
@@ -3470,7 +3470,7 @@ public class MultiArgFunctionalDemo {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 `Bi*` interfaces cover **two-argument** operations. For 3+ arguments, create a custom `@FunctionalInterface` or use currying with nested functions.
 
@@ -3484,7 +3484,7 @@ public class MultiArgFunctionalDemo {
 
 ## Q221
 
-**Answer**
+**Answer:**
 
 **Java 5 (2004)** — "Tiger" — the biggest release before Java 8. Major features:
 
@@ -3500,7 +3500,7 @@ public class MultiArgFunctionalDemo {
 | **Scanner** | Parse primitive types from input streams |
 | **StringBuilder** | Mutable string builder (prefer over `StringBuffer` for single-thread) |
 
-**Example**
+**Example:**
 
 ```java
 import java.util.*;
@@ -3550,7 +3550,7 @@ public class Java5Features {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Java 5 introduced **generics**, **enums**, **annotations**, and the **concurrent utilities** package — foundational for modern Java.
 
@@ -3558,7 +3558,7 @@ Java 5 introduced **generics**, **enums**, **annotations**, and the **concurrent
 
 ## Q222
 
-**Answer**
+**Answer:**
 
 **Java 6 (2006)** — mostly library and platform improvements; **no major language syntax changes**. Notable additions:
 
@@ -3572,7 +3572,7 @@ Java 5 introduced **generics**, **enums**, **annotations**, and the **concurrent
 | **`Console` class** | Read passwords without echo |
 | **Performance improvements** | JVM, collections, concurrency tuning |
 
-**Example**
+**Example:**
 
 ```java
 import javax.script.*;
@@ -3610,7 +3610,7 @@ public class Java6Features {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Java 6 is often called a **"library release"** — fewer syntax changes, more APIs (scripting, JDBC 4, compiler API). Know it exists but focus interview prep on Java 5, 7, and 8.
 
@@ -3618,7 +3618,7 @@ Java 6 is often called a **"library release"** — fewer syntax changes, more AP
 
 ## Q223
 
-**Answer**
+**Answer:**
 
 **Java 7 (2011)** — "Project Coin" — small language changes plus significant library updates:
 
@@ -3635,7 +3635,7 @@ Java 6 is often called a **"library release"** — fewer syntax changes, more AP
 | **`ForkJoinPool`** | Divide-and-conquer parallelism |
 | **WatchService** | File system change notifications |
 
-**Example**
+**Example:**
 
 ```java
 import java.io.*;
@@ -3689,7 +3689,7 @@ public class Java7Features {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Java 7's **try-with-resources**, **diamond operator**, and **NIO.2** are still everyday tools. Multi-catch and numeric literals are nice but less frequently discussed.
 
@@ -3697,7 +3697,7 @@ Java 7's **try-with-resources**, **diamond operator**, and **NIO.2** are still e
 
 ## Q224
 
-**Answer**
+**Answer:**
 
 **Java 8 (2014)** — the **largest modern release**. Transformed Java with functional programming and streams:
 
@@ -3715,7 +3715,7 @@ Java 7's **try-with-resources**, **diamond operator**, and **NIO.2** are still e
 | **Parallel streams** | Multi-core data processing |
 | **Nashorn JavaScript engine** | JS on JVM (removed in Java 15+) |
 
-**Example**
+**Example:**
 
 ```java
 import java.time.*;
@@ -3789,7 +3789,7 @@ public class Java8Features {
 }
 ```
 
-**Key takeaway**
+**Key takeaway:**
 
 Java 8 is the **must-know release** for interviews: lambdas, streams, Optional, and `java.time`. Most "modern Java" codebases target Java 8+ because of these features.
 
@@ -3810,6 +3810,6 @@ Java did not stop at 8. For modern context in interviews:
 
 If asked "what's new in Java?", lead with **Java 8** depth, then mention your project's LTS version (11, 17, or 21) with 2–3 concrete features.
 
-**Key takeaway**
+**Key takeaway:**
 
 Master **Java 8** thoroughly; name your project's LTS version for anything newer. Interviewers asking Q221–Q224 expect **5, 6, 7, 8** answered completely.

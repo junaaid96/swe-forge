@@ -435,10 +435,10 @@ export function PracticeWorkspacePage() {
 
           {runner ? (
             <div className="row run-row">
-              <button type="button" className="btn btn-primary" onClick={handleRun} disabled={running}>
+              <button type="button" className="btn btn-primary" onClick={handleRun} disabled={running} data-testid="practice-run">
                 {running ? 'Running…' : 'Run visible tests'}
               </button>
-              <button type="button" className="btn btn-accent" onClick={handleSubmit} disabled={running}>
+              <button type="button" className="btn btn-accent" onClick={handleSubmit} disabled={running} data-testid="practice-submit">
                 Submit all tests
               </button>
               <button type="button" className="btn btn-sm" onClick={handleReset}>

@@ -2011,7 +2011,7 @@ Topics: collection hierarchy, List/Set/Map/Queue interfaces, implementations, so
 
 ## Q134. Why do we need the Java Collections Framework instead of plain arrays?
 
-**Answer**
+**Answer:**
 
 Arrays are fixed-size, typed containers with limited operations. The **Collections Framework** (`java.util`) provides:
 
@@ -2024,7 +2024,7 @@ Arrays are fixed-size, typed containers with limited operations. The **Collectio
 | Thread-safe variants | Manual locking | `Concurrent*` collections |
 | Object-only storage | Primitives need wrappers | Autoboxing + specialized streams |
 
-**Example**
+**Example:**
 
 ```java
 // Array — fixed size, awkward insert
@@ -2045,7 +2045,7 @@ System.out.println(list.size()); // 1
 
 ## Q135. What is the Java Collections hierarchy?
 
-**Answer**
+**Answer:**
 
 ```
 Iterable
@@ -2069,7 +2069,7 @@ Map (separate hierarchy — not a Collection)
 | `Queue` | Head/tail operations |
 | `Map` | Key-value pairs, unique keys |
 
-**Example**
+**Example:**
 
 ```java
 Collection<String> col = new ArrayList<>();
@@ -2085,7 +2085,7 @@ Map<String, Integer> map = new HashMap<>();
 
 ## Q136. What are the core methods of the `Collection` interface?
 
-**Answer**
+**Answer:**
 
 | Category | Methods |
 |----------|---------|
@@ -2098,7 +2098,7 @@ Map<String, Integer> map = new HashMap<>();
 
 Optional operations (e.g., `add` on unmodifiable views) throw **`UnsupportedOperationException`**.
 
-**Example**
+**Example:**
 
 ```java
 Collection<Integer> nums = new ArrayList<>(List.of(1, 2, 3));
@@ -2116,7 +2116,7 @@ Integer[] arr = nums.toArray(Integer[]::new);
 
 ## Q137. What is the `List` interface and when do you use it?
 
-**Answer**
+**Answer:**
 
 `List` is an **ordered** collection with **positional access** (`get`, `set`, `add(index, e)`), **duplicates allowed**, and **null** allowed (in most implementations).
 
@@ -2125,7 +2125,7 @@ Use `List` when:
 - Index-based access is needed
 - Duplicates are valid (shopping cart items, log entries)
 
-**Example**
+**Example:**
 
 ```java
 List<String> tasks = new ArrayList<>();
@@ -2143,11 +2143,11 @@ System.out.println(tasks.indexOf("Deploy")); // 2
 
 ## Q138. Show a practical `ArrayList` example.
 
-**Answer**
+**Answer:**
 
 `ArrayList` is a **resizable array** — O(1) random access, O(n) insert/delete in the middle. Default choice for most `List` use cases.
 
-**Example**
+**Example:**
 
 ```java
 List<Product> catalog = new ArrayList<>();
@@ -2173,13 +2173,13 @@ for (Product p : catalog) {
 
 ## Q139. Do Lists allow duplicate elements?
 
-**Answer**
+**Answer:**
 
 **Yes.** `List` permits duplicate elements and duplicate `null` values (implementation permitting). **Set** forbids duplicates; **Map** forbids duplicate keys.
 
 If uniqueness is required, use `Set` or enforce checks manually.
 
-**Example**
+**Example:**
 
 ```java
 List<String> tags = new ArrayList<>();
@@ -2200,7 +2200,7 @@ System.out.println(uniqueTags); // [java, spring] — order not guaranteed
 
 ## Q140. How does the `Iterator` interface work?
 
-**Answer**
+**Answer:**
 
 `Iterator<E>` traverses a collection with:
 - `hasNext()` — more elements?
@@ -2211,7 +2211,7 @@ System.out.println(uniqueTags); // [java, spring] — order not guaranteed
 
 Enhanced for-loop uses iterator under the hood.
 
-**Example**
+**Example:**
 
 ```java
 List<String> items = new ArrayList<>(List.of("A", "B", "C"));
@@ -2232,13 +2232,13 @@ System.out.println(items); // [A, C]
 
 ## Q141. How do you sort a collection with `Collections.sort`?
 
-**Answer**
+**Answer:**
 
 `Collections.sort(list)` sorts a **`List`** in place using natural ordering (`Comparable`) or an explicit **`Comparator`**. It is a legacy wrapper — prefer **`list.sort(comparator)`** (Java 8+).
 
 Requires **stable, modifiable** list. Cannot sort arbitrary `Set`/`Map` directly — copy keys/entries to a `List` first.
 
-**Example**
+**Example:**
 
 ```java
 List<String> names = new ArrayList<>(List.of("Charlie", "Alice", "Bob"));
@@ -2259,7 +2259,7 @@ names.sort(String.CASE_INSENSITIVE_ORDER);
 
 ## Q142. What is the `Comparable` interface?
 
-**Answer**
+**Answer:**
 
 `Comparable<T>` defines **natural ordering** via `int compareTo(T other)`:
 - Negative if `this < other`
@@ -2268,7 +2268,7 @@ names.sort(String.CASE_INSENSITIVE_ORDER);
 
 Implement on the class itself. Used by `Collections.sort`, `TreeSet`, `TreeMap`, etc.
 
-**Example**
+**Example:**
 
 ```java
 public class Employee implements Comparable<Employee> {
@@ -2291,7 +2291,7 @@ Collections.sort(staff); // uses compareTo
 
 ## Q143. What is the `Comparator` interface?
 
-**Answer**
+**Answer:**
 
 `Comparator<T>` defines **external ordering** via `int compare(T a, T b)` without modifying the class. Supports:
 - Multiple sort orders per class
@@ -2300,7 +2300,7 @@ Collections.sort(staff); // uses compareTo
 
 Static helpers: `Comparator.comparing`, `thenComparing`, `reversed`, `nullsFirst`.
 
-**Example**
+**Example:**
 
 ```java
 List<Employee> staff = ...;
@@ -2319,7 +2319,7 @@ staff.sort(Comparator.comparingInt(Employee::getSalary).reversed());
 
 ## Q144. `Vector` vs `ArrayList` — what is the difference?
 
-**Answer**
+**Answer:**
 
 | Feature | `Vector` | `ArrayList` |
 |---------|----------|-------------|
@@ -2331,7 +2331,7 @@ staff.sort(Comparator.comparingInt(Employee::getSalary).reversed());
 
 For thread-safe lists today, use **`CopyOnWriteArrayList`** (read-heavy) or synchronize externally / use concurrent collections.
 
-**Example**
+**Example:**
 
 ```java
 List<String> arrayList = new ArrayList<>(); // preferred
@@ -2347,7 +2347,7 @@ List<String> safe = Collections.synchronizedList(new ArrayList<>());
 
 ## Q145. What is `LinkedList` and when should you use it?
 
-**Answer**
+**Answer:**
 
 `LinkedList` is a **doubly-linked list** implementing `List` and `Deque`. O(1) insert/delete at known node (with iterator), O(n) random access via index.
 
@@ -2358,7 +2358,7 @@ Use when:
 Avoid when:
 - Mostly random `get(i)` access — `ArrayList` wins
 
-**Example**
+**Example:**
 
 ```java
 Deque<Task> queue = new LinkedList<>();
@@ -2378,7 +2378,7 @@ list.addLast("tail");
 
 ## Q146. What is the `Set` interface?
 
-**Answer**
+**Answer:**
 
 `Set` extends `Collection` with **no duplicate elements** (at most one `null` in most implementations). Models mathematical set abstraction.
 
@@ -2386,7 +2386,7 @@ Core implementations: `HashSet`, `LinkedHashSet`, `TreeSet`.
 
 `Set` makes no guarantee about order except `LinkedHashSet` (insertion) and `TreeSet` (sorted).
 
-**Example**
+**Example:**
 
 ```java
 Set<String> emails = new HashSet<>();
@@ -2404,7 +2404,7 @@ System.out.println(emails.contains("admin@example.com")); // true
 
 ## Q147. What is `SortedSet`?
 
-**Answer**
+**Answer:**
 
 `SortedSet<E>` extends `Set` and maintains elements in **ascending sort order** (natural or `Comparator`). Head/tail views: `subSet`, `headSet`, `tailSet`.
 
@@ -2412,7 +2412,7 @@ Primary implementation: **`TreeSet`**.
 
 Elements must be **mutually comparable** (otherwise `ClassCastException` at runtime).
 
-**Example**
+**Example:**
 
 ```java
 SortedSet<Integer> scores = new TreeSet<>();
@@ -2429,7 +2429,7 @@ System.out.println(topHalf); // [88, 92]
 
 ## Q148. Compare `HashSet`, `LinkedHashSet`, and `TreeSet`.
 
-**Answer**
+**Answer:**
 
 | Implementation | Order | Null | Performance | Backing |
 |----------------|-------|------|-------------|---------|
@@ -2437,7 +2437,7 @@ System.out.println(topHalf); // [88, 92]
 | **LinkedHashSet** | Insertion order | 1 null OK | Slightly slower than HashSet | Hash table + linked list |
 | **TreeSet** | Sorted (natural/Comparator) | No null (usually NPE) | O(log n) | Red-black tree |
 
-**Example**
+**Example:**
 
 ```java
 Set<String> hash = new HashSet<>(List.of("banana", "apple", "cherry"));
@@ -2455,7 +2455,7 @@ System.out.println(tree);   // [apple, banana, cherry]
 
 ## Q149. What is `NavigableSet`?
 
-**Answer**
+**Answer:**
 
 `NavigableSet<E>` extends `SortedSet` with navigation methods:
 - `lower(e)`, `floor(e)`, `ceiling(e)`, `higher(e)` — nearest neighbors
@@ -2464,7 +2464,7 @@ System.out.println(tree);   // [apple, banana, cherry]
 
 Implemented by **`TreeSet`**.
 
-**Example**
+**Example:**
 
 ```java
 NavigableSet<Integer> set = new TreeSet<>(List.of(10, 20, 30, 40));
@@ -2483,7 +2483,7 @@ System.out.println(desc.pollFirst()); // 40
 
 ## Q150. What is the `Queue` interface?
 
-**Answer**
+**Answer:**
 
 `Queue` models a **FIFO** (First-In-First-Out) queue with two sets of methods:
 
@@ -2493,7 +2493,7 @@ System.out.println(desc.pollFirst()); // 40
 | Remove | `remove()` | `poll()` → null if empty |
 | Examine | `element()` | `peek()` → null if empty |
 
-**Example**
+**Example:**
 
 ```java
 Queue<String> queue = new LinkedList<>();
@@ -2512,7 +2512,7 @@ while (!queue.isEmpty()) {
 
 ## Q151. What is `Deque` (double-ended queue)?
 
-**Answer**
+**Answer:**
 
 `Deque` extends `Queue` with operations at **both ends**:
 - `addFirst` / `addLast`, `offerFirst` / `offerLast`
@@ -2523,7 +2523,7 @@ Can be used as **stack** (LIFO: `push`/`pop`) or **queue** (FIFO).
 
 Implementations: `ArrayDeque` (preferred), `LinkedList`.
 
-**Example**
+**Example:**
 
 ```java
 Deque<String> stack = new ArrayDeque<>();
@@ -2543,7 +2543,7 @@ System.out.println(fifo.pollFirst()); // A
 
 ## Q152. What is `BlockingQueue`?
 
-**Answer**
+**Answer:**
 
 `BlockingQueue` extends `Queue` for **producer-consumer** threading:
 - **`put(e)`** — blocks if queue is full (bounded)
@@ -2552,7 +2552,7 @@ System.out.println(fifo.pollFirst()); // A
 
 Thread-safe; designed for coordinating work across threads.
 
-**Example**
+**Example:**
 
 ```java
 BlockingQueue<String> queue = new ArrayBlockingQueue<>(10);
@@ -2570,7 +2570,7 @@ String task = queue.take(); // blocks if empty
 
 ## Q153. What is `PriorityQueue`?
 
-**Answer**
+**Answer:**
 
 `PriorityQueue` is an **unbounded** queue ordered by **priority** (natural `Comparable` or `Comparator`) — **not FIFO**. Head is least element (min-heap by default).
 
@@ -2578,7 +2578,7 @@ String task = queue.take(); // blocks if empty
 
 Null not allowed. Iteration order ≠ priority order.
 
-**Example**
+**Example:**
 
 ```java
 Queue<Integer> pq = new PriorityQueue<>();
@@ -2599,7 +2599,7 @@ Queue<Integer> maxPq = new PriorityQueue<>(Comparator.reverseOrder());
 
 ## Q154. What are common `BlockingQueue` implementations?
 
-**Answer**
+**Answer:**
 
 | Class | Bounded | Notes |
 |-------|---------|-------|
@@ -2610,7 +2610,7 @@ Queue<Integer> maxPq = new PriorityQueue<>(Comparator.reverseOrder());
 | `SynchronousQueue` | Zero capacity | Handoff — `put` waits for `take` |
 | `LinkedTransferQueue` | Unbounded | `transfer()` waits for consumer |
 
-**Example**
+**Example:**
 
 ```java
 BlockingQueue<Runnable> pool = new LinkedBlockingQueue<>(100);
@@ -2626,13 +2626,13 @@ ExecutorService exec = new ThreadPoolExecutor(
 
 ## Q155. What is the `Map` interface?
 
-**Answer**
+**Answer:**
 
 `Map<K,V>` stores **key-value pairs** with **unique keys**. Not a `Collection`, but provides **`keySet()`**, **`values()`**, **`entrySet()`** views.
 
 Core operations: `put`, `get`, `remove`, `containsKey`, `containsValue`, `getOrDefault`, `putIfAbsent`, `compute`, `merge` (Java 8+).
 
-**Example**
+**Example:**
 
 ```java
 Map<String, Integer> wordCount = new HashMap<>();
@@ -2648,13 +2648,13 @@ System.out.println(wordCount); // {java=2, spring=1}
 
 ## Q156. What is `SortedMap`?
 
-**Answer**
+**Answer:**
 
 `SortedMap<K,V>` maintains keys in **ascending order** (natural or `Comparator`). Provides `firstKey`, `lastKey`, `subMap`, `headMap`, `tailMap`.
 
 Implementation: **`TreeMap`**.
 
-**Example**
+**Example:**
 
 ```java
 SortedMap<String, String> capitals = new TreeMap<>();
@@ -2672,7 +2672,7 @@ System.out.println(capitals.tailMap("Germany")); // {Germany=Berlin, Italy=Rome}
 
 ## Q157. What are important `HashMap` methods?
 
-**Answer**
+**Answer:**
 
 | Method | Purpose |
 |--------|---------|
@@ -2688,7 +2688,7 @@ System.out.println(capitals.tailMap("Germany")); // {Germany=Berlin, Italy=Rome}
 
 **Not thread-safe** — use `ConcurrentHashMap` concurrently.
 
-**Example**
+**Example:**
 
 ```java
 Map<String, List<String>> index = new HashMap<>();
@@ -2705,14 +2705,14 @@ System.out.println(index.get("java")); // [collections, streams]
 
 ## Q158. What is `TreeMap`?
 
-**Answer**
+**Answer:**
 
 `TreeMap` implements `NavigableMap` / `SortedMap` using a **red-black tree**. Keys sorted; O(log n) operations.
 
 - No null keys (generally `NullPointerException`)
 - Null values allowed (unless comparator rejects)
 
-**Example**
+**Example:**
 
 ```java
 Map<String, Integer> scores = new TreeMap<>();
@@ -2731,7 +2731,7 @@ scores.forEach((name, score) ->
 
 ## Q159. What is `NavigableMap`?
 
-**Answer**
+**Answer:**
 
 `NavigableMap<K,V>` extends `SortedMap` with:
 - `lowerKey`, `floorKey`, `ceilingKey`, `higherKey`
@@ -2740,7 +2740,7 @@ scores.forEach((name, score) ->
 
 Implemented by **`TreeMap`**.
 
-**Example**
+**Example:**
 
 ```java
 NavigableMap<Integer, String> map = new TreeMap<>();
@@ -2759,7 +2759,7 @@ System.out.println(map.descendingMap().firstKey()); // 5
 
 ## Q160. What are essential static methods in `Collections`?
 
-**Answer**
+**Answer:**
 
 | Method | Purpose |
 |--------|---------|
@@ -2772,7 +2772,7 @@ System.out.println(map.descendingMap().firstKey()); // 5
 | `emptyList`, `singletonList`, `nCopies` | Immutable/special lists |
 | `disjoint`, `indexOfSubList` | Comparisons |
 
-**Example**
+**Example:**
 
 ```java
 List<Integer> nums = new ArrayList<>(List.of(3, 1, 4, 1, 5));
@@ -2790,7 +2790,7 @@ List<Integer> readOnly = Collections.unmodifiableList(nums);
 
 ## Q161. How do `HashMap`, `LinkedHashMap`, and `TreeMap` compare?
 
-**Answer**
+**Answer:**
 
 | Map | Key order | Null key | Performance |
 |-----|-----------|----------|-------------|
@@ -2799,7 +2799,7 @@ List<Integer> readOnly = Collections.unmodifiableList(nums);
 | **TreeMap** | Sorted | No null key | O(log n) |
 | **Hashtable** (legacy) | None | No null | Synchronized — avoid |
 
-**Example**
+**Example:**
 
 ```java
 Map<String, Integer> hash = new HashMap<>();
@@ -2821,7 +2821,7 @@ List.of("c", "a", "b").forEach(k -> {
 
 ## Q162. What is the difference between `Collection` and `Collections`?
 
-**Answer**
+**Answer:**
 
 | Name | What it is |
 |------|------------|
@@ -2830,7 +2830,7 @@ List.of("c", "a", "b").forEach(k -> {
 
 Easy interview trap — names differ by one letter, roles completely different.
 
-**Example**
+**Example:**
 
 ```java
 Collection<String> col = new ArrayList<>(); // interface type
@@ -2843,13 +2843,13 @@ Collections.sort((List<String>) col);       // utility — requires List
 
 ## Q163. How do you safely iterate and remove from a `Map`?
 
-**Answer**
+**Answer:**
 
 Use **`entrySet()` iterator** or **`Iterator.remove()`**. Do not call `map.remove(key)` while iterating a fail-fast collection unless using iterator removal or `ConcurrentHashMap` iterator.
 
 Java 8+ alternative: **`removeIf`** on entry set (for `ConcurrentHashMap` and modifiable maps).
 
-**Example**
+**Example:**
 
 ```java
 Map<String, Integer> scores = new HashMap<>(Map.of(
@@ -2871,7 +2871,7 @@ while (it.hasNext()) {
 
 ## Q164. What are `List.of`, `Set.of`, and `Map.of` (immutable factory methods)?
 
-**Answer**
+**Answer:**
 
 Java 9+ factory methods create **immutable** collections:
 - `List.of(e1, e2, ...)`
@@ -2880,7 +2880,7 @@ Java 9+ factory methods create **immutable** collections:
 
 Null elements/keys/values **not allowed**. Modifications throw `UnsupportedOperationException`.
 
-**Example**
+**Example:**
 
 ```java
 List<String> langs = List.of("Java", "Kotlin");
@@ -2897,7 +2897,7 @@ Map<String, Integer> map = Map.of("A", 1, "B", 2);
 
 ## Q165. What is `equals` and `hashCode` contract for collection keys?
 
-**Answer**
+**Answer:**
 
 For objects used as **`HashMap`/`HashSet` keys**:
 1. If `a.equals(b)`, then `a.hashCode() == b.hashCode()`
@@ -2906,7 +2906,7 @@ For objects used as **`HashMap`/`HashSet` keys**:
 
 If you override `equals`, **always override `hashCode`**. Broken contract → "lost" entries (same logical key, different buckets).
 
-**Example**
+**Example:**
 
 ```java
 public class User {
@@ -2933,7 +2933,7 @@ public class User {
 
 ## Q166. Summary comparison table — pick the right collection.
 
-**Answer**
+**Answer:**
 
 | Use case | Choose |
 |----------|--------|

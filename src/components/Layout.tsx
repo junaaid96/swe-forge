@@ -116,7 +116,7 @@ export function Layout() {
             <Logo size={24} />
             <strong>Forgeline</strong>
           </Link>
-          <button type="button" className="search-trigger" onClick={() => setPalette(true)} aria-label="Search (Ctrl or Command + K)">
+          <button type="button" className="search-trigger" onClick={() => setPalette(true)} aria-label="Search (Ctrl or Command + K)" data-testid="search-trigger">
             <IconSearch />
             <span>Search topics, notes, questions…</span>
             <kbd>⌘K</kbd>
@@ -141,7 +141,7 @@ export function Layout() {
           <button type="button" className="icon-btn hide-sm" onClick={() => setHelp(true)} aria-label="Keyboard shortcuts">
             <IconKeyboard />
           </button>
-          <button type="button" className="icon-btn" onClick={toggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`}>
+          <button type="button" className="icon-btn" onClick={toggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} theme`} data-testid="theme-toggle">
             {theme === 'dark' ? <IconSun /> : <IconMoon />}
           </button>
         </header>

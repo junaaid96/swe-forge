@@ -137,9 +137,10 @@ export const jsRunner: Runner = createWorkerRunner({
 export const pythonRunner: Runner = createWorkerRunner({
   id: 'python',
   kinds: ['fn'],
-  // Classic worker: the runtime loads via importScripts from /vendor, so the
-  // chunk stays tiny and Pyodide never touches the bundler.
-  makeWorker: () => new Worker(new URL('../workers/pyRunner.ts', import.meta.url), { type: 'classic', name: 'forgeline-py-runner' }),
+  // Module worker: the runtime loads via dynamic import from /vendor, so the
+  // chunk stays tiny and Pyodide never touches the bundler. Classic workers
+  // are not supported by Pyodide (loadPyodide throws in them).
+  makeWorker: () => new Worker(new URL('../workers/pyRunner.ts', import.meta.url), { type: 'module', name: 'forgeline-py-runner' }),
   // First run includes the one-time runtime load (~1-3s); later runs are fast.
   defaultTimeoutMs: 15000,
   startError: 'Could not start the Python runner.',

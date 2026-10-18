@@ -7,11 +7,14 @@
     "content": "node scripts/build-content.mjs",
     "vendor": "node scripts/vendor-runtimes.mjs",
     "validate:practice": "tsx scripts/validate-practice.mts",
-    "predev": "npm run content && npm run vendor",
+    "validate:content": "node scripts/validate-content.mjs",
+    "validate": "npm run validate:content && npm run validate:practice",
+    "predev": "npm run content && npm run vendor && npm run validate:content -- --warn-only",
     "dev": "vite",
-    "prebuild": "npm run content && npm run vendor && npm run validate:practice",
+    "prebuild": "npm run content && npm run vendor && npm run validate",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
+    "e2e": "playwright test",
     "lint": "oxlint"
   },
   "dependencies": {
@@ -39,6 +42,7 @@
     "sucrase": "^3.35.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@types/node": "^24.13.2",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19.2.17",

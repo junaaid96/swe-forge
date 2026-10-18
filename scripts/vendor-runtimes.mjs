@@ -15,7 +15,10 @@ function vendorDir(name, pkg, files) {
   const version = JSON.parse(fs.readFileSync(path.join(ROOT, 'node_modules', pkg, 'package.json'), 'utf8')).version;
   const out = path.join(ROOT, 'public', 'vendor', name);
   const stamp = path.join(out, '.version');
-  if (fs.existsSync(stamp) && fs.readFileSync(stamp, 'utf8').trim() === version) {
+  // The stamp covers the file list too, so changing which files are vendored
+  // re-vendors even when the package version is unchanged.
+  const want = `${version}\n${files.join('\n')}\n`;
+  if (fs.existsSync(stamp) && fs.readFileSync(stamp, 'utf8') === want) {
     console.log(`[vendor] ${name} ${version} already vendored`);
     return;
   }
@@ -31,13 +34,14 @@ function vendorDir(name, pkg, files) {
     fs.copyFileSync(src, path.join(out, path.basename(f)));
     bytes += fs.statSync(src).size;
   }
-  fs.writeFileSync(stamp, `${version}\n`);
+  fs.writeFileSync(stamp, want);
   console.log(`[vendor] ${name} ${version} → public/vendor/${name} (${(bytes / 1024 / 1024).toFixed(1)}MB)`);
 }
 
-// Pyodide: classic loader + wasm + stdlib. Loaded lazily by the Python
-// practice worker on first use; never part of the JS bundle.
-vendorDir('pyodide', 'pyodide', ['pyodide.js', 'pyodide.asm.mjs', 'pyodide.asm.wasm', 'python_stdlib.zip', 'pyodide-lock.json']);
+// Pyodide: ESM loader + wasm + stdlib. Loaded lazily by the Python
+// practice worker (a module worker — Pyodide no longer supports classic
+// workers) on first use; never part of the JS bundle.
+vendorDir('pyodide', 'pyodide', ['pyodide.mjs', 'pyodide.asm.mjs', 'pyodide.asm.wasm', 'python_stdlib.zip', 'pyodide-lock.json']);
 
 // sql.js: classic loader + wasm. Loaded lazily by the SQL practice worker.
 vendorDir('sqljs', 'sql.js', ['dist/sql-wasm.js', 'dist/sql-wasm.wasm']);

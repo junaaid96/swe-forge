@@ -32,7 +32,7 @@ export function HomePage() {
       <section className="hero">
         <div className="hero-text">
           <p className="eyebrow">Forgeline</p>
-          <h1>Learn it. Drill it. Track it.</h1>
+          <h1 data-testid="home-title">Learn it. Drill it. Track it.</h1>
           <p className="lead">
             {catalog.totals.topics} topics, {catalog.totals.pages} pages and {catalog.totals.cards.toLocaleString()} auto-generated flashcards covering the software engineering
             interview stack, from DSA and system design to Spring Boot, React and DevOps.

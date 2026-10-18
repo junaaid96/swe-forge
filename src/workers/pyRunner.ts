@@ -1,17 +1,16 @@
 /**
- * Python practice runner. Classic Web Worker: no DOM, no localStorage.
- * Pyodide is importScripts'd from same-origin /vendor (never bundled, never
- * CDN) and loads lazily on the first Python run. Stdlib only: the lockdown
- * snippet blocks `js`/`pyodide_js`/`micropip` imports so user code cannot
- * reach the network; output is capped; hangs are handled by the main thread,
- * which terminates and respawns this worker. No COOP/COEP needed.
+ * Python practice runner. Module Web Worker: no DOM, no localStorage.
+ * Pyodide's ESM loader is dynamically imported from same-origin /vendor
+ * (never bundled, never CDN) and loads lazily on the first Python run.
+ * A module worker is required — Pyodide refuses to load in classic workers.
+ * Stdlib only: the lockdown snippet blocks `js`/`pyodide_js`/`micropip`
+ * imports so user code cannot reach the network; output is capped; hangs are
+ * handled by the main thread, which terminates and respawns this worker.
+ * No COOP/COEP needed.
  */
 import { deepEqual, errorMessage, formatValue } from '../lib/runner-shared';
 import type { CaseResult } from '../lib/runners';
 import type { FnTestCase, FnTestSpec } from '../lib/types';
-
-declare function importScripts(...urls: string[]): void;
-declare const loadPyodide: ((opts: { indexURL: string }) => Promise<Pyodide>) | undefined;
 
 interface Pyodide {
   runPython(code: string, options?: { globals?: unknown; filename?: string }): unknown;
@@ -112,9 +111,13 @@ async function ensureInit(): Promise<Pyodide> {
   if (pyodide) return pyodide;
   if (initError) throw new Error(initError);
   try {
-    importScripts('/vendor/pyodide/pyodide.js');
-    if (typeof loadPyodide !== 'function') throw new Error('Pyodide loader did not register.');
-    pyodide = await loadPyodide({ indexURL: '/vendor/pyodide/' });
+    // Absolute same-origin URL, resolved at runtime — never bundled.
+    const loaderUrl = '/vendor/pyodide/pyodide.mjs';
+    const mod = (await import(/* @vite-ignore */ loaderUrl)) as {
+      loadPyodide: (opts: { indexURL: string }) => Promise<Pyodide>;
+    };
+    if (typeof mod.loadPyodide !== 'function') throw new Error('Pyodide loader did not export loadPyodide.');
+    pyodide = await mod.loadPyodide({ indexURL: '/vendor/pyodide/' });
     return pyodide;
   } catch (e) {
     initError = `The Python runtime failed to load (${errorMessage(e)}). Check your connection and run again.`;

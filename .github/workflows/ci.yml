@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Validate content
+        run: npm run validate
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      - name: Bundle size summary
+        run: |
+          node -e "
+            const fs = require('fs');
+            const path = require('path');
+            const zlib = require('zlib');
+            const dir = 'dist/assets';
+            const files = fs.readdirSync(dir)
+              .map((f) => ({ f, s: fs.statSync(path.join(dir, f)).size }))
+              .sort((a, b) => b.s - a.s);
+            console.log('Top 15 assets by size:');
+            for (const { f, s } of files.slice(0, 15)) {
+              const g = zlib.gzipSync(fs.readFileSync(path.join(dir, f))).length;
+              console.log((s / 1024).toFixed(1).padStart(9) + ' KiB  (gzip ' + (g / 1024).toFixed(1) + ' KiB)  ' + f);
+            }
+            const total = files.reduce((a, x) => a + x.s, 0);
+            console.log('TOTAL dist/assets: ' + (total / 1024 / 1024).toFixed(2) + ' MiB');
+          "
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Smoke tests
+        run: npm run e2e
+
+      - name: Upload failure traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-test-results
+          path: test-results/
+          retention-days: 7

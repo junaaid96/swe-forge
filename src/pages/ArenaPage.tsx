@@ -171,7 +171,7 @@ export function ArenaPage() {
     const topic = catalog.topics.find((t) => t.slug === q.card.t);
     const urgent = left < 5 && picked === null;
     return (
-      <div className="page narrow">
+      <div className="page narrow" data-testid="arena-run">
         <div className="arena-bar" role="status" aria-label="Game status">
           <span className="arena-score"><IconBolt /> {score.toLocaleString()}</span>
           <span className="arena-lives" aria-label={`${lives} lives left`}>{'❤'.repeat(lives)}{'🤍'.repeat(Math.max(0, LIVES - lives))}</span>
@@ -181,7 +181,7 @@ export function ArenaPage() {
         <article className="card pad arena-q">
           <p className="fc-ctx">{topic?.emoji} {q.card.ctx} · Q{i + 1}/{qs.length}{streak > 1 ? ` · 🔥 ${streak} streak` : ''}</p>
           <h2>{q.card.q}</h2>
-          <div className="options" role="radiogroup" aria-label="Choose an answer">
+          <div className="options" role="radiogroup" aria-label="Choose an answer" data-testid="arena-options">
             {q.opts.map((o, k) => {
               const st = picked === null ? '' : k === q.ci ? 'correct' : k === picked ? 'wrong' : 'dim';
               return (
@@ -193,7 +193,7 @@ export function ArenaPage() {
           </div>
           {picked !== null ? (
             <div className="row">
-              <button type="button" className="btn btn-primary" onClick={next} autoFocus>
+              <button type="button" className="btn btn-primary" onClick={next} autoFocus data-testid="arena-next">
                 {i + 1 >= qs.length || lives <= 0 ? 'See results' : 'Next'} →
               </button>
               <Link className="small" to={q.card.a ? `${q.card.u}#${q.card.a}` : q.card.u} target="_blank" rel="noreferrer">Why? Open source page</Link>
@@ -209,7 +209,7 @@ export function ArenaPage() {
     const answered = correct + missed.length;
     const acc = answered ? Math.round((correct / answered) * 100) : 0;
     return (
-      <div className="page narrow">
+      <div className="page narrow" data-testid="arena-over">
         <header className="page-head">
           <p className="eyebrow">Quiz arena</p>
           <h1>{missed.length && lives <= 0 ? 'Game over' : 'Arena cleared!'}</h1>
@@ -259,7 +259,7 @@ export function ArenaPage() {
         <div className="stat card"><strong>{best.games}</strong><span>games played</span></div>
         <div className="stat card"><strong>{best.wins}</strong><span>arenas cleared</span></div>
       </section>
-      <section className="card pad mock-setup" aria-labelledby="arena-h">
+      <section className="card pad mock-setup" aria-labelledby="arena-h" data-testid="arena-setup">
         <h2 id="arena-h">Set up your run</h2>
         <div className="field">
           <span className="field-label">Topics {topics.length ? `(${topics.length})` : '(mixed: all topics)'}</span>
@@ -292,7 +292,7 @@ export function ArenaPage() {
           </div>
         </div>
         <div className="row">
-          <button type="button" className="btn btn-primary btn-lg" disabled={!pool.length} onClick={start}>
+          <button type="button" className="btn btn-primary btn-lg" disabled={!pool.length} onClick={start} data-testid="arena-start">
             <IconBolt /> Start ({Math.min(count, pool.length)} questions)
           </button>
           <span className="muted small">{pool.length.toLocaleString()} MCQs match these settings.</span>

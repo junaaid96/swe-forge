@@ -57,7 +57,7 @@ function Summary({ result, catalog, onAgain }: { result: MockResult; catalog: Ca
   const [queued, setQueued] = useState(false);
 
   return (
-    <div className="mock-summary">
+    <div className="mock-summary" data-testid="mock-summary">
       <section className="card pad summary-head">
         <Ring value={pct} size={110} stroke={10} label={`Score ${pct}%`} color={pct >= 75 ? 'var(--good)' : pct >= 50 ? 'var(--warn)' : 'var(--bad)'} />
         <div>
@@ -280,7 +280,7 @@ export function MockPage() {
     const isMcq = Boolean(q.opts?.length);
     const topic = catalog.topics.find((t) => t.slug === q.t);
     return (
-      <div className="page narrow mock-run">
+      <div className="page narrow mock-run" data-testid="mock-run">
         <div className="mock-bar">
           <span>
             Question {i + 1} / {questions.length}
@@ -289,7 +289,7 @@ export function MockPage() {
           <span className={`timer ${remaining !== null && remaining < 60 ? 'urgent' : ''}`} role="timer" aria-live="off">
             <IconTimer width={16} height={16} /> {remaining !== null ? fmt(Math.max(0, remaining)) : fmt(elapsed)}
           </span>
-          <button type="button" className="btn btn-sm" onClick={() => finish(answers)}>
+          <button type="button" className="btn btn-sm" onClick={() => finish(answers)} data-testid="mock-finish">
             Finish now
           </button>
         </div>
@@ -299,7 +299,7 @@ export function MockPage() {
           </p>
           <h2>{q.q}</h2>
           {isMcq ? (
-            <div className="options" role="radiogroup" aria-label="Choose an answer">
+            <div className="options" role="radiogroup" aria-label="Choose an answer" data-testid="mock-options">
               {q.opts!.map((o, k) => {
                 const st = choice === null ? '' : k === q.ci ? 'correct' : k === choice ? 'wrong' : '';
                 return (
@@ -344,7 +344,7 @@ export function MockPage() {
           {revealed ? (
             isMcq ? (
               <div className="row">
-                <button type="button" className="btn btn-primary" onClick={() => answer(choice === q.ci ? 1 : 0)} autoFocus>
+                <button type="button" className="btn btn-primary" onClick={() => answer(choice === q.ci ? 1 : 0)} autoFocus data-testid="mock-next">
                   Next question <IconArrowRight />
                 </button>
               </div>
@@ -386,7 +386,7 @@ export function MockPage() {
         </p>
       </header>
 
-      <section className="card pad mock-setup" aria-labelledby="setup-h">
+      <section className="card pad mock-setup" aria-labelledby="setup-h" data-testid="mock-setup">
         <h2 id="setup-h">Set up your session</h2>
         <div className="field">
           <span className="field-label">Topics {topics.length ? `(${topics.length})` : '(mixed: all topics)'}</span>
@@ -444,7 +444,7 @@ export function MockPage() {
           </div>
         </div>
         <div className="row">
-          <button type="button" className="btn btn-primary btn-lg" disabled={!poolSize || !types.length} onClick={start}>
+          <button type="button" className="btn btn-primary btn-lg" disabled={!poolSize || !types.length} onClick={start} data-testid="mock-start">
             <IconTimer /> Start mock interview
           </button>
           <span className="muted small">{poolSize.toLocaleString()} questions match these settings.</span>

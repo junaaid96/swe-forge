@@ -59,7 +59,7 @@ function Session({ initial, onDone }: { initial: Card[]; onDone: (n: number) => 
   const correct = isMcq && choice === card.ci;
 
   return (
-    <div className="fc-session">
+    <div className="fc-session" data-testid="flashcard">
       <div className="fc-progress">
         <span>
           {done} reviewed · {queue.length} left
@@ -108,7 +108,7 @@ function Session({ initial, onDone }: { initial: Card[]; onDone: (n: number) => 
             </div>
           </div>
         ) : !isMcq ? (
-          <button type="button" className="btn btn-primary btn-lg fc-show" onClick={() => setFlipped(true)} autoFocus>
+          <button type="button" className="btn btn-primary btn-lg fc-show" onClick={() => setFlipped(true)} autoFocus data-testid="show-answer">
             Show answer <kbd>Space</kbd>
           </button>
         ) : null}
@@ -116,7 +116,7 @@ function Session({ initial, onDone }: { initial: Card[]; onDone: (n: number) => 
       {flipped && preview ? (
         <div className="fc-grades" role="group" aria-label="How well did you recall it?">
           {GRADES.map(({ g, label, key, cls }) => (
-            <button key={g} type="button" className={`btn ${cls} ${isMcq && ((correct && g === 4) || (!correct && g === 0)) ? 'suggested' : ''}`} onClick={() => grade(g)}>
+            <button key={g} type="button" className={`btn ${cls} ${isMcq && ((correct && g === 4) || (!correct && g === 0)) ? 'suggested' : ''}`} onClick={() => grade(g)} data-testid={`grade-${label.toLowerCase()}`}>
               <strong>{label}</strong>
               <small>
                 {intervalLabel(preview[g])} · <kbd>{key}</kbd>
@@ -228,7 +228,7 @@ export function FlashcardsPage() {
       </section>
 
       <div className="row">
-        <button type="button" className="btn btn-primary btn-lg" disabled={!total} onClick={() => { setFinished(null); setSession([...queue.due, ...queue.fresh]); }}>
+        <button type="button" className="btn btn-primary btn-lg" disabled={!total} onClick={() => { setFinished(null); setSession([...queue.due, ...queue.fresh]); }} data-testid="flash-start">
           <IconCards /> {total ? `Start review (${total})` : 'Nothing to review'}
         </button>
         {!total && queue.available ? <span className="muted">You've hit today's new-card limit. Raise it below or come back tomorrow.</span> : null}

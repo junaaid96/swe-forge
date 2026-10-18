@@ -187,10 +187,10 @@ export function SkillMapPage() {
         <h2 id="data-h">Your data</h2>
         <p className="muted small">Progress lives only in this browser (localStorage). Export it to back up or move to another device.</p>
         <div className="row">
-          <button type="button" className="btn" onClick={download}>
+          <button type="button" className="btn" onClick={download} data-testid="export-btn">
             Export progress
           </button>
-          <button type="button" className="btn" onClick={() => fileRef.current?.click()}>
+          <button type="button" className="btn" onClick={() => fileRef.current?.click()} data-testid="import-btn">
             Import progress
           </button>
           <input
@@ -198,6 +198,7 @@ export function SkillMapPage() {
             type="file"
             accept="application/json"
             hidden
+            data-testid="import-file"
             onChange={async (e) => {
               const f = e.target.files?.[0];
               if (!f) return;
@@ -213,7 +214,7 @@ export function SkillMapPage() {
           <button type="button" className="btn btn-danger" onClick={() => setConfirm(true)}>
             Reset progress
           </button>
-          {msg ? <span role="status">{msg}</span> : null}
+          {msg ? <span role="status" data-testid="transfer-msg">{msg}</span> : null}
         </div>
       </section>
 

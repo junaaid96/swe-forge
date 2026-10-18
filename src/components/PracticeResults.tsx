@@ -60,7 +60,7 @@ export function PracticeResults({ submission, running }: { submission: Submissio
   const total = visible.cases.length + (hidden?.cases.length ?? (submitted ? 0 : hiddenCount));
   const fatal = visible.error ?? hidden?.error;
   return (
-    <div className="results" aria-live="polite">
+    <div className="results" aria-live="polite" data-testid="practice-results">
       <p className="results-summary">
         <span className={`chip ${!fatal && visible.ok && (!hidden || hidden.ok) ? 'chip-good' : 'chip-bad'}`}>
           {passed}/{total} passed

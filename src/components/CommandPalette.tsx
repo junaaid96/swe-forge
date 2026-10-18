@@ -154,6 +154,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
           <IconSearch />
           <input
             ref={inputRef}
+            data-testid="palette-input"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search topics, notes, questions…"
@@ -177,7 +178,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
           />
           <kbd>Esc</kbd>
         </div>
-        <ul className="palette-results" id={listId} role="listbox" ref={listRef}>
+        <ul className="palette-results" id={listId} role="listbox" ref={listRef} data-testid="palette-results">
           {results.length === 0 ? (
             <li className="palette-empty">{index ? `No results for “${q}”` : 'Loading search index…'}</li>
           ) : (

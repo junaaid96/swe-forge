@@ -149,7 +149,8 @@ export function ArenaPage() {
   };
 
   const next = () => {
-    const dead = lives - (picked === qs[i].ci ? 0 : 1) <= 0;
+    // `lives` already reflects this question's miss (applied in resolve()).
+    const dead = lives <= 0;
     if (dead) {
       finish(score, false);
       return;
@@ -193,7 +194,7 @@ export function ArenaPage() {
           {picked !== null ? (
             <div className="row">
               <button type="button" className="btn btn-primary" onClick={next} autoFocus>
-                {i + 1 >= qs.length || lives - (picked === q.ci ? 0 : 1) <= 0 ? 'See results' : 'Next'} →
+                {i + 1 >= qs.length || lives <= 0 ? 'See results' : 'Next'} →
               </button>
               <Link className="small" to={q.card.a ? `${q.card.u}#${q.card.a}` : q.card.u} target="_blank" rel="noreferrer">Why? Open source page</Link>
             </div>
@@ -204,7 +205,9 @@ export function ArenaPage() {
   }
 
   if (phase === 'over') {
-    const acc = qs.length ? Math.round((correct / qs.length) * 100) : 0;
+    // Only answered questions count — unseen ones after an early death aren't misses.
+    const answered = correct + missed.length;
+    const acc = answered ? Math.round((correct / answered) * 100) : 0;
     return (
       <div className="page narrow">
         <header className="page-head">

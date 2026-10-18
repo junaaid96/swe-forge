@@ -140,7 +140,7 @@ export function TrackPage() {
 
       <section id="checkpoint" className="card track-quiz" aria-labelledby="checkpoint-h">
         <h2 id="checkpoint-h">Checkpoint quiz</h2>
-        <p className="muted small">15 questions drawn from every topic on this roadmap.</p>
+        <p className="muted small">{quiz && quiz.length < 15 ? `${quiz.length} questions` : 'Up to 15 questions'} drawn from every topic on this roadmap.</p>
         {quiz ? quiz.length ? <QuizPanel slug={`track:${track.slug}`} questions={quiz} /> : <p className="muted">No questions yet.</p> : <PageFallback />}
       </section>
     </div>

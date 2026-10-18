@@ -85,7 +85,13 @@ export function ReaderPage({ prepMap = false }: { prepMap?: boolean }) {
   const navigate = useNavigate();
   const articleRef = useRef<HTMLElement>(null);
   const pct = useReadingProgress(articleRef, page);
-  const [practice, setPractice] = useState(() => localStorage.getItem('forgeline:qa-practice') === '1');
+  const [practice, setPractice] = useState(() => {
+    try {
+      return localStorage.getItem('forgeline:qa-practice') === '1';
+    } catch {
+      return false;
+    }
+  });
   const [aiOpen, setAiOpen] = useState(false);
 
   const topic = catalog?.topics.find((t) => t.slug === slug);
@@ -179,7 +185,11 @@ export function ReaderPage({ prepMap = false }: { prepMap?: boolean }) {
                   checked={practice}
                   onChange={(e) => {
                     setPractice(e.target.checked);
-                    localStorage.setItem('forgeline:qa-practice', e.target.checked ? '1' : '0');
+                    try {
+                      localStorage.setItem('forgeline:qa-practice', e.target.checked ? '1' : '0');
+                    } catch {
+                      /* storage blocked */
+                    }
                   }}
                 />
                 <span>Practice mode (hide answers)</span>

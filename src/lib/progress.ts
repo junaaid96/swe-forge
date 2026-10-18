@@ -92,22 +92,33 @@ function migrateLegacy(): ProgressState | null {
   }
 }
 
-function load(): ProgressState {
-  if (typeof localStorage === 'undefined') return empty();
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as Partial<ProgressState>;
-      const base = empty();
-      return { ...base, ...parsed, srs: { ...base.srs, ...(parsed.srs ?? {}) }, newCards: parsed.newCards ?? base.newCards };
-    }
-  } catch {
-    /* fall through */
-  }
-  return migrateLegacy() ?? empty();
+function merge(parsed: Partial<ProgressState>): ProgressState {
+  const base = empty();
+  return { ...base, ...parsed, srs: { ...base.srs, ...(parsed.srs ?? {}) }, newCards: parsed.newCards ?? base.newCards };
 }
 
-let state = load();
+function load(): ProgressState {
+  try {
+    if (typeof localStorage === 'undefined') return empty();
+    const raw = localStorage.getItem(KEY);
+    if (raw) return merge(JSON.parse(raw) as Partial<ProgressState>);
+  } catch {
+    /* storage blocked or corrupt — fall through */
+  }
+  try {
+    return migrateLegacy() ?? empty();
+  } catch {
+    return empty();
+  }
+}
+
+// Accessing localStorage itself can throw (blocked cookies) — never crash the app at import.
+let state: ProgressState;
+try {
+  state = load();
+} catch {
+  state = empty();
+}
 const listeners = new Set<() => void>();
 
 function commit(next: ProgressState, study = true) {
@@ -138,7 +149,11 @@ function update(fn: (s: ProgressState) => void, study = true) {
 if (typeof window !== 'undefined') {
   window.addEventListener('storage', (e) => {
     if (e.key === KEY) {
-      state = load();
+      try {
+        state = load();
+      } catch {
+        state = empty();
+      }
       listeners.forEach((l) => l());
     }
   });
@@ -219,7 +234,7 @@ export const progress = {
   importJson(json: string) {
     const parsed = JSON.parse(json) as ProgressState;
     if (parsed?.version !== 1) throw new Error('Not a Forgeline progress file');
-    commit({ ...empty(), ...parsed }, false);
+    commit(merge(parsed), false);
   },
   reset() {
     commit(empty(), false);

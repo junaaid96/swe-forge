@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { AiError, GROQ_MODELS, chat, clip, getBudget, keySource, setBudget, setKey, setModel, testConnection, useAiStatus, type ChatMsg } from '../lib/ai';
+import { useDialogFocus } from '../lib/focus';
 import { Markdown } from './Markdown';
 import { IconClose } from './Icons';
 
@@ -126,6 +127,8 @@ export function AIPanel({ open, onClose, context }: { open: boolean; onClose: ()
   const [showSettings, setShowSettings] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(open, onClose, dialogRef);
 
   useEffect(() => {
     if (open) {
@@ -142,14 +145,6 @@ export function AIPanel({ open, onClose, context }: { open: boolean; onClose: ()
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ block: 'end' });
   }, [msgs, busy]);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && open) onClose();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
 
   if (!open) return null;
 
@@ -184,7 +179,7 @@ export function AIPanel({ open, onClose, context }: { open: boolean; onClose: ()
 
   return createPortal(
     <div className="modal-overlay" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="ai-panel" role="dialog" aria-modal="true" aria-label={`AI assistant for ${context.title}`}>
+      <div className="ai-panel" role="dialog" aria-modal="true" aria-label={`AI assistant for ${context.title}`} ref={dialogRef}>
         <div className="ai-head">
           <div>
             <p className="eyebrow">AI study coach · Groq</p>
@@ -232,7 +227,7 @@ export function AIPanel({ open, onClose, context }: { open: boolean; onClose: ()
                 send(input);
               }}
             >
-              <input value={input} onChange={(e) => setInput(e.target.value)} placeholder={status.key ? 'Ask about this page…' : 'Add an API key first (Settings)'} aria-label="Ask about this page" disabled={!status.key || busy} />
+              <input value={input} onChange={(e) => setInput(e.target.value)} placeholder={status.key ? 'Ask about this page…' : 'Add an API key first (Settings)'} aria-label="Ask about this page" disabled={!status.key || busy} autoFocus />
               <button type="submit" className="btn btn-primary btn-sm" disabled={!status.key || busy || !input.trim()}>
                 Send
               </button>

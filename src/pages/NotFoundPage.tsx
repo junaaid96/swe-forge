@@ -1,6 +1,10 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 export function NotFoundPage({ message = "We couldn't find that page." }: { message?: string }) {
+  useEffect(() => {
+    document.title = 'Page not found · Forgeline';
+  }, []);
   return (
     <div className="empty-state">
       <p className="eyebrow">404</p>

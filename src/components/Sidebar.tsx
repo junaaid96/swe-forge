@@ -83,7 +83,12 @@ export function Sidebar({ onNavigate }: { onNavigate: () => void }) {
                           const read = Boolean(state.pages[p.key]?.readAt);
                           return (
                             <li key={p.key}>
-                              <NavLink to={p.url} className={({ isActive }) => `side-page ${isActive ? 'active' : ''}`} onClick={onNavigate}>
+                              <NavLink
+                                to={p.url}
+                                className={({ isActive }) => `side-page ${isActive ? 'active' : ''}`}
+                                onClick={onNavigate}
+                                aria-current={pathname === p.url ? 'page' : undefined}
+                              >
                                 <span className={`read-dot ${read ? 'read' : ''}`} aria-label={read ? 'Read' : 'Unread'}>
                                   {read ? <IconCheck width={10} height={10} strokeWidth={3} /> : null}
                                 </span>

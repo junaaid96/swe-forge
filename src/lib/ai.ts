@@ -54,7 +54,15 @@ function loadUsage(): AiUsage {
 }
 
 const listeners = new Set<() => void>();
-let usageCache: AiUsage = typeof localStorage === 'undefined' ? { day: dayKey(), calls: 0, inTokens: 0, outTokens: 0 } : loadUsage();
+function freshUsage(): AiUsage {
+  return { day: dayKey(), calls: 0, inTokens: 0, outTokens: 0 };
+}
+let usageCache: AiUsage;
+try {
+  usageCache = typeof localStorage === 'undefined' ? freshUsage() : loadUsage();
+} catch {
+  usageCache = freshUsage();
+}
 
 function saveUsage(u: AiUsage) {
   usageCache = u;
@@ -140,6 +148,8 @@ function getSnapshot(): AiSnapshot {
   const key = getKey();
   const model = getModel();
   const budget = getBudget();
+  // Day rollover: yesterday's cached bucket must not linger until the next chat.
+  if (usageCache.day !== dayKey()) usageCache = loadUsage();
   const usage = usageCache;
   if (snapCache.key !== key || snapCache.model !== model || snapCache.budget !== budget || snapCache.usage !== usage) {
     snapCache = { key, model, usage, budget };

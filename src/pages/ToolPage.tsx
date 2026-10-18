@@ -1,34 +1,34 @@
 /** Single-tool runner: breadcrumb, workspace, related tools. */
-import { Suspense, lazy, useEffect, type ComponentType } from 'react';
+import { Suspense, lazy, useEffect, type ComponentType, type LazyExoticComponent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { relatedTools, toolBySlug } from '../tools/registry';
 import { useToolPrefs } from '../tools/store';
 import { PageFallback } from '../components/Layout';
 import { IconArrowLeft, IconArrowRight, IconCode, IconStar } from '../components/Icons';
 
-const LOADERS: Record<string, () => Promise<{ default: ComponentType }>> = {
-  json: () => import('../tools/format').then((m) => ({ default: m.JsonTool })),
-  'csv-json': () => import('../tools/format').then((m) => ({ default: m.CsvJsonTool })),
-  markdown: () => import('../tools/format').then((m) => ({ default: m.MarkdownTool })),
-  'base-converter': () => import('../tools/format').then((m) => ({ default: m.BaseConverterTool })),
-  encoders: () => import('../tools/encode').then((m) => ({ default: m.EncodersTool })),
-  hash: () => import('../tools/encode').then((m) => ({ default: m.HashTool })),
-  'ids-secrets': () => import('../tools/encode').then((m) => ({ default: m.IdsTool })),
-  jwt: () => import('../tools/encode').then((m) => ({ default: m.JwtTool })),
-  regex: () => import('../tools/web').then((m) => ({ default: m.RegexTool })),
-  time: () => import('../tools/web').then((m) => ({ default: m.TimeTool })),
-  'curl-api': () => import('../tools/web').then((m) => ({ default: m.CurlTool })),
-  color: () => import('../tools/web').then((m) => ({ default: m.ColorTool })),
-  diff: () => import('../tools/text').then((m) => ({ default: m.DiffTool })),
-  'text-case': () => import('../tools/text').then((m) => ({ default: m.TextCaseTool })),
-  git: () => import('../tools/text').then((m) => ({ default: m.GitTool })),
-  docker: () => import('../tools/text').then((m) => ({ default: m.DockerTool })),
-  tokens: () => import('../tools/labs').then((m) => ({ default: m.TokensTool })),
-  'mock-data': () => import('../tools/labs').then((m) => ({ default: m.MockDataTool })),
-  subnet: () => import('../tools/labs').then((m) => ({ default: m.SubnetTool })),
-  sql: () => import('../tools/enrich').then((m) => ({ default: m.SqlTool })),
-  qr: () => import('../tools/enrich').then((m) => ({ default: m.QrTool })),
-  unicode: () => import('../tools/enrich').then((m) => ({ default: m.UnicodeTool })),
+const TOOL_COMPONENTS: Record<string, LazyExoticComponent<ComponentType>> = {
+  json: lazy(() => import('../tools/format').then((m) => ({ default: m.JsonTool }))),
+  'csv-json': lazy(() => import('../tools/format').then((m) => ({ default: m.CsvJsonTool }))),
+  markdown: lazy(() => import('../tools/format').then((m) => ({ default: m.MarkdownTool }))),
+  'base-converter': lazy(() => import('../tools/format').then((m) => ({ default: m.BaseConverterTool }))),
+  encoders: lazy(() => import('../tools/encode').then((m) => ({ default: m.EncodersTool }))),
+  hash: lazy(() => import('../tools/encode').then((m) => ({ default: m.HashTool }))),
+  'ids-secrets': lazy(() => import('../tools/encode').then((m) => ({ default: m.IdsTool }))),
+  jwt: lazy(() => import('../tools/encode').then((m) => ({ default: m.JwtTool }))),
+  regex: lazy(() => import('../tools/web').then((m) => ({ default: m.RegexTool }))),
+  time: lazy(() => import('../tools/web').then((m) => ({ default: m.TimeTool }))),
+  'curl-api': lazy(() => import('../tools/web').then((m) => ({ default: m.CurlTool }))),
+  color: lazy(() => import('../tools/web').then((m) => ({ default: m.ColorTool }))),
+  diff: lazy(() => import('../tools/text').then((m) => ({ default: m.DiffTool }))),
+  'text-case': lazy(() => import('../tools/text').then((m) => ({ default: m.TextCaseTool }))),
+  git: lazy(() => import('../tools/text').then((m) => ({ default: m.GitTool }))),
+  docker: lazy(() => import('../tools/text').then((m) => ({ default: m.DockerTool }))),
+  tokens: lazy(() => import('../tools/labs').then((m) => ({ default: m.TokensTool }))),
+  'mock-data': lazy(() => import('../tools/labs').then((m) => ({ default: m.MockDataTool }))),
+  subnet: lazy(() => import('../tools/labs').then((m) => ({ default: m.SubnetTool }))),
+  sql: lazy(() => import('../tools/enrich').then((m) => ({ default: m.SqlTool }))),
+  qr: lazy(() => import('../tools/enrich').then((m) => ({ default: m.QrTool }))),
+  unicode: lazy(() => import('../tools/enrich').then((m) => ({ default: m.UnicodeTool }))),
 };
 
 export function ToolPage() {
@@ -44,7 +44,7 @@ export function ToolPage() {
     document.title = meta ? `${meta.title} · Tools · Forgeline` : 'Tool not found · Forgeline';
   }, [meta]);
 
-  if (!meta || !slug || !LOADERS[slug]) {
+  if (!meta || !slug || !TOOL_COMPONENTS[slug]) {
     return (
       <div className="page narrow">
         <p className="empty-state">
@@ -54,7 +54,7 @@ export function ToolPage() {
     );
   }
 
-  const Tool = lazy(LOADERS[slug]);
+  const Tool = TOOL_COMPONENTS[slug];
   const related = relatedTools(slug);
   const fav = favs.includes(slug);
 
@@ -86,8 +86,8 @@ export function ToolPage() {
       </div>
 
       <div className="tool-workspace card pad">
-        <Suspense fallback={<PageFallback />}>
-          <Tool />
+        <Suspense key={slug} fallback={<PageFallback />}>
+          <Tool key={slug} />
         </Suspense>
       </div>
 

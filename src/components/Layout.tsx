@@ -18,6 +18,16 @@ export function PageFallback() {
   );
 }
 
+/** Spinner that only appears if the lazy chunk takes a while — avoids a full-page flash on fast transitions. */
+function DeferredFallback({ delay = 250 }: { delay?: number }) {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const t = window.setTimeout(() => setShow(true), delay);
+    return () => window.clearTimeout(t);
+  }, [delay]);
+  return show ? <PageFallback /> : null;
+}
+
 export function Layout() {
   const [drawer, setDrawer] = useState(false);
   const [palette, setPalette] = useState(false);
@@ -28,12 +38,33 @@ export function Layout() {
   const state = useProgress();
   const due = dueCount(state);
   const mainRef = useRef<HTMLElement>(null);
+  const menuRef = useRef<HTMLButtonElement>(null);
+  const drawerRef = useRef<HTMLElement>(null);
   const gPressed = useRef(0);
 
   useEffect(() => {
     setDrawer(false);
     if (!location.hash) window.scrollTo({ top: 0 });
+    mainRef.current?.focus({ preventScroll: true });
   }, [location.pathname, location.hash]);
+
+  // Dismissing the drawer (not navigating) returns focus to the menu button.
+  const closeDrawer = (refocus = true) => {
+    setDrawer(false);
+    if (refocus) menuRef.current?.focus();
+  };
+
+  // Drawer: Escape dismisses, and focus moves into the drawer on open.
+  useEffect(() => {
+    if (!drawer) return;
+    drawerRef.current?.querySelector<HTMLElement>('button, a[href]')?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeDrawer();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [drawer]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -49,7 +80,10 @@ export function Layout() {
       } else if (e.key === 't' || e.key === 'T') toggleTheme();
       else if (e.key === '?') setHelp(true);
       else if (e.key === 'g') gPressed.current = Date.now();
-      else if (e.key === 'h' && Date.now() - gPressed.current < 900) navigate('/');
+      else if (e.key === 'h' && Date.now() - gPressed.current < 900) {
+        gPressed.current = 0;
+        navigate('/');
+      }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -65,17 +99,17 @@ export function Layout() {
         Skip to content
       </a>
 
-      <aside className={`sidebar ${drawer ? 'open' : ''}`} aria-label="Navigation">
-        <button type="button" className="icon-btn drawer-close" onClick={() => setDrawer(false)} aria-label="Close menu">
+      <aside ref={drawerRef} className={`sidebar ${drawer ? 'open' : ''}`} aria-label="Navigation">
+        <button type="button" className="icon-btn drawer-close" onClick={() => closeDrawer()} aria-label="Close menu">
           <IconClose />
         </button>
         <Sidebar onNavigate={() => setDrawer(false)} />
       </aside>
-      {drawer ? <div className="drawer-backdrop" onClick={() => setDrawer(false)} aria-hidden /> : null}
+      {drawer ? <div className="drawer-backdrop" onClick={() => closeDrawer()} aria-hidden /> : null}
 
       <div className="main-col">
         <header className="topbar">
-          <button type="button" className="icon-btn menu-btn" onClick={() => setDrawer(true)} aria-label="Open menu" aria-expanded={drawer}>
+          <button ref={menuRef} type="button" className="icon-btn menu-btn" onClick={() => setDrawer(true)} aria-label="Open menu" aria-expanded={drawer}>
             <IconMenu />
           </button>
           <Link to="/" className="topbar-brand" aria-label="Forgeline home">
@@ -113,7 +147,7 @@ export function Layout() {
         </header>
 
         <main id="main" ref={mainRef} tabIndex={-1}>
-          <Suspense fallback={<PageFallback />}>
+          <Suspense fallback={<DeferredFallback />}>
             <Outlet />
           </Suspense>
         </main>

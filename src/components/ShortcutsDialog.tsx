@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
+import { useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useDialogFocus } from '../lib/focus';
 
 const KEYS: Array<[string, string]> = [
   ['⌘ K  or  /', 'Search everything'],
@@ -15,16 +16,12 @@ const KEYS: Array<[string, string]> = [
 ];
 
 export function ShortcutsDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [open, onClose]);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useDialogFocus(open, onClose, dialogRef);
   if (!open) return null;
   return createPortal(
     <div className="modal-overlay" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="kbd-title">
+      <div className="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="kbd-title" ref={dialogRef}>
         <h2 id="kbd-title">Keyboard shortcuts</h2>
         <table className="kbd-table">
           <tbody>

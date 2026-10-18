@@ -496,8 +496,8 @@ a.page-row:hover, .page-row:hover { background: var(--bg-soft); }
   .fc-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 960px) {
-  .sidebar { position: fixed; z-index: 40; left: 0; top: 0; transform: translateX(-102%); transition: transform 0.22s var(--ease); box-shadow: var(--shadow-lg); width: min(86vw, 320px); }
-  .sidebar.open { transform: none; }
+  .sidebar { position: fixed; z-index: 40; left: 0; top: 0; transform: translateX(-102%); visibility: hidden; transition: transform 0.22s var(--ease), visibility 0.22s; box-shadow: var(--shadow-lg); width: min(86vw, 320px); }
+  .sidebar.open { transform: none; visibility: visible; }
   .drawer-close { display: inline-grid; position: absolute; right: 8px; top: 10px; z-index: 2; }
   .menu-btn { display: inline-grid; }
   .topbar { padding: 0 10px; gap: 6px; }

@@ -2,6 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { getSearchIndex, useCatalog } from '../lib/content';
+import { useDialogFocus } from '../lib/focus';
 import { TOOLS } from '../tools/registry';
 import type { SearchEntry } from '../lib/types';
 import { toggleTheme } from '../lib/theme';
@@ -66,7 +67,10 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const mouseRef = useRef({ x: -1, y: -1 });
   const listId = useId();
+  useDialogFocus(open, onClose, dialogRef);
 
   useEffect(() => {
     if (!open) return;
@@ -93,7 +97,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
       { id: 'a-roadmaps', url: '/roadmaps', title: 'Browse roadmaps', sub: '24 role-based learning tracks', kind: 'action' },
       { id: 'a-skills', url: '/skills', title: 'Open skill map', sub: 'Progress & what to study next', kind: 'action' },
       { id: 'a-prep', url: '/prep-map', title: 'Topic-wise prep map', sub: 'Guide', kind: 'action' },
-      { id: 'a-tools', url: '/tools', title: 'Browse developer tools', sub: '22 client-side utilities', kind: 'action' },
+      { id: 'a-tools', url: '/tools', title: 'Browse developer tools', sub: `${TOOLS.length} client-side utilities`, kind: 'action' },
       { id: 'a-theme', url: '', title: 'Toggle light / dark theme', sub: 'Shortcut: T', kind: 'action', run: toggleTheme },
     ];
     if (!toks.length) return actions;
@@ -144,7 +148,7 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
 
   return createPortal(
     <div className="modal-overlay palette-overlay" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="palette" role="dialog" aria-modal="true" aria-label="Search Forgeline">
+      <div className="palette" role="dialog" aria-modal="true" aria-label="Search Forgeline" ref={dialogRef}>
         <div className="palette-input">
           <IconSearch />
           <input
@@ -167,9 +171,6 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
               } else if (e.key === 'Enter') {
                 e.preventDefault();
                 go(results[active]);
-              } else if (e.key === 'Escape') {
-                e.preventDefault();
-                onClose();
               }
             }}
           />
@@ -187,7 +188,14 @@ export function CommandPalette({ open, onClose }: { open: boolean; onClose: () =
                 role="option"
                 aria-selected={i === active}
                 className={`palette-item ${i === active ? 'active' : ''}`}
-                onMouseMove={() => setActive(i)}
+                onMouseMove={(e) => {
+                  // Ignore hover events where the pointer didn't actually move (e.g. the
+                  // list scrolling under a stationary cursor) so keyboard nav keeps control.
+                  const last = mouseRef.current;
+                  if (e.clientX === last.x && e.clientY === last.y) return;
+                  mouseRef.current = { x: e.clientX, y: e.clientY };
+                  if (i !== active) setActive(i);
+                }}
                 onClick={() => go(r)}
               >
                 <span className={`palette-kind kind-${r.kind}`}>{r.kind === 'section' ? 'Section' : r.kind === 'page' ? 'Page' : r.kind === 'topic' ? 'Topic' : 'Action'}</span>

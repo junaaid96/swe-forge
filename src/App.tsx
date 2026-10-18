@@ -2,6 +2,7 @@ import { lazy } from 'react';
 import { BrowserRouter, Navigate, Route, Routes, useParams } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { HomePage } from './pages/HomePage';
+import { NotFoundPage } from './pages/NotFoundPage';
 
 const TopicPage = lazy(() => import('./pages/TopicPage'));
 const ReaderPage = lazy(() => import('./pages/ReaderPage'));
@@ -15,7 +16,6 @@ const ToolsPage = lazy(() => import('./pages/ToolsPage'));
 const ToolPage = lazy(() => import('./pages/ToolPage'));
 const ArenaPage = lazy(() => import('./pages/ArenaPage'));
 const AIPage = lazy(() => import('./pages/AIPage'));
-const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 /** Old SWE Forge URLs keep working. */
 function Legacy({ to }: { to: (p: Record<string, string | undefined>) => string }) {

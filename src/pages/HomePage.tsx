@@ -7,6 +7,7 @@ import { Bar, Ring } from '../components/Ring';
 import { IconArrowRight, IconBolt, IconCards, IconCode, IconFlame, IconMap, IconRadar, IconSpark, IconTimer } from '../components/Icons';
 import { PageFallback } from '../components/Layout';
 import { TopicMark } from '../components/TopicMark';
+import { TOOLS } from '../tools/registry';
 import { dayKey } from '../lib/srs';
 
 export function HomePage() {
@@ -136,7 +137,7 @@ export function HomePage() {
         <div className="group-head">
           <h2 id="g-tools">Developer tools</h2>
           <Link to="/tools" className="small">
-            All 22 tools →
+            All {TOOLS.length} tools →
           </Link>
         </div>
         <div className="track-strip">

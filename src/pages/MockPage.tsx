@@ -172,6 +172,7 @@ export function MockPage() {
   const [aiErr, setAiErr] = useState('');
   const [aiSetup, setAiSetup] = useState(false);
   const startRef = useRef(0);
+  const finishedRef = useRef(false);
 
   useEffect(() => {
     document.title = 'Mock interview · Forgeline';
@@ -180,6 +181,9 @@ export function MockPage() {
   const poolSize = useMemo(() => (cards ? cards.filter((c) => (!topics.length || topics.includes(c.t)) && types.includes(c.src)).length : 0), [cards, topics, types]);
 
   const finish = (final: MockAnswer[]) => {
+    // The timeout watcher and the answer buttons can fire in the same tick — record once.
+    if (finishedRef.current) return;
+    finishedRef.current = true;
     const r: MockResult = {
       id: String(Date.now()),
       at: Date.now(),
@@ -220,6 +224,7 @@ export function MockPage() {
     setAiErr('');
     setElapsed(0);
     startRef.current = Date.now();
+    finishedRef.current = false;
     setPhase('running');
   };
 

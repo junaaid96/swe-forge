@@ -27,8 +27,8 @@
 | **Visualizers**: step through sorting, graphs, the event loop and more | **System design**: structured answers, live Mermaid and a rubric |
 | ![AI Coach hub](docs/screenshots/ai-coach.jpg) | ![Skill map](docs/screenshots/skill-map.jpg) |
 | **AI Coach** (bring your own Groq key) | **Skill map**: radar chart, study-next list and badges |
-| ![Home in the dark theme](docs/screenshots/home-dark.jpg) | <img src="docs/screenshots/mobile-practice.jpg" alt="Practice Lab on mobile" width="240"> |
-| **Dark theme** with no flash on load | **Responsive**: works on phones |
+| <img src="docs/screenshots/mobile-practice.jpg" alt="Practice Lab on mobile" width="240"> | |
+| **Responsive**: works on phones | |
 
 ## Tech stack
 
@@ -70,7 +70,7 @@
 - **Progress tracking:** read/bookmark state, quiz scores, solved practice problems and a daily streak.
 - **Footer credit:** a "Developed by `<CodeJBorg />`" pill linking to [junaidul.pro.bd/codejborg](https://junaidul.pro.bd/codejborg).
 - **Brand marks:** language/framework logos vendored from [thesvg.org](https://thesvg.org/) under `public/logos/` (trademarks belong to their owners).
-- **UX:** light/dark theme with no flash on load, responsive layout with a mobile drawer, keyboard shortcuts (`?` lists them), a skip link, ARIA-labelled navigation and dialogs, reduced-motion support and print styles.
+- **UX:** responsive layout with a mobile drawer, keyboard shortcuts (`?` lists them), a skip link, ARIA-labelled navigation and dialogs, reduced-motion support and print styles.
 
 ## Quick start
 
